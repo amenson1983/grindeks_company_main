@@ -47,9 +47,6 @@ class SKU_WORKOUT():
                 list_items_2020.append([{"year": entry_new.year, "sales_method":entry_new.sales_method,"promotion":entry_new.promotion,"purpose":entry_new.purpose,"item_proxima":entry_new.item_proxima,"item_quadra":entry_new.item_quadra,"item_sales_report":entry_new.item_sales_report,"item_kpi_report":entry_new.item_kpi_report,"brand":entry_new.brand,"month":entry_new.month,"cip_euro":entry_new.cip_euro}])
         return list_items_2020
 
-    def save_items_2020_to_csv(self,list_items_2020):
-        self.save_items_to_csv(list_items_2020)
-
     def save_items_to_csv(self, list_items_2020):
         FILENAME = "items_2020.csv"
         with open(FILENAME, "w", newline="", encoding='UTF') as file:
@@ -58,11 +55,6 @@ class SKU_WORKOUT():
             writer = csv.DictWriter(file, fieldnames=columns)
             writer.writeheader()
             for item in list_items_2020:
-                # запись нескольких строк
                 writer.writerows(item)
 
 
-if __name__ == '__main__':
-    r = SKU_WORKOUT()
-    list_2020_items = r.read_item_2020()
-    r.save_items_to_csv(list_2020_items)
