@@ -1,32 +1,15 @@
-import csv
 import json
-import sqlite3
 import tkinter
 from tkinter import font, messagebox, Checkbutton, Radiobutton, BOTH, END
 import matplotlib.pyplot as plt
-
-
-
 import csv
 import sqlite3
-
 from items_class import SKU_WORKOUT, CSKU, CItemsDAO
 from new_try.database import CEXtract_database_tertiary
 from tertiary_sales_class import Tertiary_sales
 
-
-
-
-
-
-
 conn = sqlite3.connect("tertiary_sales_database.db")
-
 items_ = CItemsDAO.read_tertiary(conn)
-
-
-
-
 
 class Items_GUI(tkinter.Frame):
 
@@ -103,10 +86,6 @@ class Items_GUI(tkinter.Frame):
         self.show_button_sro.pack(side='left')
         self.show_button_weight_sro = tkinter.Button(self.button_frame, text='Weighted SRO', command=self.show_weighted_sro)
         self.show_button_weight_sro.pack(side='left')
-
-
-
-
         self.ok_button = tkinter.Button(self.button_frame, text='Sales in euro', command=self.onclick_euro)
         self.ok_button.pack(side='left')
         self.quit_button = tkinter.Button(self.button_frame, text='Quit', command=self.master.destroy)
@@ -227,7 +206,7 @@ class Items_GUI(tkinter.Frame):
         x = value
         self.info_var.set(value)
 
-        self.var.set(f'Здесь может быть еще какое-нибудь сообщение')
+        self.var.set(f"Для отображения динамики роста ключевых показателей:\n1. Bыберите месяцы\n2. Выберите препарат (на некоторые - нет данных)\n3. Нажмите соответствующую кнопку\nВЫБРАННЫЙ ПРЕПАРАТ:")
     def show_penetration(self):
         self.month = ''
         self.amount_euro = 0

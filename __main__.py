@@ -14,7 +14,7 @@ from tertiary_sales_class import Tertiary_sales
 def Main():
     root = Tk()
     ex = Items_GUI()
-    root.geometry("500x550")
+    root.geometry("600x550+400+50")
     main_menu = tkinter.Menu()
     file_menu = tkinter.Menu()
     save_menu = tkinter.Menu()
