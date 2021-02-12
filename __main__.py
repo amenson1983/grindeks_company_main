@@ -25,9 +25,10 @@ def Main():
                           command=ex.save_weight_pen_month_to_csv)
     save_menu.add_command(label="Save month-weighted_penetration-item data to CSV",
                           command=ex.save_weight_pen_month_item_to_csv)
-    save_menu.add_command(label="Save month-weighted_penetration-item RX-PROMO data to CSV",
-                          command=ex.save_weight_pen_month_all_items_to_csv)
-
+    save_menu.add_command(label="Save month-weighted_penetration-item PROMO data to CSV",
+                          command=ex.save_weight_pen_month_all_PROMO_items_to_csv)
+    save_menu.add_command(label="Save month-weighted_penetration-item PROMO data to CSV with commas",
+                          command=ex.save_weight_pen_month_all_PROMO_items_to_csv_commas)
     file_menu.add_command(label="New")
     file_menu.add_cascade(label="Save", menu=save_menu)
     file_menu.add_separator()
