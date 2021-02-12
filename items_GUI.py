@@ -95,7 +95,7 @@ class Items_GUI(tkinter.Frame):
 
         acts = SKU_WORKOUT()
         acts_ = acts.read_item_2020()
-        self.show_button = tkinter.Button(self.button_frame, text='Weighted penetration', command=self.show_penetration)
+        self.show_button = tkinter.Button(self.button_frame, text='Weighted penetration', command=self.show_weighted_penetration)
         self.show_button.pack(side='left')
         self.ok_button = tkinter.Button(self.button_frame, text='Sales in euro', command=self.onclick_euro)
         self.ok_button.pack(side='left')
@@ -156,7 +156,7 @@ class Items_GUI(tkinter.Frame):
         self.top_frame.pack(side='bottom')
         self.left_frame.pack(side='top')
 
-    def show_penetration(self):
+    def show_weighted_penetration(self):
         self.month = ''
         list = []
         if self.check_var1.get() == 1:
@@ -386,23 +386,18 @@ class Items_GUI(tkinter.Frame):
             self.month = 'Dec'
             list.append(self.month)
         list_2 = []
-        x_coord = list
-        y_coord = []
-        for l in list:
-            for i in items:
-                if i.item == self.info_var.get() and i.year == 2020 and i.month == l:
-                    x = str(i.weight_penetration)
-                    x = x.replace(',','.')
-                    list_2.append(float(x))
-
-        for en in list_2:
-            self.quantity += en
-            y_coord.append(en)
+        ss = CEXtract_database_tertiary()
+        pos = ss.read_item_2020()
+        basic_list = []
+        for i in pos:
+            z = Tertiary_sales(i)
+            if z.month in list and z.item == self.info_var.get():
+                basic_list.append(float(z.weight_penetration))
+                print(basic_list)
         users = []
         for num in range(0,len(list)):
                 users.append({"month": str(list[num]),
-                    "weighted_penetration": str(list_2[num])})
-
+                    "weighted_penetration": str(basic_list[num])})
         strData = json.dumps(users)
         with open(FILENAME, "w") as file:
             file.write(strData)
