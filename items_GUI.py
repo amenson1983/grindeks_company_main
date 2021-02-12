@@ -99,6 +99,14 @@ class Items_GUI(tkinter.Frame):
         self.show_button.pack(side='left')
         self.show_button_pen = tkinter.Button(self.button_frame, text='Penetration', command=self.show_penetration)
         self.show_button_pen.pack(side='left')
+        self.show_button_sro = tkinter.Button(self.button_frame, text='SRO', command=self.show_sro)
+        self.show_button_sro.pack(side='left')
+        self.show_button_weight_sro = tkinter.Button(self.button_frame, text='Weighted SRO', command=self.show_weighted_sro)
+        self.show_button_weight_sro.pack(side='left')
+
+
+
+
         self.ok_button = tkinter.Button(self.button_frame, text='Sales in euro', command=self.onclick_euro)
         self.ok_button.pack(side='left')
         self.quit_button = tkinter.Button(self.button_frame, text='Quit', command=self.master.destroy)
@@ -337,8 +345,124 @@ class Items_GUI(tkinter.Frame):
         plt.grid(True)
         plt.plot(x_coord,y_coord,marker='s')
         plt.show()
+    def show_sro(self):
+        self.month = ''
+        self.amount_euro = 0
+        list = []
+        if self.check_var1.get() == 1:
+            self.month = 'Jan'
+            list.append(self.month)
+        if self.check_var2.get() == 1:
+            self.month = 'Feb'
+            list.append(self.month)
+        if self.check_var3.get() == 1:
+            self.month = 'Mar'
+            list.append(self.month)
+        if self.check_var4.get() == 1:
+            self.month = 'Apr'
+            list.append(self.month)
+        if self.check_var5.get() == 1:
+            self.month = 'May'
+            list.append(self.month)
+        if self.check_var6.get() == 1:
+            self.month = 'Jun'
+            list.append(self.month)
+        if self.check_var7.get() == 1:
+            self.month = 'Jul'
+            list.append(self.month)
+        if self.check_var8.get() == 1:
+            self.month = 'Aug'
+            list.append(self.month)
+        if self.check_var9.get() == 1:
+            self.month = 'Sep'
+            list.append(self.month)
+        if self.check_var10.get() == 1:
+            self.month = 'Oct'
+            list.append(self.month)
+        if self.check_var11.get() == 1:
+            self.month = 'Nov'
+            list.append(self.month)
+        if self.check_var12.get() == 1:
+            self.month = 'Dec'
+            list.append(self.month)
+
+        x_coord = list
+        ss = CEXtract_database_tertiary()
+        pos = ss.read_item_2020()
+        basic_list = []
+        print(pos)
+        for i in pos:
+            z = Tertiary_sales(i)
+            if z.month in list and z.item == self.info_var.get():
+                basic_list.append(float(z.sro))
+                print(basic_list)
+
+        y_coord = basic_list
 
 
+        plt.title(f'SRO: \n{self.info_var.get()}')
+        plt.grid(True)
+        plt.plot(x_coord,y_coord,marker='s')
+        plt.show()
+    def show_weighted_sro(self):
+        self.month = ''
+        self.amount_euro = 0
+        list = []
+        if self.check_var1.get() == 1:
+            self.month = 'Jan'
+            list.append(self.month)
+        if self.check_var2.get() == 1:
+            self.month = 'Feb'
+            list.append(self.month)
+        if self.check_var3.get() == 1:
+            self.month = 'Mar'
+            list.append(self.month)
+        if self.check_var4.get() == 1:
+            self.month = 'Apr'
+            list.append(self.month)
+        if self.check_var5.get() == 1:
+            self.month = 'May'
+            list.append(self.month)
+        if self.check_var6.get() == 1:
+            self.month = 'Jun'
+            list.append(self.month)
+        if self.check_var7.get() == 1:
+            self.month = 'Jul'
+            list.append(self.month)
+        if self.check_var8.get() == 1:
+            self.month = 'Aug'
+            list.append(self.month)
+        if self.check_var9.get() == 1:
+            self.month = 'Sep'
+            list.append(self.month)
+        if self.check_var10.get() == 1:
+            self.month = 'Oct'
+            list.append(self.month)
+        if self.check_var11.get() == 1:
+            self.month = 'Nov'
+            list.append(self.month)
+        if self.check_var12.get() == 1:
+            self.month = 'Dec'
+            list.append(self.month)
+
+        x_coord = list
+        ss = CEXtract_database_tertiary()
+        pos = ss.read_item_2020()
+        basic_list = []
+        print(pos)
+        for i in pos:
+            z = Tertiary_sales(i)
+            if z.month in list and z.item == self.info_var.get():
+                basic_list.append(float(z.weighted_sro))
+                print(basic_list)
+
+        y_coord = basic_list
+
+
+        plt.title(f'Weighted SRO: \n{self.info_var.get()}')
+        plt.grid(True)
+        plt.plot(x_coord,y_coord,marker='s')
+        plt.show()
     def save_quant_month_to_json(self):
         FILENAME = f"{self.info_var.get()}_month_quantity.json"
         self.month = ''

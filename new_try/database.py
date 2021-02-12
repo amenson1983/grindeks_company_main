@@ -9,7 +9,7 @@ class CEXtract_database_tertiary:
         with sqlite3.connect("tertiary_sales_database.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020'")
+                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020'")
             results = cursor.fetchall()
             tertiary_list = []
             for i in results:
@@ -18,25 +18,26 @@ class CEXtract_database_tertiary:
                 y_3 = str(i[6]).replace(',', '.')
                 y_4 = str(i[7]).replace(',', '.')
                 y_5 = str(i[8]).replace(',', '.')
-                z = ([i[0], i[1], i[2], i[3], y_1, y_2, y_3, y_4, y_5])
+                y_6 = str(i[9]).replace(',', '.')
+                z = ([i[0], i[1], i[2], i[3], y_1, y_2, y_3, y_4, y_5,y_6])
                 tertiary_list.append(z)
         return tertiary_list
     def read_item_2020_w_commas(conn):
         with sqlite3.connect("tertiary_sales_database.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020'")
+                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020'")
             results = cursor.fetchall()
             tertiary_list = []
             for i in results:
-                z = ([i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8]])
+                z = ([i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8],i[9]])
                 tertiary_list.append(z)
         return tertiary_list
     def save_2020_items_to_csv(self, filename, list_months):
         with sqlite3.connect("tertiary_sales_database.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020'")
+                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020'")
             results = cursor.fetchall()
             tertiary_list = []
             for i in results:
@@ -45,7 +46,8 @@ class CEXtract_database_tertiary:
                 y_3 = str(i[6]).replace(',', '.')
                 y_4 = str(i[7]).replace(',', '.')
                 y_5 = str(i[8]).replace(',', '.')
-                z = ([i[0], i[1], i[2], i[3], y_1, y_2, y_3, y_4, y_5])
+                y_6 = str(i[9]).replace(',', '.')
+                z = ([i[0], i[1], i[2], i[3], y_1, y_2, y_3, y_4, y_5,y_6])
                 entry = Tertiary_sales(z)
                 tertiary_list.append(entry)
         final_list = []
@@ -54,10 +56,10 @@ class CEXtract_database_tertiary:
                 if month == i.month:
                     final_list.append([{"year": str(i.year), "month": i.month, "brand": i.brand, "item": i.item,
                                         "weight_penetration": str(i.weight_penetration),
-                                        "weight_sro": str(i.weight_sro), "penetration": str(i.penetration),
-                                        "quantity": str(i.quantity), "amount_euro": str(i.volume_euro)}])
+                                        "sro": str(i.sro), "penetration": str(i.penetration),
+                                        "quantity": str(i.quantity), "amount_euro": str(i.volume_euro),"weighted_sro":str(i.weighted_sro)}])
         with open(filename, "w", newline="", encoding='UTF') as file:
-            columns = ["year","month","brand","item","weight_penetration","weight_sro","penetration","quantity","amount_euro"]
+            columns = ["year","month","brand","item","weight_penetration","sro","penetration","quantity","amount_euro","weighted_sro"]
             writer = csv.DictWriter(file, fieldnames=columns)
             writer.writeheader()
             for item in final_list:
@@ -67,12 +69,12 @@ class CEXtract_database_tertiary:
         with sqlite3.connect("tertiary_sales_database.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020'")
+                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020'")
             results = cursor.fetchall()
             tertiary_list = []
             for i in results:
 
-                z = ([i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8]])
+                z = ([i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8],i[9]])
                 entry = Tertiary_sales(z)
                 tertiary_list.append(entry)
         final_list = []
@@ -81,10 +83,10 @@ class CEXtract_database_tertiary:
                 if month == i.month:
                     final_list.append([{"year": str(i.year), "month": i.month, "brand": i.brand, "item": i.item,
                                         "weight_penetration": str(i.weight_penetration),
-                                        "weight_sro": str(i.weight_sro), "penetration": str(i.penetration),
-                                        "quantity": str(i.quantity), "amount_euro": str(i.volume_euro)}])
+                                        "sro": str(i.sro), "penetration": str(i.penetration),
+                                        "quantity": str(i.quantity), "amount_euro": str(i.volume_euro),"weighted_sro":str(i.weighted_sro)}])
         with open(filename, "w", newline="", encoding='UTF') as file:
-            columns = ["year","month","brand","item","weight_penetration","weight_sro","penetration","quantity","amount_euro"]
+            columns = ["year","month","brand","item","weight_penetration","sro","penetration","quantity","amount_euro","weighted_sro"]
             writer = csv.DictWriter(file, fieldnames=columns)
             writer.writeheader()
             for item in final_list:
@@ -94,7 +96,7 @@ class CEXtract_database_tertiary:
         with sqlite3.connect("tertiary_sales_database.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020' and items.sales_method = 'OTC'")
+                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020' and items.sales_method = 'OTC'")
             results = cursor.fetchall()
             tertiary_list_otc = []
             for i in results:
@@ -103,7 +105,9 @@ class CEXtract_database_tertiary:
                 y_3 = str(i[6]).replace(',', '.')
                 y_4 = str(i[7]).replace(',', '.')
                 y_5 = str(i[8]).replace(',', '.')
-                z = ([i[0], i[1], i[2], i[3], y_1, y_2, y_3, y_4, y_5])
+                y_6 = str(i[9]).replace(',', '.')
+                z = ([i[0], i[1], i[2], i[3], y_1, y_2, y_3, y_4, y_5,y_6])
+
                 tertiary_list_otc.append(z)
         return tertiary_list_otc
 
@@ -111,7 +115,7 @@ class CEXtract_database_tertiary:
         with sqlite3.connect("tertiary_sales_database.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020' and items.sales_method = 'OTC'")
+                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020' and items.sales_method = 'OTC'")
             results = cursor.fetchall()
             tertiary_list = []
             for i in results:
@@ -120,7 +124,9 @@ class CEXtract_database_tertiary:
                 y_3 = str(i[6]).replace(',', '.')
                 y_4 = str(i[7]).replace(',', '.')
                 y_5 = str(i[8]).replace(',', '.')
-                z = ([i[0], i[1], i[2], i[3], y_1, y_2, y_3, y_4, y_5])
+                y_6 = str(i[9]).replace(',', '.')
+                z = ([i[0], i[1], i[2], i[3], y_1, y_2, y_3, y_4, y_5,y_6])
+
                 entry = Tertiary_sales(z)
                 tertiary_list.append(entry)
         final_list = []
@@ -129,10 +135,10 @@ class CEXtract_database_tertiary:
                 if month == i.month:
                     final_list.append([{"year": str(i.year), "month": i.month, "brand": i.brand, "item": i.item,
                                         "weight_penetration": str(i.weight_penetration),
-                                        "weight_sro": str(i.weight_sro), "penetration": str(i.penetration),
-                                        "quantity": str(i.quantity), "amount_euro": str(i.volume_euro)}])
+                                        "sro": str(i.sro), "penetration": str(i.penetration),
+                                        "quantity": str(i.quantity), "amount_euro": str(i.volume_euro),"weighted_sro":str(i.weighted_sro)}])
         with open(filename, "w", newline="", encoding='UTF') as file:
-            columns = ["year","month","brand","item","weight_penetration","weight_sro","penetration","quantity","amount_euro"]
+            columns = ["year","month","brand","item","weight_penetration","sro","penetration","quantity","amount_euro","weighted_sro"]
             writer = csv.DictWriter(file, fieldnames=columns)
             writer.writeheader()
             for item in final_list:
@@ -141,7 +147,7 @@ class CEXtract_database_tertiary:
         with sqlite3.connect("tertiary_sales_database.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020' and items.sales_method = 'OTC'")
+                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020' and items.sales_method = 'OTC'")
             results = cursor.fetchall()
             tertiary_list_otc = []
             for i in results:
@@ -150,7 +156,9 @@ class CEXtract_database_tertiary:
                 y_3 = str(i[6])
                 y_4 = str(i[7])
                 y_5 = str(i[8])
-                z = ([i[0], i[1], i[2], i[3], y_1, y_2, y_3, y_4, y_5])
+                y_6 = str(i[9])
+                z = ([i[0], i[1], i[2], i[3], y_1, y_2, y_3, y_4, y_5,y_6])
+
                 tertiary_list_otc.append(z)
         return tertiary_list_otc
 
@@ -158,7 +166,7 @@ class CEXtract_database_tertiary:
         with sqlite3.connect("tertiary_sales_database.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020' and items.sales_method = 'OTC'")
+                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020' and items.sales_method = 'OTC'")
             results = cursor.fetchall()
             tertiary_list = []
             for i in results:
@@ -167,7 +175,9 @@ class CEXtract_database_tertiary:
                 y_3 = str(i[6])
                 y_4 = str(i[7])
                 y_5 = str(i[8])
-                z = ([i[0], i[1], i[2], i[3], y_1, y_2, y_3, y_4, y_5])
+                y_6 = str(i[9])
+                z = ([i[0], i[1], i[2], i[3], y_1, y_2, y_3, y_4, y_5,y_6])
+
                 entry = Tertiary_sales(z)
                 tertiary_list.append(entry)
         final_list = []
@@ -176,10 +186,10 @@ class CEXtract_database_tertiary:
                 if month == i.month:
                     final_list.append([{"year": str(i.year), "month": i.month, "brand": i.brand, "item": i.item,
                                         "weight_penetration": str(i.weight_penetration),
-                                        "weight_sro": str(i.weight_sro), "penetration": str(i.penetration),
-                                        "quantity": str(i.quantity), "amount_euro": str(i.volume_euro)}])
+                                        "sro": str(i.sro), "penetration": str(i.penetration),
+                                        "quantity": str(i.quantity), "amount_euro": str(i.volume_euro),"weighted_sro":str(i.weighted_sro)}])
         with open(filename, "w", newline="", encoding='UTF') as file:
-            columns = ["year","month","brand","item","weight_penetration","weight_sro","penetration","quantity","amount_euro"]
+            columns = ["year","month","brand","item","weight_penetration","sro","penetration","quantity","amount_euro","weighted_sro"]
             writer = csv.DictWriter(file, fieldnames=columns)
             writer.writeheader()
             for item in final_list:
@@ -189,7 +199,7 @@ class CEXtract_database_tertiary:
         with sqlite3.connect("tertiary_sales_database.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020' and items.sales_method = 'RX'")
+                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020' and items.sales_method = 'RX'")
             results = cursor.fetchall()
             tertiary_list_otc = []
             for i in results:
@@ -198,7 +208,9 @@ class CEXtract_database_tertiary:
                 y_3 = str(i[6])
                 y_4 = str(i[7])
                 y_5 = str(i[8])
-                z = ([i[0], i[1], i[2], i[3], y_1, y_2, y_3, y_4, y_5])
+                y_6 = str(i[9])
+                z = ([i[0], i[1], i[2], i[3], y_1, y_2, y_3, y_4, y_5,y_6])
+
                 tertiary_list_otc.append(z)
         return tertiary_list_otc
 
@@ -206,7 +218,7 @@ class CEXtract_database_tertiary:
         with sqlite3.connect("tertiary_sales_database.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020' and items.sales_method = 'RX'")
+                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020' and items.sales_method = 'RX'")
             results = cursor.fetchall()
             tertiary_list = []
             for i in results:
@@ -215,7 +227,9 @@ class CEXtract_database_tertiary:
                 y_3 = str(i[6])
                 y_4 = str(i[7])
                 y_5 = str(i[8])
-                z = ([i[0], i[1], i[2], i[3], y_1, y_2, y_3, y_4, y_5])
+                y_6 = str(i[9])
+                z = ([i[0], i[1], i[2], i[3], y_1, y_2, y_3, y_4, y_5,y_6])
+
                 entry = Tertiary_sales(z)
                 tertiary_list.append(entry)
         final_list = []
@@ -224,10 +238,10 @@ class CEXtract_database_tertiary:
                 if month == i.month:
                     final_list.append([{"year": str(i.year), "month": i.month, "brand": i.brand, "item": i.item,
                                         "weight_penetration": str(i.weight_penetration),
-                                        "weight_sro": str(i.weight_sro), "penetration": str(i.penetration),
-                                        "quantity": str(i.quantity), "amount_euro": str(i.volume_euro)}])
+                                        "sro": str(i.sro), "penetration": str(i.penetration),
+                                        "quantity": str(i.quantity), "amount_euro": str(i.volume_euro),"weighted_sro":str(i.weighted_sro)}])
         with open(filename, "w", newline="", encoding='UTF') as file:
-            columns = ["year","month","brand","item","weight_penetration","weight_sro","penetration","quantity","amount_euro"]
+            columns = ["year","month","brand","item","weight_penetration","sro","penetration","quantity","amount_euro","weighted_sro"]
             writer = csv.DictWriter(file, fieldnames=columns)
             writer.writeheader()
             for item in final_list:
@@ -236,7 +250,7 @@ class CEXtract_database_tertiary:
         with sqlite3.connect("tertiary_sales_database.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020' and items.sales_method = 'RX'")
+                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020' and items.sales_method = 'RX'")
             results = cursor.fetchall()
             tertiary_list_otc = []
             for i in results:
@@ -245,7 +259,9 @@ class CEXtract_database_tertiary:
                 y_3 = str(i[6]).replace(',', '.')
                 y_4 = str(i[7]).replace(',', '.')
                 y_5 = str(i[8]).replace(',', '.')
-                z = ([i[0], i[1], i[2], i[3], y_1, y_2, y_3, y_4, y_5])
+                y_6 = str(i[9]).replace(',', '.')
+                z = ([i[0], i[1], i[2], i[3], y_1, y_2, y_3, y_4, y_5,y_6])
+
                 tertiary_list_otc.append(z)
         return tertiary_list_otc
 
@@ -253,7 +269,7 @@ class CEXtract_database_tertiary:
         with sqlite3.connect("tertiary_sales_database.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020' and items.sales_method = 'RX'")
+                "SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = '2020' and items.sales_method = 'RX'")
             results = cursor.fetchall()
             tertiary_list = []
             for i in results:
@@ -262,7 +278,9 @@ class CEXtract_database_tertiary:
                 y_3 = str(i[6]).replace(',', '.')
                 y_4 = str(i[7]).replace(',', '.')
                 y_5 = str(i[8]).replace(',', '.')
-                z = ([i[0], i[1], i[2], i[3], y_1, y_2, y_3, y_4, y_5])
+                y_6 = str(i[9]).replace(',', '.')
+                z = ([i[0], i[1], i[2], i[3], y_1, y_2, y_3, y_4, y_5,y_6])
+
                 entry = Tertiary_sales(z)
                 tertiary_list.append(entry)
         final_list = []
@@ -271,10 +289,10 @@ class CEXtract_database_tertiary:
                 if month == i.month:
                     final_list.append([{"year": str(i.year), "month": i.month, "brand": i.brand, "item": i.item,
                                         "weight_penetration": str(i.weight_penetration),
-                                        "weight_sro": str(i.weight_sro), "penetration": str(i.penetration),
-                                        "quantity": str(i.quantity), "amount_euro": str(i.volume_euro)}])
+                                        "sro": str(i.sro), "penetration": str(i.penetration),
+                                        "quantity": str(i.quantity), "amount_euro": str(i.volume_euro),"weighted_sro":str(i.weighted_sro)}])
         with open(filename, "w", newline="", encoding='UTF') as file:
-            columns = ["year","month","brand","item","weight_penetration","weight_sro","penetration","quantity","amount_euro"]
+            columns = ["year","month","brand","item","weight_penetration","sro","penetration","quantity","amount_euro","weighted_sro"]
             writer = csv.DictWriter(file, fieldnames=columns)
             writer.writeheader()
             for item in final_list:

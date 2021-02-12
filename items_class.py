@@ -58,7 +58,7 @@ class CItemsDAO:
             cursor = conn.cursor()
             # cursor.execute("INSERT INTO Tertiary_sales VALUES (276,'Djamala');")
             # cursor.execute(f"INSERT INTO Tertiary_sales VALUES (?,?)",(artist.item,f'{artist.brand}'))
-            cursor.execute(f"INSERT INTO sales VALUES (?,?,?,?,?,?,?,?)", (f'({sales.year}', (f'{sales.month}'), (f'{sales.item}'), (f'{sales.weight_penetration}'), (f'{sales.weight_sro}'), (f'{sales.quantity}'), (f'{sales.volume_euro}')))
+            cursor.execute(f"INSERT INTO sales VALUES (?,?,?,?,?,?,?,?)", (f'({sales.year}', (f'{sales.month}'), (f'{sales.item}'), (f'{sales.weight_penetration}'), (f'{sales.sro}'), (f'{sales.quantity}'), (f'{sales.volume_euro}')))
 
             conn.commit()
 
