@@ -1,4 +1,5 @@
 import csv
+import json
 import sqlite3
 import tkinter
 from tkinter import font, messagebox, Checkbutton, Radiobutton, BOTH, END
@@ -319,23 +320,24 @@ class Items_GUI(tkinter.Frame):
         if self.check_var12.get() == 1:
             self.month = 'Dec'
             list.append(self.month)
-        list_2 = []
-        x_coord = list
-        y_coord = []
-        for l in list:
-            for i in items:
-                if i.item == self.info_var.get() and i.year == 2020 and i.month == l:
-                    x = str(i.quantity)
-                    x = x.replace(',','.')
-                    list_2.append(float(x))
 
-        for en in list_2:
-            self.quantity += en
-            y_coord.append(en)
+
+        ss = CEXtract_database_tertiary()
+        pos = ss.read_item_2020()
+        basic_list = []
+        for i in pos:
+            z = Tertiary_sales(i)
+            if z.month in list and z.item == self.info_var.get():
+                basic_list.append(float(z.quantity))
+                print(basic_list)
+        for i in basic_list:
+            self.quantity += float(i)
+
+        print(self.quantity)
         users = []
         for num in range(0,len(list)):
                 users.append({"month": str(list[num]),
-                    "quantity_packs": str(list_2[num])})
+                    "quantity_packs": str(basic_list[num])})
 
         strData = json.dumps(users)
         with open(FILENAME, "w", encoding='utf-8') as file:
