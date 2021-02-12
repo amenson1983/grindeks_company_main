@@ -478,58 +478,55 @@ class Items_GUI(tkinter.Frame):
         self.quantity = 0
         list = []
         if self.check_var1.get() == 1:
-            self.month = 'Январь'
+            self.month = 'Jan'
             list.append(self.month)
         if self.check_var2.get() == 1:
-            self.month = 'Февраль'
+            self.month = 'Feb'
             list.append(self.month)
         if self.check_var3.get() == 1:
-            self.month = 'Март'
+            self.month = 'Mar'
             list.append(self.month)
         if self.check_var4.get() == 1:
-            self.month = 'Апрель'
+            self.month = 'Apr'
             list.append(self.month)
         if self.check_var5.get() == 1:
-            self.month = 'Май'
+            self.month = 'May'
             list.append(self.month)
         if self.check_var6.get() == 1:
-            self.month = 'Июнь'
+            self.month = 'Jun'
             list.append(self.month)
         if self.check_var7.get() == 1:
-            self.month = 'Июль'
+            self.month = 'Jul'
             list.append(self.month)
         if self.check_var8.get() == 1:
-            self.month = 'Август'
+            self.month = 'Aug'
             list.append(self.month)
         if self.check_var9.get() == 1:
-            self.month = 'Сентябрь'
+            self.month = 'Sep'
             list.append(self.month)
         if self.check_var10.get() == 1:
-            self.month = 'Октябрь'
+            self.month = 'Oct'
             list.append(self.month)
         if self.check_var11.get() == 1:
-            self.month = 'Ноябрь'
+            self.month = 'Nov'
             list.append(self.month)
         if self.check_var12.get() == 1:
-            self.month = 'Декабрь'
+            self.month = 'Dec'
             list.append(self.month)
-        list_2 = []
         x_coord = list
-        y_coord = []
-        for l in list:
-            for i in items:
-                if i.item == self.info_var.get() and i.year == 2020 and i.month == l:
-                    x = str(i.weight_penetration)
-                    x = x.replace(',','.')
-                    list_2.append(float(x))
-
-        for en in list_2:
-            self.quantity += en
-            y_coord.append(en)
+        ss = CEXtract_database_tertiary()
+        pos = ss.read_item_2020()
+        basic_list = []
+        for i in pos:
+            z = Tertiary_sales(i)
+            if z.month in list and z.item == self.info_var.get():
+                basic_list.append(float(z.weight_penetration))
+                print(basic_list)
+        y_coord = basic_list
         users = []
         for num in range(0,len(list)):
                 users.append({"month": str(list[num]),
-                    "weighted_penetration": str(list_2[num])})
+                    "weighted_penetration": str(basic_list[num])})
         with open(FILENAME, "w", newline="") as file:
             columns = ["month", "weighted_penetration"]
             writer = csv.DictWriter(file, fieldnames=columns)
@@ -538,8 +535,6 @@ class Items_GUI(tkinter.Frame):
             # запись нескольких строк
             writer.writerows(users)
 
-        print(list)
-        print(list_2)
         tkinter.messagebox.showinfo('INFO',
                                     f'File {FILENAME} has been succesfully written!')
     def save_weight_pen_month_item_to_csv(self):
@@ -548,59 +543,56 @@ class Items_GUI(tkinter.Frame):
         self.quantity = 0
         list = []
         if self.check_var1.get() == 1:
-            self.month = 'Январь'
+            self.month = 'Jan'
             list.append(self.month)
         if self.check_var2.get() == 1:
-            self.month = 'Февраль'
+            self.month = 'Feb'
             list.append(self.month)
         if self.check_var3.get() == 1:
-            self.month = 'Март'
+            self.month = 'Mar'
             list.append(self.month)
         if self.check_var4.get() == 1:
-            self.month = 'Апрель'
+            self.month = 'Apr'
             list.append(self.month)
         if self.check_var5.get() == 1:
-            self.month = 'Май'
+            self.month = 'May'
             list.append(self.month)
         if self.check_var6.get() == 1:
-            self.month = 'Июнь'
+            self.month = 'Jun'
             list.append(self.month)
         if self.check_var7.get() == 1:
-            self.month = 'Июль'
+            self.month = 'Jul'
             list.append(self.month)
         if self.check_var8.get() == 1:
-            self.month = 'Август'
+            self.month = 'Aug'
             list.append(self.month)
         if self.check_var9.get() == 1:
-            self.month = 'Сентябрь'
+            self.month = 'Sep'
             list.append(self.month)
         if self.check_var10.get() == 1:
-            self.month = 'Октябрь'
+            self.month = 'Oct'
             list.append(self.month)
         if self.check_var11.get() == 1:
-            self.month = 'Ноябрь'
+            self.month = 'Nov'
             list.append(self.month)
         if self.check_var12.get() == 1:
-            self.month = 'Декабрь'
+            self.month = 'Dec'
             list.append(self.month)
-        list_2 = []
-        x_coord = list
-        y_coord = []
-        for l in list:
-            for i in items:
-                if i.item == self.info_var.get() and i.year == 2020 and i.month == l:
-                    x = str(i.weight_penetration)
-                    x = x.replace(',', '.')
-                    list_2.append(float(x))
 
-        for en in list_2:
-            self.quantity += en
-            y_coord.append(en)
+        ss = CEXtract_database_tertiary()
+        pos = ss.read_item_2020()
+        basic_list = []
+        for i in pos:
+            z = Tertiary_sales(i)
+            if z.month in list and z.item == self.info_var.get():
+                basic_list.append(float(z.weight_penetration))
+                print(basic_list)
+
         users = []
         for num in range(0, len(list)):
             users.append({"item": str(self.info_var.get()),
                 "month": str(list[num]),
-                          "weighted_penetration": str(list_2[num])})
+                          "weighted_penetration": str(basic_list[num])})
         with open(FILENAME, "w", newline="") as file:
             columns = ["item", "month", "weighted_penetration"]
             writer = csv.DictWriter(file, fieldnames=columns)
@@ -608,73 +600,52 @@ class Items_GUI(tkinter.Frame):
 
             # запись нескольких строк
             writer.writerows(users)
-
-        print(list)
-        print(list_2)
         tkinter.messagebox.showinfo('INFO',
                                     f'File {FILENAME} has been succesfully written!')
     def save_weight_pen_month_item_RX_PROMO_to_csv(self):
-        FILENAME = "Weight_pen_month_item_RX_PROMO.csv"
+        FILENAME = "Weight_pen_month_item_all_items.csv"
         self.month = ''
         self.quantity = 0
         list = []
         if self.check_var1.get() == 1:
-            self.month = 'Январь'
+            self.month = 'Jan'
             list.append(self.month)
         if self.check_var2.get() == 1:
-            self.month = 'Февраль'
+            self.month = 'Feb'
             list.append(self.month)
         if self.check_var3.get() == 1:
-            self.month = 'Март'
+            self.month = 'Mar'
             list.append(self.month)
         if self.check_var4.get() == 1:
-            self.month = 'Апрель'
+            self.month = 'Apr'
             list.append(self.month)
         if self.check_var5.get() == 1:
-            self.month = 'Май'
+            self.month = 'May'
             list.append(self.month)
         if self.check_var6.get() == 1:
-            self.month = 'Июнь'
+            self.month = 'Jun'
             list.append(self.month)
         if self.check_var7.get() == 1:
-            self.month = 'Июль'
+            self.month = 'Jul'
             list.append(self.month)
         if self.check_var8.get() == 1:
-            self.month = 'Август'
+            self.month = 'Aug'
             list.append(self.month)
         if self.check_var9.get() == 1:
-            self.month = 'Сентябрь'
+            self.month = 'Sep'
             list.append(self.month)
         if self.check_var10.get() == 1:
-            self.month = 'Октябрь'
+            self.month = 'Oct'
             list.append(self.month)
         if self.check_var11.get() == 1:
-            self.month = 'Ноябрь'
+            self.month = 'Nov'
             list.append(self.month)
         if self.check_var12.get() == 1:
-            self.month = 'Декабрь'
+            self.month = 'Dec'
             list.append(self.month)
-        with sqlite3.connect("tertiary_sales_database.db") as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT ymm.Month, ymm.Месяц, items.ITEMSTRANSLIT, items.ITEMSBRAND, tertiary_sales.WeightPenetration from tertiary_sales join ymm on tertiary_sales.Period = ymm.Year_monnum JOIN items on tertiary_sales.Fullmedicationname = items.Fullmedicationname where tertiary_sales.MarketOrg = 'Grindeks  (Latvia)' and items.PROMOTION = 'PROMO' and ymm.Year = '2020'")
-            results = cursor.fetchall()
-        item_list = []
-        for i in results:
-            x = {"month":str(i[0]),"month_cube":str(i[1]),"item_translit":str(i[2]),"item_brand":str(i[3]),"weighted_penetration":str(i[4])}
-            x[4] = str(i[4]).replace(',','.')
-            i = x
-            item_list.append(i)
 
-        final_list = []
-        for i in item_list:
-            if i.get("month_cube") in list:
-                final_list.append(i)
-        print(final_list)
+        ss = CEXtract_database_tertiary()
+        pos = ss.read_item_2020()
 
-        with open(FILENAME, "w", newline="", encoding='UTF-8') as file:
-            columns = ["month","month_cube", "item_translit", "item_brand", "weighted_penetration", 4]
-            writer = csv.DictWriter(file, fieldnames=columns)
-            writer.writeheader()
+        ss.save_items_to_csv(FILENAME,list)
 
-            # запись нескольких строк
-            writer.writerows(final_list)
