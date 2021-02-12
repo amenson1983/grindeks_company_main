@@ -18,30 +18,33 @@ def Main():
     main_menu = tkinter.Menu()
     file_menu = tkinter.Menu()
     save_menu = tkinter.Menu()
-    save_menu.add_command(label="Save month-sold_packs data to JSON", command=ex.save_quant_month_to_json)
-    save_menu.add_command(label="Save month-weighted_penetration data to JSON",
+    tertiary_reports_2020 = tkinter.Menu()
+
+    tertiary_reports_2020.add_command(label="Save month-sold_packs data to JSON", command=ex.save_quant_month_to_json)
+    tertiary_reports_2020.add_command(label="Save month-weighted_penetration data to JSON",
                           command=ex.save_weight_pen_month_to_json)
-    save_menu.add_command(label="Save month-weighted_penetration data to CSV",
+    tertiary_reports_2020.add_command(label="Save month-weighted_penetration data to CSV",
                           command=ex.save_weight_pen_month_to_csv)
-    save_menu.add_command(label="Save month-weighted_penetration-item data to CSV",
+    tertiary_reports_2020.add_command(label="Save month-weighted_penetration-item data to CSV",
                           command=ex.save_weight_pen_month_item_to_csv)
-    save_menu.add_command(label="Save relevant data PROMO to CSV",
+    tertiary_reports_2020.add_command(label="Save relevant data PROMO to CSV",
                           command=ex.save_all_data_2020_PROMO_items_to_csv)
-    save_menu.add_command(label="Save relevant data PROMO to CSV with commas",
+    tertiary_reports_2020.add_command(label="Save relevant data PROMO to CSV with commas",
                           command=ex.save_all_data_2020_PROMO_items_to_csv_commas)
 
-    save_menu.add_command(label="Save OTC relevant data to CSV",
+    tertiary_reports_2020.add_command(label="Save OTC relevant data to CSV",
                           command=ex.save_otc_2020_PROMO_items_to_csv)
-    save_menu.add_command(label="Save OTC relevant data to CSV with commas",
+    tertiary_reports_2020.add_command(label="Save OTC relevant data to CSV with commas",
                           command=ex.save_otc_2020_PROMO_items_to_csv_with_commas)
-    save_menu.add_command(label="Save RX relevant data to CSV with commas",
+    tertiary_reports_2020.add_command(label="Save RX relevant data to CSV with commas",
                           command=ex.save_rx_2020_items_to_csv_with_commas)
-    save_menu.add_command(label="Save RX relevant data to CSV",
+    tertiary_reports_2020.add_command(label="Save RX relevant data to CSV",
                           command=ex.save_rx_2020_items_to_csv)
 
 
     file_menu.add_command(label="New")
     file_menu.add_cascade(label="Save", menu=save_menu)
+    file_menu.add_cascade(label="Tertiary reports 2020", menu=tertiary_reports_2020)
     file_menu.add_separator()
     file_menu.add_command(label="Exit", command=root.destroy)
 
