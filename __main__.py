@@ -34,6 +34,10 @@ def Main():
                           command=ex.save_otc_2020_PROMO_items_to_csv)
     save_menu.add_command(label="Save OTC relevant data to CSV with commas",
                           command=ex.save_otc_2020_PROMO_items_to_csv_with_commas)
+    save_menu.add_command(label="Save RX relevant data to CSV with commas",
+                          command=ex.save_rx_2020_items_to_csv_with_commas)
+    save_menu.add_command(label="Save RX relevant data to CSV",
+                          command=ex.save_rx_2020_items_to_csv)
 
 
     file_menu.add_command(label="New")

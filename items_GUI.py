@@ -794,3 +794,100 @@ class Items_GUI(tkinter.Frame):
         ss.save_items_otc_to_csv_2020_with_commas(FILENAME,list)
         tkinter.messagebox.showinfo('INFO',
                                     f'File {FILENAME} has been succesfully written!')
+
+    def save_rx_2020_items_to_csv_with_commas(self):
+        FILENAME = "Rx_items_all_data2020_with_commas.csv"
+        self.month = ''
+        self.quantity = 0
+        list = []
+        if self.check_var1.get() == 1:
+            self.month = 'Jan'
+            list.append(self.month)
+        if self.check_var2.get() == 1:
+            self.month = 'Feb'
+            list.append(self.month)
+        if self.check_var3.get() == 1:
+            self.month = 'Mar'
+            list.append(self.month)
+        if self.check_var4.get() == 1:
+            self.month = 'Apr'
+            list.append(self.month)
+        if self.check_var5.get() == 1:
+            self.month = 'May'
+            list.append(self.month)
+        if self.check_var6.get() == 1:
+            self.month = 'Jun'
+            list.append(self.month)
+        if self.check_var7.get() == 1:
+            self.month = 'Jul'
+            list.append(self.month)
+        if self.check_var8.get() == 1:
+            self.month = 'Aug'
+            list.append(self.month)
+        if self.check_var9.get() == 1:
+            self.month = 'Sep'
+            list.append(self.month)
+        if self.check_var10.get() == 1:
+            self.month = 'Oct'
+            list.append(self.month)
+        if self.check_var11.get() == 1:
+            self.month = 'Nov'
+            list.append(self.month)
+        if self.check_var12.get() == 1:
+            self.month = 'Dec'
+            list.append(self.month)
+
+        ss = CEXtract_database_tertiary()
+        pos = ss.read_item_2020_RX_with_commas()
+
+        ss.save_items_RX_to_csv_2020_with_commas(FILENAME,list)
+        tkinter.messagebox.showinfo('INFO',
+                                    f'File {FILENAME} has been succesfully written!')
+    def save_rx_2020_items_to_csv(self):
+        FILENAME = "Rx_items_all_data_2020.csv"
+        self.month = ''
+        self.quantity = 0
+        list = []
+        if self.check_var1.get() == 1:
+            self.month = 'Jan'
+            list.append(self.month)
+        if self.check_var2.get() == 1:
+            self.month = 'Feb'
+            list.append(self.month)
+        if self.check_var3.get() == 1:
+            self.month = 'Mar'
+            list.append(self.month)
+        if self.check_var4.get() == 1:
+            self.month = 'Apr'
+            list.append(self.month)
+        if self.check_var5.get() == 1:
+            self.month = 'May'
+            list.append(self.month)
+        if self.check_var6.get() == 1:
+            self.month = 'Jun'
+            list.append(self.month)
+        if self.check_var7.get() == 1:
+            self.month = 'Jul'
+            list.append(self.month)
+        if self.check_var8.get() == 1:
+            self.month = 'Aug'
+            list.append(self.month)
+        if self.check_var9.get() == 1:
+            self.month = 'Sep'
+            list.append(self.month)
+        if self.check_var10.get() == 1:
+            self.month = 'Oct'
+            list.append(self.month)
+        if self.check_var11.get() == 1:
+            self.month = 'Nov'
+            list.append(self.month)
+        if self.check_var12.get() == 1:
+            self.month = 'Dec'
+            list.append(self.month)
+
+        ss = CEXtract_database_tertiary()
+        pos = ss.read_item_2020_RX()
+
+        ss.save_items_RX_to_csv_2020(FILENAME,list)
+        tkinter.messagebox.showinfo('INFO',
+                                    f'File {FILENAME} has been succesfully written!')
