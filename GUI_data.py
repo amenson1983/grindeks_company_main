@@ -1,33 +1,16 @@
 import csv
+import json
 import sqlite3
 import tkinter
-from tkinter import font, messagebox, Checkbutton, Radiobutton, BOTH, END
+from tkinter import Tk, BOTH, Listbox, StringVar, END, messagebox, Checkbutton,font
+from tkinter.ttk import Frame, Label
 import matplotlib.pyplot as plt
 
-
-
-import csv
-import sqlite3
-
-from items_class import SKU_WORKOUT, CSKU, CItemsDAO
 from new_try.database import CEXtract_database_tertiary
 from tertiary_sales_class import Tertiary_sales
 
 
-
-
-
-
-
-conn = sqlite3.connect("tertiary_sales_database.db")
-
-items_ = CItemsDAO.read_tertiary(conn)
-
-
-
-
-
-class Items_GUI(tkinter.Frame):
+class Data_GUI(Frame):
 
     def __init__(self):
         super().__init__()
@@ -66,78 +49,64 @@ class Items_GUI(tkinter.Frame):
         self.check_var12.set(0)
         my_font = tkinter.font.Font(family='Arial', size=14, weight='bold')
         my_font1 = tkinter.font.Font(family='Arial', size=11)
-        self.chb1 = tkinter.Checkbutton(self.left_frame, text='Jan', variable=self.check_var1,
+        self.chb1 = tkinter.Checkbutton(self.left_frame, text='Январь', variable=self.check_var1,
                                         font=my_font1)
 
 
-        self.chb2 = tkinter.Checkbutton(self.left_frame, text='Feb', variable=self.check_var2,
+        self.chb2 = tkinter.Checkbutton(self.left_frame, text='Февраль', variable=self.check_var2,
                                         font=my_font1)
-        self.chb3 = tkinter.Checkbutton(self.left_frame, text='Mar', variable=self.check_var3,
+        self.chb3 = tkinter.Checkbutton(self.left_frame, text='Март', variable=self.check_var3,
                                         font=my_font1)
-        self.chb4 = tkinter.Checkbutton(self.left_frame, text='Apr',
+        self.chb4 = tkinter.Checkbutton(self.left_frame, text='Апрель',
                                         variable=self.check_var4, font=my_font1)
-        self.chb5 = tkinter.Checkbutton(self.left_frame, text='May', variable=self.check_var5, font=my_font1)
-        self.chb6 = tkinter.Checkbutton(self.left_frame, text='Jun', variable=self.check_var6,
+        self.chb5 = tkinter.Checkbutton(self.left_frame, text='Май', variable=self.check_var5, font=my_font1)
+        self.chb6 = tkinter.Checkbutton(self.left_frame, text='Июнь', variable=self.check_var6,
                                         font=my_font1)
-        self.chb7 = tkinter.Checkbutton(self.top_frame, text='Jul', variable=self.check_var7,
+        self.chb7 = tkinter.Checkbutton(self.top_frame, text='Июль', variable=self.check_var7,
                                         font=my_font1)
-        self.chb8 = tkinter.Checkbutton(self.top_frame, text='Aug', variable=self.check_var8,
+        self.chb8 = tkinter.Checkbutton(self.top_frame, text='Август', variable=self.check_var8,
                                         font=my_font1)
-        self.chb9 = tkinter.Checkbutton(self.top_frame, text='Sep',
+        self.chb9 = tkinter.Checkbutton(self.top_frame, text='Сентябрь',
                                         variable=self.check_var9, font=my_font1)
-        self.chb10 = tkinter.Checkbutton(self.top_frame, text='Oct', variable=self.check_var10, font=my_font1)
-        self.chb11 = tkinter.Checkbutton(self.top_frame, text='Nov', variable=self.check_var11,
+        self.chb10 = tkinter.Checkbutton(self.top_frame, text='Октябрь', variable=self.check_var10, font=my_font1)
+        self.chb11 = tkinter.Checkbutton(self.top_frame, text='Ноябрь', variable=self.check_var11,
                                         font=my_font1)
 
-        self.chb12 = tkinter.Checkbutton(self.top_frame, text='Dec', variable=self.check_var12,
+        self.chb12 = tkinter.Checkbutton(self.top_frame, text='Декабрь', variable=self.check_var12,
                                         font=my_font1,padx=15, pady=-10)
+        ss = CEXtract_database_tertiary()
+        pos = ss.read_item_2020()
+        for i in pos:
+            z = Tertiary_sales(i)
+            print(z.weight_penetration)
 
-        acts = SKU_WORKOUT()
-        acts_ = acts.read_item_2020()
-        self.show_button = tkinter.Button(self.button_frame, text='Weighted penetration', command=self.show_penetration)
+        acts = items
+        self.show_button = tkinter.Button(self.button_frame, text='Weighted penetration', command=self.show_renetration)
         self.show_button.pack(side='left')
         self.ok_button = tkinter.Button(self.button_frame, text='Sales in euro', command=self.onclick_euro)
         self.ok_button.pack(side='left')
         self.quit_button = tkinter.Button(self.button_frame, text='Quit', command=self.master.destroy)
         self.quit_button.pack(side='left')
         self.button_frame.pack()
-        lb = tkinter.Listbox(self, width='70', height='15')
+        lb = Listbox(self,width='70',height='15')
         self.ok_button_quantity = tkinter.Button(self.button_frame, text='Sales in packs', command=self.onclick_quantity)
         self.ok_button_quantity.pack(side='left')
 
         i_list = []
-        for i in range(0,len(acts_)):
-            for entry in acts_[i]:
-                year = entry.get('year')
-                sales_method = entry.get('sales_method')
-                promotion = entry.get('promotion')
-                purpose = entry.get('purpose')
-                item_proxima = entry.get('item_proxima')
-                item_quadra = entry.get('item_quadra')
-                item_sales_report = entry.get('item_sales_report')
-                item_kpi_report = entry.get('item_kpi_report')
-                brand = entry.get('brand')
-                month = entry.get('month')
-                cip_euro = entry.get('cip_euro')
-                z = CSKU(year,sales_method,promotion,purpose,item_proxima,item_quadra,item_sales_report,item_kpi_report,brand,month,cip_euro)
-                i_list.append(str(z.item_kpi_report))
-        i_list_1 = []
-
-        for i in i_list:
-            if i not in i_list_1:
-                i_list_1.append(i)
-        for item in i_list_1:
+        for i in acts:
+            i_list.append(i.item)
+        for item in i_list:
             lb.insert(END, item)
 
         lb.bind("<<ListboxSelect>>", self.onSelect)
 
         lb.pack(pady=15)
 
-        self.var = tkinter.StringVar()
-        self.label = tkinter.Label(self, text=0, textvariable=self.var)
+        self.var = StringVar()
+        self.label = Label(self, text=0, textvariable=self.var)
         self.label.pack()
-        self.info_var = tkinter.StringVar()
-        self.info_label = tkinter.Label(self, text=0, textvariable=self.info_var)
+        self.info_var = StringVar()
+        self.info_label = Label(self, text=0, textvariable=self.info_var)
         self.info_label.pack()
 
         self.chb1.pack(side='left')
@@ -155,56 +124,58 @@ class Items_GUI(tkinter.Frame):
         self.top_frame.pack(side='bottom')
         self.left_frame.pack(side='top')
 
-    def show_penetration(self):
+
+
+    def show_renetration(self):
         self.month = ''
         list = []
         if self.check_var1.get() == 1:
-            self.month = 'Jan'
+            self.month = 'Январь'
             list.append(self.month)
         if self.check_var2.get() == 1:
-            self.month = 'Feb'
+            self.month = 'Февраль'
             list.append(self.month)
         if self.check_var3.get() == 1:
-            self.month = 'Mar'
+            self.month = 'Март'
             list.append(self.month)
         if self.check_var4.get() == 1:
-            self.month = 'Apr'
+            self.month = 'Апрель'
             list.append(self.month)
         if self.check_var5.get() == 1:
-            self.month = 'May'
+            self.month = 'Май'
             list.append(self.month)
         if self.check_var6.get() == 1:
-            self.month = 'Jun'
+            self.month = 'Июнь'
             list.append(self.month)
         if self.check_var7.get() == 1:
-            self.month = 'Jul'
+            self.month = 'Июль'
             list.append(self.month)
         if self.check_var8.get() == 1:
-            self.month = 'Aug'
+            self.month = 'Август'
             list.append(self.month)
         if self.check_var9.get() == 1:
-            self.month = 'Sep'
+            self.month = 'Сентябрь'
             list.append(self.month)
         if self.check_var10.get() == 1:
-            self.month = 'Oct'
+            self.month = 'Октябрь'
             list.append(self.month)
         if self.check_var11.get() == 1:
-            self.month = 'Nov'
+            self.month = 'Ноябрь'
             list.append(self.month)
         if self.check_var12.get() == 1:
-            self.month = 'Dec'
+            self.month = 'Декабрь'
             list.append(self.month)
         x_coord = list
-        ss = CEXtract_database_tertiary()
-        pos = ss.read_item_2020()
-        basic_list = []
-        for i in pos:
-            z = Tertiary_sales(i)
-            if z.month in list and z.item == self.info_var.get():
-                basic_list.append(float(z.weight_penetration))
-                print(basic_list)
-        y_coord = basic_list
-
+        list_2 = []
+        for l in list:
+            for i in items:
+                if i.item == self.info_var.get() and i.year == 2020 and i.month == l:
+                    x = str(i.weight_penetration)
+                    x = x.replace(',', '.')
+                    list_2.append(float(x))
+        y_coord = []
+        for en in list_2:
+            y_coord.append(en)
         plt.title(f'Пенетрация по месяцам по выбранному SKU: \n{self.info_var.get()}')
         plt.grid(True)
         plt.plot(x_coord, y_coord,marker='s')
@@ -222,102 +193,100 @@ class Items_GUI(tkinter.Frame):
         self.amount_euro = 0
         list = []
         if self.check_var1.get() == 1:
-            self.month = 'Jan'
+            self.month = 'Январь'
             list.append(self.month)
         if self.check_var2.get() == 1:
-            self.month = 'Feb'
+            self.month = 'Февраль'
             list.append(self.month)
         if self.check_var3.get() == 1:
-            self.month = 'Mar'
+            self.month = 'Март'
             list.append(self.month)
         if self.check_var4.get() == 1:
-            self.month = 'Apr'
+            self.month = 'Апрель'
             list.append(self.month)
         if self.check_var5.get() == 1:
-            self.month = 'May'
+            self.month = 'Май'
             list.append(self.month)
         if self.check_var6.get() == 1:
-            self.month = 'Jun'
+            self.month = 'Июнь'
             list.append(self.month)
         if self.check_var7.get() == 1:
-            self.month = 'Jul'
+            self.month = 'Июль'
             list.append(self.month)
         if self.check_var8.get() == 1:
-            self.month = 'Aug'
+            self.month = 'Август'
             list.append(self.month)
         if self.check_var9.get() == 1:
-            self.month = 'Sep'
+            self.month = 'Сентябрь'
             list.append(self.month)
         if self.check_var10.get() == 1:
-            self.month = 'Oct'
+            self.month = 'Октябрь'
             list.append(self.month)
         if self.check_var11.get() == 1:
-            self.month = 'Nov'
+            self.month = 'Ноябрь'
             list.append(self.month)
         if self.check_var12.get() == 1:
-            self.month = 'Dec'
+            self.month = 'Декабрь'
             list.append(self.month)
-
         x_coord = list
-        ss = CEXtract_database_tertiary()
-        pos = ss.read_item_2020()
-        basic_list = []
-        for i in pos:
-            z = Tertiary_sales(i)
-            if z.month in list and z.item == self.info_var.get():
-                basic_list.append(float(z.volume_euro))
-                print(basic_list)
-        for i in basic_list:
-            self.amount_euro += float(i)
-        y_coord = basic_list
-        print(self.amount_euro)
-        tkinter.messagebox.showinfo('INFO', f'Sales in euro: {self.amount_euro} euro')
+        list_2 = []
+
+        for l in list:
+            for i in items:
+                if i.item == self.info_var.get() and i.year == 2020 and i.month == l:
+                    x = str(i.volume_euro)
+                    x = x.replace(',','.')
+                    list_2.append(float(x))
+        y_coord = []
+        for en in list_2:
+            self.amount_euro += en
+            y_coord.append(en)
         plt.title(f'Третичные продажи в евро по месяцам по SKU: \n{self.info_var.get()}')
         plt.grid(True)
         plt.plot(x_coord,y_coord,marker='s')
         plt.show()
-
-
+        tkinter.messagebox.showinfo('INFO',
+                                    f'Sales in euro: {self.amount_euro} euro')
     def save_quant_month_to_json(self):
         FILENAME = f"{self.info_var.get()}_month_quantity.json"
         self.month = ''
         self.quantity = 0
         list = []
         if self.check_var1.get() == 1:
-            self.month = 'Jan'
+            self.month = 'Январь'
             list.append(self.month)
         if self.check_var2.get() == 1:
-            self.month = 'Feb'
+            self.month = 'Февраль'
             list.append(self.month)
         if self.check_var3.get() == 1:
-            self.month = 'Mar'
+            self.month = 'Март'
             list.append(self.month)
         if self.check_var4.get() == 1:
-            self.month = 'Apr'
+            self.month = 'Апрель'
             list.append(self.month)
         if self.check_var5.get() == 1:
-            self.month = 'May'
+            self.month = 'Май'
             list.append(self.month)
         if self.check_var6.get() == 1:
-            self.month = 'Jun'
+            self.month = 'Июнь'
             list.append(self.month)
         if self.check_var7.get() == 1:
-            self.month = 'Jul'
+            self.month = 'Июль'
             list.append(self.month)
         if self.check_var8.get() == 1:
-            self.month = 'Aug'
+            self.month = 'Август'
             list.append(self.month)
         if self.check_var9.get() == 1:
-            self.month = 'Sep'
+            self.month = 'Сентябрь'
             list.append(self.month)
         if self.check_var10.get() == 1:
-            self.month = 'Oct'
+            self.month = 'Октябрь'
             list.append(self.month)
         if self.check_var11.get() == 1:
-            self.month = 'Nov'
+            self.month = 'Ноябрь'
             list.append(self.month)
         if self.check_var12.get() == 1:
-            self.month = 'Dec'
+            self.month = 'Декабрь'
             list.append(self.month)
         list_2 = []
         x_coord = list
@@ -348,40 +317,40 @@ class Items_GUI(tkinter.Frame):
         self.quantity = 0
         list = []
         if self.check_var1.get() == 1:
-            self.month = 'Jan'
+            self.month = 'Январь'
             list.append(self.month)
         if self.check_var2.get() == 1:
-            self.month = 'Feb'
+            self.month = 'Февраль'
             list.append(self.month)
         if self.check_var3.get() == 1:
-            self.month = 'Mar'
+            self.month = 'Март'
             list.append(self.month)
         if self.check_var4.get() == 1:
-            self.month = 'Apr'
+            self.month = 'Апрель'
             list.append(self.month)
         if self.check_var5.get() == 1:
-            self.month = 'May'
+            self.month = 'Май'
             list.append(self.month)
         if self.check_var6.get() == 1:
-            self.month = 'Jun'
+            self.month = 'Июнь'
             list.append(self.month)
         if self.check_var7.get() == 1:
-            self.month = 'Jul'
+            self.month = 'Июль'
             list.append(self.month)
         if self.check_var8.get() == 1:
-            self.month = 'Aug'
+            self.month = 'Август'
             list.append(self.month)
         if self.check_var9.get() == 1:
-            self.month = 'Sep'
+            self.month = 'Сентябрь'
             list.append(self.month)
         if self.check_var10.get() == 1:
-            self.month = 'Oct'
+            self.month = 'Октябрь'
             list.append(self.month)
         if self.check_var11.get() == 1:
-            self.month = 'Nov'
+            self.month = 'Ноябрь'
             list.append(self.month)
         if self.check_var12.get() == 1:
-            self.month = 'Dec'
+            self.month = 'Декабрь'
             list.append(self.month)
         list_2 = []
         x_coord = list
@@ -417,64 +386,60 @@ class Items_GUI(tkinter.Frame):
         self.quantity = 0
         list = []
         if self.check_var1.get() == 1:
-            self.month = 'Jan'
+            self.month = 'Январь'
             list.append(self.month)
         if self.check_var2.get() == 1:
-            self.month = 'Feb'
+            self.month = 'Февраль'
             list.append(self.month)
         if self.check_var3.get() == 1:
-            self.month = 'Mar'
+            self.month = 'Март'
             list.append(self.month)
         if self.check_var4.get() == 1:
-            self.month = 'Apr'
+            self.month = 'Апрель'
             list.append(self.month)
         if self.check_var5.get() == 1:
-            self.month = 'May'
+            self.month = 'Май'
             list.append(self.month)
         if self.check_var6.get() == 1:
-            self.month = 'Jun'
+            self.month = 'Июнь'
             list.append(self.month)
         if self.check_var7.get() == 1:
-            self.month = 'Jul'
+            self.month = 'Июль'
             list.append(self.month)
         if self.check_var8.get() == 1:
-            self.month = 'Aug'
+            self.month = 'Август'
             list.append(self.month)
         if self.check_var9.get() == 1:
-            self.month = 'Sep'
+            self.month = 'Сентябрь'
             list.append(self.month)
         if self.check_var10.get() == 1:
-            self.month = 'Oct'
+            self.month = 'Октябрь'
             list.append(self.month)
         if self.check_var11.get() == 1:
-            self.month = 'Nov'
+            self.month = 'Ноябрь'
             list.append(self.month)
         if self.check_var12.get() == 1:
-            self.month = 'Dec'
+            self.month = 'Декабрь'
             list.append(self.month)
         list_2 = []
         x_coord = list
         y_coord = []
-
-        ss = CEXtract_database_tertiary()
-        pos = ss.read_item_2020()
-        basic_list = []
-        for i in pos:
-            z = Tertiary_sales(i)
-            if z.month in list and z.item == self.info_var.get():
-                basic_list.append(float(z.quantity))
-                print(basic_list)
-        for i in basic_list:
-            self.quantity += float(i)
-        y_coord = basic_list
-        print(self.quantity)
-        tkinter.messagebox.showinfo('INFO',
-                                    f'Sales in packs: {self.quantity} pcs')
+        for l in list:
+            for i in items:
+                if i.item == self.info_var.get() and i.year == 2020 and i.month == l:
+                    x = str(i.quantity)
+                    x = x.replace(',','.')
+                    list_2.append(float(x))
+        #for en in range(0, len(list_2)):
+        for en in list_2:
+            self.quantity += en
+            y_coord.append(en)
         plt.title(f'Третичные продажи в упаковках по месяцам по SKU: \n{self.info_var.get()}')
         plt.grid(True)
-        plt.plot(x_coord, y_coord,  color='g')
+        plt.bar(x_coord, y_coord, color='g')
         plt.show()
-
+        tkinter.messagebox.showinfo('INFO',
+                                    f'Sales in packs: {self.quantity} pcs')
     def save_weight_pen_month_to_csv(self):
         FILENAME = f"{self.info_var.get()}_month_weight_pen.csv"
         self.month = ''
@@ -659,7 +624,7 @@ class Items_GUI(tkinter.Frame):
             list.append(self.month)
         with sqlite3.connect("tertiary_sales_database.db") as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT ymm.Month, ymm.Месяц, items.ITEMSTRANSLIT, items.ITEMSBRAND, tertiary_sales.WeightPenetration from tertiary_sales join ymm on tertiary_sales.Period = ymm.Year_monnum JOIN items on tertiary_sales.Fullmedicationname = items.Fullmedicationname where tertiary_sales.MarketOrg = 'Grindeks  (Latvia)' and items.PROMOTION = 'PROMO' and ymm.Year = '2020'")
+            cursor.execute("SELECT ymm.Month, ymm.Месяц, items.item_quadra, items.brand, tertiary_sales.WeightPenetration from tertiary_sales join ymm on tertiary_sales.Period = ymm.Year JOIN items on tertiary_sales.Fullmedicationname = items.item_proxima where tertiary_sales.MarketOrg = 'Grindeks  (Latvia)' and items.PROMOTION = 'PROMO' and ymm.Year = '2020'")
             results = cursor.fetchall()
         item_list = []
         for i in results:

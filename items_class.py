@@ -1,6 +1,8 @@
 import csv
 import sqlite3
 
+from tertiary_sales_class import Tertiary_sales
+
 
 class CSKU:
     def __init__(self,year,sales_method,promotion,purpose,item_proxima,item_quadra,item_sales_report,item_kpi_report,brand,month,cip_euro):
@@ -58,3 +60,45 @@ class SKU_WORKOUT():
                 writer.writerows(item)
 
 
+class CItemsDAO:
+    def insert_item(conn, sales: Tertiary_sales):
+        with sqlite3.connect("tertiary_sales_database.db") as conn:
+            cursor = conn.cursor()
+            # cursor.execute("INSERT INTO Tertiary_sales VALUES (276,'Djamala');")
+            # cursor.execute(f"INSERT INTO Tertiary_sales VALUES (?,?)",(artist.item,f'{artist.brand}'))
+            cursor.execute(f"INSERT INTO sales VALUES (?,?,?,?,?,?,?,?)", (f'({sales.year}', (f'{sales.month}'), (f'{sales.item}'), (f'{sales.weight_penetration}'), (f'{sales.weight_sro}'), (f'{sales.quantity}'), (f'{sales.volume_euro}')))
+
+            conn.commit()
+
+    def update_item(conn, sales: Tertiary_sales):
+        pass
+        with mySql.connect(
+                host="localhost",
+                user="root",
+                password="root",
+                database="chinook"
+        ) as conn:
+            cursor = conn.cursor()
+            # cursor.execute("UPDATE Tertiary_sales SET Name = 'TNMK' WHERE ArtistId = 276;")
+            cursor.execute(f"UPDATE Tertiary_sales SET Name = '{items.brand}' WHERE ItemsId = {items.item};")
+            conn.commit()
+
+    def delete_item(conn):
+        with sqlite3.connect("tertiary_sales_database.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM sales WHERE sales.item_id = '(90'")
+            #cursor.execute(f"DELETE FROM Tertiary_sales WHERE ItemsId = {sales.item}")
+            conn.commit()
+
+    def read_tertiary(conn):
+        with sqlite3.connect("tertiary_sales_database.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT ymm.Year, ymm.Month, items.item_kpi_report, items.brand, tertiary_sales.WeightPenetration,tertiary_sales.WeightSRO , tertiary_sales.Quantity, tertiary_sales.Volume from tertiary_sales join ymm on tertiary_sales.Period = ymm.Year_monnum JOIN items on tertiary_sales.Fullmedicationname = items.item_proxima where tertiary_sales.MarketOrg = 'Grindeks  (Latvia)' and tertiary_sales.year = '2020'")
+            results = cursor.fetchall()
+            tertiary_list = []
+            for i in results:
+                y = str(i[4]).replace(',', '.')
+                z = (i[0], i[1], i[2], i[3], y, i[5] , i[6], i[7])
+                tertiary_list.append(z)
+        return tertiary_list
