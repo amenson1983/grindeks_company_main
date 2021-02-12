@@ -97,6 +97,8 @@ class Items_GUI(tkinter.Frame):
         acts_ = acts.read_item_2020()
         self.show_button = tkinter.Button(self.button_frame, text='Weighted penetration', command=self.show_weighted_penetration)
         self.show_button.pack(side='left')
+        self.show_button_pen = tkinter.Button(self.button_frame, text='Penetration', command=self.show_penetration)
+        self.show_button_pen.pack(side='left')
         self.ok_button = tkinter.Button(self.button_frame, text='Sales in euro', command=self.onclick_euro)
         self.ok_button.pack(side='left')
         self.quit_button = tkinter.Button(self.button_frame, text='Quit', command=self.master.destroy)
@@ -218,6 +220,64 @@ class Items_GUI(tkinter.Frame):
         self.info_var.set(value)
 
         self.var.set(f'Здесь может быть еще какое-нибудь сообщение')
+    def show_penetration(self):
+        self.month = ''
+        self.amount_euro = 0
+        list = []
+        if self.check_var1.get() == 1:
+            self.month = 'Jan'
+            list.append(self.month)
+        if self.check_var2.get() == 1:
+            self.month = 'Feb'
+            list.append(self.month)
+        if self.check_var3.get() == 1:
+            self.month = 'Mar'
+            list.append(self.month)
+        if self.check_var4.get() == 1:
+            self.month = 'Apr'
+            list.append(self.month)
+        if self.check_var5.get() == 1:
+            self.month = 'May'
+            list.append(self.month)
+        if self.check_var6.get() == 1:
+            self.month = 'Jun'
+            list.append(self.month)
+        if self.check_var7.get() == 1:
+            self.month = 'Jul'
+            list.append(self.month)
+        if self.check_var8.get() == 1:
+            self.month = 'Aug'
+            list.append(self.month)
+        if self.check_var9.get() == 1:
+            self.month = 'Sep'
+            list.append(self.month)
+        if self.check_var10.get() == 1:
+            self.month = 'Oct'
+            list.append(self.month)
+        if self.check_var11.get() == 1:
+            self.month = 'Nov'
+            list.append(self.month)
+        if self.check_var12.get() == 1:
+            self.month = 'Dec'
+            list.append(self.month)
+
+        x_coord = list
+        ss = CEXtract_database_tertiary()
+        pos = ss.read_item_2020()
+        basic_list = []
+        for i in pos:
+            z = Tertiary_sales(i)
+            if z.month in list and z.item == self.info_var.get():
+                basic_list.append(float(z.penetration))
+                print(basic_list)
+
+        y_coord = basic_list
+        print(self.amount_euro)
+
+        plt.title(f'Пенетрация по месяцам по SKU: \n{self.info_var.get()}')
+        plt.grid(True)
+        plt.plot(x_coord,y_coord,marker='s')
+        plt.show()
     def onclick_euro(self):
         self.month = ''
         self.amount_euro = 0
