@@ -602,7 +602,7 @@ class Items_GUI(tkinter.Frame):
             writer.writerows(users)
         tkinter.messagebox.showinfo('INFO',
                                     f'File {FILENAME} has been succesfully written!')
-    def save_weight_pen_month_item_RX_PROMO_to_csv(self):
+    def save_weight_pen_month_all_items_to_csv(self):
         FILENAME = "Weight_pen_month_item_all_items.csv"
         self.month = ''
         self.quantity = 0
@@ -648,4 +648,5 @@ class Items_GUI(tkinter.Frame):
         pos = ss.read_item_2020()
 
         ss.save_items_to_csv(FILENAME,list)
-
+        tkinter.messagebox.showinfo('INFO',
+                                    f'File {FILENAME} has been succesfully written!')
