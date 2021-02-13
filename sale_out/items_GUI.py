@@ -23,7 +23,8 @@ class Items_GUI(tkinter.Frame):
         self.top_frame = tkinter.Frame(self.master)
         self.button_frame = tkinter.Frame(self.master)
         self.left_frame = tkinter.Frame()
-
+        self.radio_var = tkinter.IntVar()
+        self.radio_var.set(2020)
         self.check_var1 = tkinter.IntVar()
         self.check_var1.set(0)
         self.check_var2 = tkinter.IntVar()
@@ -53,6 +54,9 @@ class Items_GUI(tkinter.Frame):
         self.chb1 = tkinter.Checkbutton(self.left_frame, text='Jan', variable=self.check_var1,
                                         font=my_font1)
 
+        self.rb1 = tkinter.Radiobutton(self.button_frame,text='2019',variable=self.radio_var,value=2019)
+        self.rb2 = tkinter.Radiobutton(self.button_frame, text='2020', variable=self.radio_var, value=2020)
+        self.rb3 = tkinter.Radiobutton(self.button_frame, text='2021', variable=self.radio_var, value=2021)
 
         self.chb2 = tkinter.Checkbutton(self.left_frame, text='Feb', variable=self.check_var2,
                                         font=my_font1)
@@ -142,11 +146,15 @@ class Items_GUI(tkinter.Frame):
         self.chb10.pack(side='left')
         self.chb11.pack(side='left')
         self.chb12.pack(side='left')
+        self.rb1.pack()
+        self.rb2.pack()
+        self.rb3.pack()
         self.top_frame.pack(side='bottom')
         self.left_frame.pack(side='top')
 
     def show_weighted_penetration(self):
         self.month = ''
+        year = self.radio_var.get()
         list = []
         if self.check_var1.get() == 1:
             self.month = 'Jan'
@@ -186,7 +194,7 @@ class Items_GUI(tkinter.Frame):
             list.append(self.month)
         x_coord = list
         ss = CEXtract_database_tertiary()
-        pos = ss.read_item_2020()
+        pos = ss.read_item(year)
         basic_list = []
         for i in pos:
             z = Tertiary_sales(i)
@@ -210,6 +218,7 @@ class Items_GUI(tkinter.Frame):
     def show_penetration(self):
         self.month = ''
         self.amount_euro = 0
+        year = self.radio_var.get()
         list = []
         if self.check_var1.get() == 1:
             self.month = 'Jan'
@@ -250,7 +259,7 @@ class Items_GUI(tkinter.Frame):
 
         x_coord = list
         ss = CEXtract_database_tertiary()
-        pos = ss.read_item_2020()
+        pos = ss.read_item(year)
         basic_list = []
         for i in pos:
             z = Tertiary_sales(i)
@@ -268,6 +277,7 @@ class Items_GUI(tkinter.Frame):
     def onclick_euro(self):
         self.month = ''
         self.amount_euro = 0
+        year = self.radio_var.get()
         list = []
         if self.check_var1.get() == 1:
             self.month = 'Jan'
@@ -308,7 +318,7 @@ class Items_GUI(tkinter.Frame):
 
         x_coord = list
         ss = CEXtract_database_tertiary()
-        pos = ss.read_item_2020()
+        pos = ss.read_item(year)
         basic_list = []
         for i in pos:
             z = Tertiary_sales(i)
@@ -328,6 +338,7 @@ class Items_GUI(tkinter.Frame):
         self.month = ''
         self.amount_euro = 0
         list = []
+        year = self.radio_var.get()
         if self.check_var1.get() == 1:
             self.month = 'Jan'
             list.append(self.month)
@@ -367,7 +378,7 @@ class Items_GUI(tkinter.Frame):
 
         x_coord = list
         ss = CEXtract_database_tertiary()
-        pos = ss.read_item_2020()
+        pos = ss.read_item(year)
         basic_list = []
         print(pos)
         for i in pos:
@@ -387,6 +398,7 @@ class Items_GUI(tkinter.Frame):
         self.month = ''
         self.amount_euro = 0
         list = []
+        year = self.radio_var.get()
         if self.check_var1.get() == 1:
             self.month = 'Jan'
             list.append(self.month)
@@ -426,7 +438,7 @@ class Items_GUI(tkinter.Frame):
 
         x_coord = list
         ss = CEXtract_database_tertiary()
-        pos = ss.read_item_2020()
+        pos = ss.read_item(year)
         basic_list = []
         print(pos)
         for i in pos:
@@ -443,10 +455,12 @@ class Items_GUI(tkinter.Frame):
         plt.plot(x_coord,y_coord,marker='s')
         plt.show()
     def save_quant_month_to_json(self):
-        FILENAME = f"{self.info_var.get()}_month_quantity.json"
+        year = self.radio_var.get()
+        FILENAME = f"{self.info_var.get()}_month_quantity_{year}.json"
         self.month = ''
         self.quantity = 0
         list = []
+
         if self.check_var1.get() == 1:
             self.month = 'Jan'
             list.append(self.month)
@@ -486,7 +500,7 @@ class Items_GUI(tkinter.Frame):
 
 
         ss = CEXtract_database_tertiary()
-        pos = ss.read_item_2020()
+        pos = ss.read_item(year)
         basic_list = []
         for i in pos:
             z = Tertiary_sales(i)
@@ -508,10 +522,12 @@ class Items_GUI(tkinter.Frame):
             tkinter.messagebox.showinfo('INFO',
                                         f'File {FILENAME} has been succesfully written!')
     def save_weight_pen_month_to_json(self):
-        FILENAME = f"{self.info_var.get()}_month_weight_pen.json"
+        year = self.radio_var.get()
+        FILENAME = f"{self.info_var.get()}_month_weight_pen_{year}.json"
         self.month = ''
         self.quantity = 0
         list = []
+
         if self.check_var1.get() == 1:
             self.month = 'Jan'
             list.append(self.month)
@@ -550,7 +566,7 @@ class Items_GUI(tkinter.Frame):
             list.append(self.month)
         list_2 = []
         ss = CEXtract_database_tertiary()
-        pos = ss.read_item_2020()
+        pos = ss.read_item(year)
         basic_list = []
         for i in pos:
             z = Tertiary_sales(i)
@@ -576,6 +592,7 @@ class Items_GUI(tkinter.Frame):
         self.month = ''
         self.quantity = 0
         list = []
+        year = self.radio_var.get()
         if self.check_var1.get() == 1:
             self.month = 'Jan'
             list.append(self.month)
@@ -617,7 +634,7 @@ class Items_GUI(tkinter.Frame):
         y_coord = []
 
         ss = CEXtract_database_tertiary()
-        pos = ss.read_item_2020()
+        pos = ss.read_item(year)
         basic_list = []
         for i in pos:
             z = Tertiary_sales(i)
@@ -636,10 +653,12 @@ class Items_GUI(tkinter.Frame):
         plt.show()
 
     def save_weight_pen_month_to_csv(self):
-        FILENAME = f"{self.info_var.get()}_month_weight_pen.csv"
+        year = self.radio_var.get()
+        FILENAME = f"{self.info_var.get()}_month_weight_pen_{year}.csv"
         self.month = ''
         self.quantity = 0
         list = []
+
         if self.check_var1.get() == 1:
             self.month = 'Jan'
             list.append(self.month)
@@ -678,7 +697,7 @@ class Items_GUI(tkinter.Frame):
             list.append(self.month)
         x_coord = list
         ss = CEXtract_database_tertiary()
-        pos = ss.read_item_2020()
+        pos = ss.read_item(year)
         basic_list = []
         for i in pos:
             z = Tertiary_sales(i)
@@ -701,10 +720,12 @@ class Items_GUI(tkinter.Frame):
         tkinter.messagebox.showinfo('INFO',
                                     f'File {FILENAME} has been succesfully written!')
     def save_weight_pen_month_item_to_csv(self):
-        FILENAME = f"{self.info_var.get()}_month_weight_pen.csv"
+        year = self.radio_var.get()
+        FILENAME = f"{self.info_var.get()}_month_weight_pen_{year}.csv"
         self.month = ''
         self.quantity = 0
         list = []
+
         if self.check_var1.get() == 1:
             self.month = 'Jan'
             list.append(self.month)
@@ -743,7 +764,7 @@ class Items_GUI(tkinter.Frame):
             list.append(self.month)
 
         ss = CEXtract_database_tertiary()
-        pos = ss.read_item_2020()
+        pos = ss.read_item(year)
         basic_list = []
         for i in pos:
             z = Tertiary_sales(i)
@@ -766,10 +787,12 @@ class Items_GUI(tkinter.Frame):
         tkinter.messagebox.showinfo('INFO',
                                     f'File {FILENAME} has been succesfully written!')
     def save_all_data_2020_PROMO_items_to_csv(self):
-        FILENAME = "Weight_pen_month_item_all_PROMO_items.csv"
+        year = self.radio_var.get()
+        FILENAME = f"Weight_pen_month_item_all_PROMO_items_{year}.csv"
         self.month = ''
         self.quantity = 0
         list = []
+
         if self.check_var1.get() == 1:
             self.month = 'Jan'
             list.append(self.month)
@@ -808,16 +831,18 @@ class Items_GUI(tkinter.Frame):
             list.append(self.month)
 
         ss = CEXtract_database_tertiary()
-        pos = ss.read_item_2020()
+        pos = ss.read_item(year)
 
-        ss.save_2020_items_to_csv(FILENAME,list)
+        ss.save_2020_items_to_csv(FILENAME,list,year)
         tkinter.messagebox.showinfo('INFO',
                                     f'File {FILENAME} has been succesfully written!')
     def save_all_data_2020_PROMO_items_to_csv_commas(self):
-        FILENAME = "Weight_pen_month_item_all_PROMO_items_with_commas.csv"
+        year = self.radio_var.get()
+        FILENAME = f"Weight_pen_month_item_all_PROMO_items_with_commas_{year}.csv"
         self.month = ''
         self.quantity = 0
         list = []
+
         if self.check_var1.get() == 1:
             self.month = 'Jan'
             list.append(self.month)
@@ -856,16 +881,18 @@ class Items_GUI(tkinter.Frame):
             list.append(self.month)
 
         ss = CEXtract_database_tertiary()
-        pos = ss.read_item_2020_w_commas()
+        pos = ss.read_item_2020_w_commas(year)
 
-        ss.save_items_2020_to_csv_with_commas(FILENAME,list)
+        ss.save_items_2020_to_csv_with_commas(FILENAME,list,year)
         tkinter.messagebox.showinfo('INFO',
                                     f'File {FILENAME} has been succesfully written!')
     def save_otc_2020_PROMO_items_to_csv(self):
-        FILENAME = "Otc_PROMO_items_all_data2020.csv"
+        year = self.radio_var.get()
+        FILENAME = f"Otc_PROMO_items_all_data2020_{year}.csv"
         self.month = ''
         self.quantity = 0
         list = []
+
         if self.check_var1.get() == 1:
             self.month = 'Jan'
             list.append(self.month)
@@ -904,16 +931,18 @@ class Items_GUI(tkinter.Frame):
             list.append(self.month)
 
         ss = CEXtract_database_tertiary()
-        pos = ss.read_item_2020_OTC()
+        pos = ss.read_item_2020_OTC(year)
 
-        ss.save_items_otc_to_csv_2020(FILENAME,list)
+        ss.save_items_otc_to_csv_2020(FILENAME,list,year)
         tkinter.messagebox.showinfo('INFO',
                                     f'File {FILENAME} has been succesfully written!')
     def save_otc_2020_PROMO_items_to_csv_with_commas(self):
-        FILENAME = "Otc_PROMO_items_all_data2020_with_commas.csv"
+        year = self.radio_var.get()
+        FILENAME = f"Otc_PROMO_items_all_data2020_with_commas_{year}.csv"
         self.month = ''
         self.quantity = 0
         list = []
+
         if self.check_var1.get() == 1:
             self.month = 'Jan'
             list.append(self.month)
@@ -952,17 +981,19 @@ class Items_GUI(tkinter.Frame):
             list.append(self.month)
 
         ss = CEXtract_database_tertiary()
-        pos = ss.read_item_2020_OTC_with_commas()
+        pos = ss.read_item_2020_OTC_with_commas(year)
 
-        ss.save_items_otc_to_csv_2020_with_commas(FILENAME,list)
+        ss.save_items_otc_to_csv_2020_with_commas(FILENAME,list,year)
         tkinter.messagebox.showinfo('INFO',
                                     f'File {FILENAME} has been succesfully written!')
 
     def save_rx_2020_items_to_csv_with_commas(self):
-        FILENAME = "Rx_items_all_data2020_with_commas.csv"
+        year = self.radio_var.get()
+        FILENAME = f"Rx_items_all_data2020_with_commas_{year}.csv"
         self.month = ''
         self.quantity = 0
         list = []
+
         if self.check_var1.get() == 1:
             self.month = 'Jan'
             list.append(self.month)
@@ -1001,16 +1032,18 @@ class Items_GUI(tkinter.Frame):
             list.append(self.month)
 
         ss = CEXtract_database_tertiary()
-        pos = ss.read_item_2020_RX_with_commas()
+        pos = ss.read_item_2020_RX_with_commas(year)
 
-        ss.save_items_RX_to_csv_2020_with_commas(FILENAME,list)
+        ss.save_items_RX_to_csv_2020_with_commas(FILENAME,list,year)
         tkinter.messagebox.showinfo('INFO',
                                     f'File {FILENAME} has been succesfully written!')
     def save_rx_2020_items_to_csv(self):
-        FILENAME = "Rx_items_all_data_2020.csv"
+        year = self.radio_var.get()
+        FILENAME = f"Rx_items_all_data_2020_{year}.csv"
         self.month = ''
         self.quantity = 0
         list = []
+
         if self.check_var1.get() == 1:
             self.month = 'Jan'
             list.append(self.month)
@@ -1049,8 +1082,8 @@ class Items_GUI(tkinter.Frame):
             list.append(self.month)
 
         ss = CEXtract_database_tertiary()
-        pos = ss.read_item_2020_RX()
+        pos = ss.read_item_2020_RX(year)
 
-        ss.save_items_RX_to_csv_2020(FILENAME,list)
+        ss.save_items_RX_to_csv_2020(FILENAME,list,year)
         tkinter.messagebox.showinfo('INFO',
                                     f'File {FILENAME} has been succesfully written!')
