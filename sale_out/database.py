@@ -1,6 +1,6 @@
 import csv
 import sqlite3
-from tertiary_sales_class import Tertiary_sales
+from sale_out.tertiary_sales_class import Tertiary_sales
 
 
 class CEXtract_database_tertiary:

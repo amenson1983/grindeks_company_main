@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 from items_GUI import Items_GUI
 from items_class import SKU_WORKOUT, CItemsDAO
-from new_try.database import CEXtract_database_tertiary
+from sale_out.database import CEXtract_database_tertiary
 from tertiary_sales_class import Tertiary_sales
 def Main():
     root = Tk()
@@ -43,7 +43,7 @@ def Main():
 
 
     file_menu.add_command(label="New")
-    file_menu.add_cascade(label="Save", menu=save_menu)
+    file_menu.add_cascade(label="Tertiary reports 2021", menu=save_menu)
     file_menu.add_cascade(label="Tertiary reports 2020", menu=tertiary_reports_2020)
     file_menu.add_separator()
     file_menu.add_command(label="Exit", command=root.destroy)

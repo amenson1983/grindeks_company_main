@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import csv
 import sqlite3
 from items_class import SKU_WORKOUT, CSKU, CItemsDAO
-from new_try.database import CEXtract_database_tertiary
+from sale_out.database import CEXtract_database_tertiary
 from tertiary_sales_class import Tertiary_sales
 
 conn = sqlite3.connect("tertiary_sales_database.db")
@@ -195,7 +195,7 @@ class Items_GUI(tkinter.Frame):
                 print(basic_list)
         y_coord = basic_list
 
-        plt.title(f'Пенетрация по месяцам по выбранному SKU: \n{self.info_var.get()}')
+        plt.title(f'Взвешенная пенетрация по месяцам по выбранному SKU: \n{self.info_var.get()}')
         plt.grid(True)
         plt.plot(x_coord, y_coord,marker='s')
         plt.show()
