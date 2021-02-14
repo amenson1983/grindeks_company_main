@@ -786,7 +786,7 @@ class Items_GUI(tkinter.Frame):
             writer.writerows(users)
         tkinter.messagebox.showinfo('INFO',
                                     f'File {FILENAME} has been succesfully written!')
-    def save_all_data_2020_PROMO_items_to_csv(self):
+    def save_all_data_PROMO_items_to_csv(self):
         year = self.radio_var.get()
         FILENAME = f"Weight_pen_month_item_all_PROMO_items_{year}.csv"
         self.month = ''
@@ -836,7 +836,7 @@ class Items_GUI(tkinter.Frame):
         ss.save_2020_items_to_csv(FILENAME,list,year)
         tkinter.messagebox.showinfo('INFO',
                                     f'File {FILENAME} has been succesfully written!')
-    def save_all_data_2020_PROMO_items_to_csv_commas(self):
+    def save_all_data_PROMO_items_to_csv_commas(self):
         year = self.radio_var.get()
         FILENAME = f"Weight_pen_month_item_all_PROMO_items_with_commas_{year}.csv"
         self.month = ''
@@ -886,7 +886,7 @@ class Items_GUI(tkinter.Frame):
         ss.save_items_2020_to_csv_with_commas(FILENAME,list,year)
         tkinter.messagebox.showinfo('INFO',
                                     f'File {FILENAME} has been succesfully written!')
-    def save_otc_2020_PROMO_items_to_csv(self):
+    def save_otc_PROMO_items_to_csv(self):
         year = self.radio_var.get()
         FILENAME = f"Otc_PROMO_items_all_data2020_{year}.csv"
         self.month = ''
@@ -936,7 +936,7 @@ class Items_GUI(tkinter.Frame):
         ss.save_items_otc_to_csv_2020(FILENAME,list,year)
         tkinter.messagebox.showinfo('INFO',
                                     f'File {FILENAME} has been succesfully written!')
-    def save_otc_2020_PROMO_items_to_csv_with_commas(self):
+    def save_otc_PROMO_items_to_csv_with_commas(self):
         year = self.radio_var.get()
         FILENAME = f"Otc_PROMO_items_all_data2020_with_commas_{year}.csv"
         self.month = ''
@@ -987,7 +987,7 @@ class Items_GUI(tkinter.Frame):
         tkinter.messagebox.showinfo('INFO',
                                     f'File {FILENAME} has been succesfully written!')
 
-    def save_rx_2020_items_to_csv_with_commas(self):
+    def save_rx_items_to_csv_with_commas(self):
         year = self.radio_var.get()
         FILENAME = f"Rx_items_all_data2020_with_commas_{year}.csv"
         self.month = ''
@@ -1037,7 +1037,7 @@ class Items_GUI(tkinter.Frame):
         ss.save_items_RX_to_csv_2020_with_commas(FILENAME,list,year)
         tkinter.messagebox.showinfo('INFO',
                                     f'File {FILENAME} has been succesfully written!')
-    def save_rx_2020_items_to_csv(self):
+    def save_rx_items_to_csv(self):
         year = self.radio_var.get()
         FILENAME = f"Rx_items_all_data_2020_{year}.csv"
         self.month = ''

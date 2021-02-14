@@ -28,18 +28,18 @@ def Main():
     tertiary_reports_2020.add_command(label="Save month-weighted_penetration-item data to CSV",
                           command=ex.save_weight_pen_month_item_to_csv)
     tertiary_reports_2020.add_command(label="Save relevant data PROMO to CSV",
-                          command=ex.save_all_data_2020_PROMO_items_to_csv)
+                          command=ex.save_all_data_PROMO_items_to_csv)
     tertiary_reports_2020.add_command(label="Save relevant data PROMO to CSV with commas",
-                          command=ex.save_all_data_2020_PROMO_items_to_csv_commas)
+                          command=ex.save_all_data_PROMO_items_to_csv_commas)
 
     tertiary_reports_2020.add_command(label="Save OTC relevant data to CSV",
-                          command=ex.save_otc_2020_PROMO_items_to_csv)
+                          command=ex.save_otc_PROMO_items_to_csv)
     tertiary_reports_2020.add_command(label="Save OTC relevant data to CSV with commas",
-                          command=ex.save_otc_2020_PROMO_items_to_csv_with_commas)
+                          command=ex.save_otc_PROMO_items_to_csv_with_commas)
     tertiary_reports_2020.add_command(label="Save RX relevant data to CSV with commas",
-                          command=ex.save_rx_2020_items_to_csv_with_commas)
+                          command=ex.save_rx_items_to_csv_with_commas)
     tertiary_reports_2020.add_command(label="Save RX relevant data to CSV",
-                          command=ex.save_rx_2020_items_to_csv)
+                          command=ex.save_rx_items_to_csv)
 
 
     file_menu.add_command(label="New")
