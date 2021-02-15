@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import csv
 import sqlite3
 from items_class import SKU_WORKOUT, CSKU, CItemsDAO
-from sale_out.database import CEXtract_database_tertiary
+from sale_out.database import CEXtract_database_tertiary, Tertiary_download_structure
 from tertiary_sales_class import Tertiary_sales
 
 conn = sqlite3.connect("tertiary_sales_database.db")
@@ -197,9 +197,9 @@ class Items_GUI(tkinter.Frame):
         pos = ss.read_item(year)
         basic_list = []
         for i in pos:
-            z = Tertiary_sales(i)
-            if z.month in list and z.item == self.info_var.get():
-                basic_list.append(float(z.weight_penetration))
+            z = Tertiary_download_structure(i.item_kpi,i.year,i.month,i.brand,i.weight_pen,i.sro,i.pen,i.quantity,i.amount_euro,i.weight_sro)
+            if z.month in list and z.item_kpi == self.info_var.get():
+                basic_list.append(float(z.weight_pen))
                 print(basic_list)
         y_coord = basic_list
 
@@ -262,9 +262,10 @@ class Items_GUI(tkinter.Frame):
         pos = ss.read_item(year)
         basic_list = []
         for i in pos:
-            z = Tertiary_sales(i)
-            if z.month in list and z.item == self.info_var.get():
-                basic_list.append(float(z.penetration))
+            z = Tertiary_download_structure(i.item_kpi, i.year, i.month, i.brand, i.weight_pen, i.sro, i.pen,
+                                            i.quantity, i.amount_euro, i.weight_sro)
+            if z.month in list and z.item_kpi == self.info_var.get():
+                basic_list.append(float(z.pen))
                 print(basic_list)
 
         y_coord = basic_list
@@ -321,9 +322,10 @@ class Items_GUI(tkinter.Frame):
         pos = ss.read_item(year)
         basic_list = []
         for i in pos:
-            z = Tertiary_sales(i)
-            if z.month in list and z.item == self.info_var.get():
-                basic_list.append(float(z.volume_euro))
+            z = Tertiary_download_structure(i.item_kpi, i.year, i.month, i.brand, i.weight_pen, i.sro, i.pen,
+                                            i.quantity, i.amount_euro, i.weight_sro)
+            if z.month in list and z.item_kpi == self.info_var.get():
+                basic_list.append(float(z.amount_euro))
                 print(basic_list)
         for i in basic_list:
             self.amount_euro += float(i)
@@ -380,10 +382,10 @@ class Items_GUI(tkinter.Frame):
         ss = CEXtract_database_tertiary()
         pos = ss.read_item(year)
         basic_list = []
-        print(pos)
         for i in pos:
-            z = Tertiary_sales(i)
-            if z.month in list and z.item == self.info_var.get():
+            z = Tertiary_download_structure(i.item_kpi, i.year, i.month, i.brand, i.weight_pen, i.sro, i.pen,
+                                            i.quantity, i.amount_euro, i.weight_sro)
+            if z.month in list and z.item_kpi == self.info_var.get():
                 basic_list.append(float(z.sro))
                 print(basic_list)
 
@@ -440,11 +442,11 @@ class Items_GUI(tkinter.Frame):
         ss = CEXtract_database_tertiary()
         pos = ss.read_item(year)
         basic_list = []
-        print(pos)
         for i in pos:
-            z = Tertiary_sales(i)
-            if z.month in list and z.item == self.info_var.get():
-                basic_list.append(float(z.weighted_sro))
+            z = Tertiary_download_structure(i.item_kpi, i.year, i.month, i.brand, i.weight_pen, i.sro, i.pen,
+                                            i.quantity, i.amount_euro, i.weight_sro)
+            if z.month in list and z.item_kpi == self.info_var.get():
+                basic_list.append(float(z.weight_sro))
                 print(basic_list)
 
         y_coord = basic_list
@@ -498,13 +500,13 @@ class Items_GUI(tkinter.Frame):
             self.month = 'Dec'
             list.append(self.month)
 
-
         ss = CEXtract_database_tertiary()
         pos = ss.read_item(year)
         basic_list = []
         for i in pos:
-            z = Tertiary_sales(i)
-            if z.month in list and z.item == self.info_var.get():
+            z = Tertiary_download_structure(i.item_kpi, i.year, i.month, i.brand, i.weight_pen, i.sro, i.pen,
+                                            i.quantity, i.amount_euro, i.weight_sro)
+            if z.month in list and z.item_kpi == self.info_var.get():
                 basic_list.append(float(z.quantity))
                 print(basic_list)
         for i in basic_list:
@@ -569,9 +571,10 @@ class Items_GUI(tkinter.Frame):
         pos = ss.read_item(year)
         basic_list = []
         for i in pos:
-            z = Tertiary_sales(i)
-            if z.month in list and z.item == self.info_var.get():
-                basic_list.append(float(z.weight_penetration))
+            z = Tertiary_download_structure(i.item_kpi, i.year, i.month, i.brand, i.weight_pen, i.sro, i.pen,
+                                            i.quantity, i.amount_euro, i.weight_sro)
+            if z.month in list and z.item_kpi == self.info_var.get():
+                basic_list.append(float(z.weight_pen))
                 print(basic_list)
         users = []
         for num in range(0,len(list)):
@@ -637,8 +640,9 @@ class Items_GUI(tkinter.Frame):
         pos = ss.read_item(year)
         basic_list = []
         for i in pos:
-            z = Tertiary_sales(i)
-            if z.month in list and z.item == self.info_var.get():
+            z = Tertiary_download_structure(i.item_kpi, i.year, i.month, i.brand, i.weight_pen, i.sro, i.pen,
+                                            i.quantity, i.amount_euro, i.weight_sro)
+            if z.month in list and z.item_kpi == self.info_var.get():
                 basic_list.append(float(z.quantity))
                 print(basic_list)
         for i in basic_list:
@@ -700,9 +704,10 @@ class Items_GUI(tkinter.Frame):
         pos = ss.read_item(year)
         basic_list = []
         for i in pos:
-            z = Tertiary_sales(i)
-            if z.month in list and z.item == self.info_var.get():
-                basic_list.append(float(z.weight_penetration))
+            z = Tertiary_download_structure(i.item_kpi, i.year, i.month, i.brand, i.weight_pen, i.sro, i.pen,
+                                            i.quantity, i.amount_euro, i.weight_sro)
+            if z.month in list and z.item_kpi == self.info_var.get():
+                basic_list.append(float(z.weight_pen))
                 print(basic_list)
         y_coord = basic_list
         users = []
@@ -767,9 +772,10 @@ class Items_GUI(tkinter.Frame):
         pos = ss.read_item(year)
         basic_list = []
         for i in pos:
-            z = Tertiary_sales(i)
-            if z.month in list and z.item == self.info_var.get():
-                basic_list.append(float(z.weight_penetration))
+            z = Tertiary_download_structure(i.item_kpi, i.year, i.month, i.brand, i.weight_pen, i.sro, i.pen,
+                                            i.quantity, i.amount_euro, i.weight_sro)
+            if z.month in list and z.item_kpi == self.info_var.get():
+                basic_list.append(float(z.weight_pen))
                 print(basic_list)
 
         users = []
@@ -832,6 +838,7 @@ class Items_GUI(tkinter.Frame):
 
         ss = CEXtract_database_tertiary()
         pos = ss.read_item(year)
+        basic_list = []
 
         ss.save_2020_items_to_csv(FILENAME,list,year)
         tkinter.messagebox.showinfo('INFO',

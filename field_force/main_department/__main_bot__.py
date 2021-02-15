@@ -1,6 +1,8 @@
-
+import sqlite3
 
 import telebot
+
+from sale_out.database import CEXtract_database_tertiary
 
 list = ['boss', 'ff']
 passwords = ["123", '456']
@@ -22,6 +24,25 @@ def get_password(message):
 
 def choose(message):
     if message.text == '1':
-        bot.send_message(message.from_user.id, "А ты молодец )")
+        bot.send_message(message.from_user.id, "Супер, введите год: )")
+        bot.register_next_step_handler(message, tertiary_menu)
+
+def tertiary_menu(message):
+        year = message.text
+        sales = CEXtract_database_tertiary()
+        otc = sales.read_item(year)
+        bot.send_message(message.from_user.id, "Супер, введите месяц: )")
+        bot.register_next_step_handler(message, tertiary_month(message,otc))
+
+
+
+def tertiary_month(message, otc):
+    total_euro = 0
+    for i in otc:
+        print(message.text)
+        if i[2] == message.text:
+            total_euro += float(i[8])
+            bot.send_message(message.from_user.id, f"{i[0]}, {i[8]}")
+
 
 bot.polling(none_stop=True, interval=0)
