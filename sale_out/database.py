@@ -71,7 +71,7 @@ class CEXtract_database_tertiary:
                                         "weight_penetration": str(i.weight_pen),
                                         "sro": str(i.sro), "penetration": str(i.pen),
                                         "quantity": str(i.quantity), "amount_euro": str(i.amount_euro),"weighted_sro":str(i.weight_sro)}])
-        with open(filename, "w", newline="", encoding='UTF') as file:
+        with open(filename, "w", newline="", encoding='utf-16') as file:
             columns = ["year","month","brand","item","weight_penetration","sro","penetration","quantity","amount_euro","weighted_sro"]
             writer = csv.DictWriter(file, fieldnames=columns)
             writer.writeheader()
@@ -97,7 +97,7 @@ class CEXtract_database_tertiary:
                                         "weight_penetration": str(i.weight_pen),
                                         "sro": str(i.sro), "penetration": str(i.pen),
                                         "quantity": str(i.quantity), "amount_euro": str(i.amount_euro),"weighted_sro":str(i.weight_sro)}])
-        with open(filename, "w", newline="", encoding='UTF') as file:
+        with open(filename, "w", newline="", encoding='utf-16') as file:
             columns = ["year","month","brand","item","weight_penetration","sro","penetration","quantity","amount_euro","weighted_sro"]
             writer = csv.DictWriter(file, fieldnames=columns)
             writer.writeheader()
@@ -147,7 +147,7 @@ class CEXtract_database_tertiary:
                                         "weight_penetration": str(i.weight_pen),
                                         "sro": str(i.sro), "penetration": str(i.pen),
                                         "quantity": str(i.quantity), "amount_euro": str(i.amount_euro),"weighted_sro":str(i.weight_sro)}])
-        with open(filename, "w", newline="", encoding='UTF') as file:
+        with open(filename, "w", newline="", encoding='utf-16') as file:
             columns = ["year","month","brand","item","weight_penetration","sro","penetration","quantity","amount_euro","weighted_sro"]
             writer = csv.DictWriter(file, fieldnames=columns)
             writer.writeheader()
@@ -196,7 +196,7 @@ class CEXtract_database_tertiary:
                                         "weight_penetration": str(i.weight_pen),
                                         "sro": str(i.sro), "penetration": str(i.pen),
                                         "quantity": str(i.quantity), "amount_euro": str(i.amount_euro),"weighted_sro":str(i.weight_sro)}])
-        with open(filename, "w", newline="", encoding='UTF') as file:
+        with open(filename, "w", newline="", encoding='utf-16') as file:
             columns = ["year","month","brand","item","weight_penetration","sro","penetration","quantity","amount_euro","weighted_sro"]
             writer = csv.DictWriter(file, fieldnames=columns)
             writer.writeheader()
@@ -247,7 +247,7 @@ class CEXtract_database_tertiary:
                                         "weight_penetration": str(i.weight_pen),
                                         "sro": str(i.sro), "penetration": str(i.pen),
                                         "quantity": str(i.quantity), "amount_euro": str(i.amount_euro),"weighted_sro":str(i.weight_sro)}])
-        with open(filename, "w", newline="", encoding='UTF') as file:
+        with open(filename, "w", newline="", encoding='utf-16') as file:
             columns = ["year","month","brand","item","weight_penetration","sro","penetration","quantity","amount_euro","weighted_sro"]
             writer = csv.DictWriter(file, fieldnames=columns)
             writer.writeheader()
@@ -296,7 +296,7 @@ class CEXtract_database_tertiary:
                                         "weight_penetration": str(i.weight_pen),
                                         "sro": str(i.sro), "penetration": str(i.pen),
                                         "quantity": str(i.quantity), "amount_euro": str(i.amount_euro),"weighted_sro":str(i.weight_sro)}])
-        with open(filename, "w", newline="", encoding='UTF') as file:
+        with open(filename, "w", newline="", encoding='utf-16') as file:
             columns = ["year","month","brand","item","weight_penetration","sro","penetration","quantity","amount_euro","weighted_sro"]
             writer = csv.DictWriter(file, fieldnames=columns)
             writer.writeheader()
