@@ -4,5 +4,5 @@ from fuzzywuzzy import process
 
 
 if __name__ == '__main__':
-    a = fuzz.ratio('Привет мир', 'Привт rир')
+    a = fuzz.ratio('Привет мир', 'Приветмир')
     print(a)
