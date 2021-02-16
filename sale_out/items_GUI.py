@@ -1,12 +1,12 @@
 import json
 import tkinter
-from tkinter import font, messagebox, Checkbutton, Radiobutton, BOTH, END
+from tkinter import font, messagebox, BOTH, END
 import matplotlib.pyplot as plt
 import csv
 import sqlite3
 from items_class import SKU_WORKOUT, CSKU, CItemsDAO
 from sale_out.database import CEXtract_database_tertiary, Tertiary_download_structure
-from tertiary_sales_class import Tertiary_sales
+
 
 conn = sqlite3.connect("tertiary_sales_database.db")
 items_ = CItemsDAO.read_tertiary(conn)

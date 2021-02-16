@@ -1,16 +1,10 @@
-import csv
-import json
-import sqlite3
+
 import tkinter
-from tkinter import Tk, BOTH, Listbox, StringVar, END, messagebox, Checkbutton,font
-from tkinter.ttk import Frame, Label
-import matplotlib
-import matplotlib.pyplot as plt
+from tkinter import Tk
+
 
 from items_GUI import Items_GUI
-from items_class import SKU_WORKOUT, CItemsDAO
-from sale_out.database import CEXtract_database_tertiary
-from tertiary_sales_class import Tertiary_sales
+
 def Main():
     root = Tk()
     ex = Items_GUI()

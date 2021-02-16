@@ -1,4 +1,3 @@
-import csv
 import sqlite3
 
 from tertiary_sales_class import Tertiary_sales

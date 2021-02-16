@@ -1,6 +1,6 @@
 import csv
 import sqlite3
-from sale_out.tertiary_sales_class import Tertiary_sales
+
 class Tertiary_download_structure:
     def __init__(self,item_kpi,year,month,brand,weight_pen,sro, pen, quantity, amount_euro, weight_sro):
         self.weight_sro = weight_sro
@@ -34,6 +34,7 @@ class CEXtract_database_tertiary:
                 tertiary_list.append(z)
         return tertiary_list
 
+
     def read_item_2020_w_commas(conn,year):
         with sqlite3.connect("tertiary_sales_database.db") as conn:
             cursor = conn.cursor()
@@ -42,10 +43,10 @@ class CEXtract_database_tertiary:
             results = cursor.fetchall()
             tertiary_list = []
             for i in results:
-                z = Tertiary_download_structure([i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8],i[9]])
+                z = Tertiary_download_structure(i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8],i[9])
                 tertiary_list.append(z)
-
         return tertiary_list
+
     def save_2020_items_to_csv(self, filename, list_months,year):
         with sqlite3.connect("tertiary_sales_database.db") as conn:
             cursor = conn.cursor()
