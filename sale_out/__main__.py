@@ -4,6 +4,8 @@ from tkinter import Tk
 
 
 from items_GUI import Items_GUI
+from sale_out.database import CEXtract_database_tertiary
+
 
 def Main():
     root = Tk()
@@ -58,9 +60,10 @@ def replace_commas(items_2_pos):
     return items
 
 if __name__ == '__main__':
-    Main()
-
-
+    #Main()
+    x = CEXtract_database_tertiary()
+    y = x.test_secondary_2021('Февраль')
+    print('YTD sales in euro: ', y.__round__(2))
 
 
 

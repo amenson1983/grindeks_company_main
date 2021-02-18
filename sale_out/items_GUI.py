@@ -455,7 +455,9 @@ class Items_GUI(tkinter.Frame):
         plt.title(f'Weighted SRO: \n{self.info_var.get()}')
         plt.grid(True)
         plt.plot(x_coord,y_coord,marker='s')
+        plt.savefig(f"weighted SRO_{year}.pdf", bbox_inches='tight')
         plt.show()
+
     def save_quant_month_to_json(self):
         year = self.radio_var.get()
         FILENAME = f"{self.info_var.get()}_month_quantity_{year}.json"
