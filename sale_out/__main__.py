@@ -65,7 +65,8 @@ if __name__ == '__main__':
     month_list = ['Январь','Февраль']
     for month in month_list:
         y = x.test_secondary_2021(month)
-        print(f'{month}: \t', y.__round__(2))
+        print(f'{month}: \t', '{0:,}'.format(y.__round__(2)).replace(",", " "))
+
 
 
 
