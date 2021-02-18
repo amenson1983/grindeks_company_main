@@ -62,8 +62,10 @@ def replace_commas(items_2_pos):
 if __name__ == '__main__':
     #Main()
     x = CEXtract_database_tertiary()
-    y = x.test_secondary_2021('Февраль')
-    print('YTD sales in euro: ', y.__round__(2))
+    month_list = ['Январь','Февраль']
+    for month in month_list:
+        y = x.test_secondary_2021(month)
+        print(f'{month}: \t', y.__round__(2))
 
 
 
