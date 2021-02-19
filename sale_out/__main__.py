@@ -58,17 +58,25 @@ def replace_commas(items_2_pos):
         z = [i[0],x]
         items.append(z)
     return items
-
-if __name__ == '__main__':
-    #Main()
+def actual_secondary_sales_2021():
     x = CEXtract_database_tertiary()
-    month_list = ['Январь','Февраль']
+    month_list = ['Январь','Февраль','Март','Апрель', 'Май','Июнь','Июль', 'Август','Сентябрь','Октябрь', 'Ноябрь','Декабрь']
     for month in month_list:
         y = x.test_secondary_2021(month)
-        print(f'{month}: \t', '{0:,}'.format(y.__round__(2)).replace(",", " "))
+        print(f'Год: 2021; Месяц: {month}: \t\t\t\t', '{0:,}'.format(y.__round__(2)).replace(",", " "), 'euro')
 
+def actual_secondary_sales_2020():
+    x = CEXtract_database_tertiary()
+    month_list = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь',
+                  'Ноябрь', 'Декабрь']
+    for month in month_list:
+        y = x.test_secondary_2020(month)
+        print(f'Год: 2020; Месяц: {month}: \t\t\t\t', '{0:,}'.format(y.__round__(2)).replace(",", " "), 'euro')
 
-
+if __name__ == '__main__':
+    Main()
+    #actual_secondary_sales_2020()
+    #actual_secondary_sales_2021()
 
 
 

@@ -314,7 +314,7 @@ class CEXtract_database_tertiary:
         with sqlite3.connect("tertiary_sales_database.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
-                f"select secondary_sales_2021.item_quadra, secondary_sales_2021.sales_euro from secondary_sales_2021 where secondary_sales_2021.month = '{month_ru}'")
+                f"select secondary_sales_2021.item_quadra, secondary_sales_2021.cip_fact from secondary_sales_2021 where secondary_sales_2021.month_ru = '{month_ru}'")
             results = cursor.fetchall()
             secondary_list = []
             for i in results:
@@ -326,5 +326,20 @@ class CEXtract_database_tertiary:
             for i in secondary_list:
                 sum += float(i.sales_euro)
             return sum
-
+    def test_secondary_2020(self,month_ru):
+        with sqlite3.connect("tertiary_sales_database.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                f"select secondary_sales_2020.item_quadra, secondary_sales_2020.cip_fact from secondary_sales_2020 where secondary_sales_2020.month_ru = '{month_ru}'")
+            results = cursor.fetchall()
+            secondary_list = []
+            for i in results:
+                y_1 = str(i[0]).replace(',', '.')
+                y_2 = str(i[1]).replace(',', '.')
+                z = Secondary_total_2021(y_1, y_2)
+                secondary_list.append(z)
+            sum = 0
+            for i in secondary_list:
+                sum += float(i.sales_euro)
+            return sum
 
