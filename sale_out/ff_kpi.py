@@ -38,6 +38,11 @@ class CEXtract_database_plan:
 if __name__ == '__main__':
     x = CEXtract_database_plan()
     y = x.read_plan_ff_main()
-
+    annual_ff_plan_euro = 0
+    distinct_codes = []
     for i in y:
-        print(i.month_local, i.plan_euro)
+        annual_ff_plan_euro += float(i.plan_euro)
+        if i.med_rep_code not in distinct_codes:
+            distinct_codes.append(i.med_rep_code)
+
+    print(annual_ff_plan_euro, distinct_codes)
