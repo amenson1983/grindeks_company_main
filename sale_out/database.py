@@ -19,6 +19,45 @@ class Secondary_total_2021:
         self.sales_euro = sales_euro
         self.item_quadra = item_quadra
 
+class Quadra_direct_629():
+    def __init__(self,year,month,ff_region,country_region,city_town,organization_name,organization_adress,sales_method,
+                 product_code,item_quadra,organization_etalon_id,organization_etalon_name,distributor_etalon_name,
+                 distributor_name,distributor_okpo,sales_euro_,promotion,organization_type,organization_status,
+                 etalon_code_okpo,delivery_date,office_head_organization,head_office_okpo,quarter_year,half_year,
+                 annual_sales_category,med_representative_name,kam_name,week,territory_name,brik_name,sale_in_quantity):
+        self.sale_in_quantity = sale_in_quantity
+        self.brik_name = brik_name
+        self.territory_name = territory_name
+        self.week = week
+        self.kam_name = kam_name
+        self.med_representative_name = med_representative_name
+        self.annual_sales_category = annual_sales_category
+        self.half_year = half_year
+        self.quarter_year = quarter_year
+        self.head_office_okpo = head_office_okpo
+        self.office_head_organization = office_head_organization
+        self.delivery_date = delivery_date
+        self.etalon_code_okpo = etalon_code_okpo
+        self.organization_status = organization_status
+        self.organization_type = organization_type
+        self.promotion = promotion
+        self.sales_euro_ = sales_euro_
+        self.distributor_okpo = distributor_okpo
+        self.distributor_name = distributor_name
+        self.distributor_etalon_name = distributor_etalon_name
+        self.organization_etalon_name = organization_etalon_name
+        self.organization_etalon_id = organization_etalon_id
+        self.item_quadra = item_quadra
+        self.product_code = product_code
+        self.sales_method = sales_method
+        self.organization_adress = organization_adress
+        self.organization_name = organization_name
+        self.city_town = city_town
+        self.country_region = country_region
+        self.ff_region = ff_region
+        self.month = month
+        self.year = year
+
 
 
 
