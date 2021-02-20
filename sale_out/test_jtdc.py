@@ -1,10 +1,10 @@
 import sys
 import jaydebeapi
 
-from sale_out.database import Quadra_direct_629
+from sale_out.database import Quadra_direct_629, CBase_2021_quadra_workout
 
 
-def main():
+def upload_2021_base_from_quadra():
     try:
         # jTDS Driver.
         driver_name = "net.sourceforge.jtds.jdbc.Driver"
@@ -178,57 +178,17 @@ def main():
 +" WHERE orgSalesByProduct.year = 2021")
         res = cursor.fetchall()
 
-        return res
 
-
+        x = CBase_2021_quadra_workout()
+        base_2021_classifyed = x.classify_base_2021(res)
+        return base_2021_classifyed
     except Exception as err:
         print(str(err))
 
 
 if __name__ == "__main__":
-
-
-    base_2021 = main()
-    base_2021_classifyed = []
-    for i in base_2021:
-        sale_in_quantity = i[31]
-        brik_name = i[30]
-        territory_name = i[29]
-        week = i[28]
-        kam_name = i[27]
-        med_representative_name = i[26]
-        annual_sales_category = i[25]
-        half_year = i[24]
-        quarter_year = i[23]
-        head_office_okpo = i[22]
-        office_head_organization = i[21]
-        delivery_date = i[20]
-        etalon_code_okpo = i[19]
-        organization_status = i[18]
-        organization_type = i[17]
-        promotion = i[16]
-        sales_euro_ = i[15]
-        distributor_okpo = i[14]
-        distributor_name = i[13]
-        distributor_etalon_name = i[12]
-        organization_etalon_name = i[11]
-        organization_etalon_id = i[10]
-        item_quadra = i[9]
-        product_code = i[8]
-        sales_method = i[7]
-        organization_adress = i[6]
-        organization_name = i[5]
-        city_town = i[4]
-        country_region = i[3]
-        ff_region = i[2]
-        month = i[1]
-        year = i[0]
-        entry = Quadra_direct_629(year,month,ff_region,country_region,city_town,organization_name,organization_adress,sales_method,
-                 product_code,item_quadra,organization_etalon_id,organization_etalon_name,distributor_etalon_name,
-                 distributor_name,distributor_okpo,sales_euro_,promotion,organization_type,organization_status,
-                 etalon_code_okpo,delivery_date,office_head_organization,head_office_okpo,quarter_year,half_year,
-                 annual_sales_category,med_representative_name,kam_name,week,territory_name,brik_name,sale_in_quantity)
-        base_2021_classifyed.append(entry)
+    x = CBase_2021_quadra_workout()
+    base_2021_classifyed = x.upload_2021_base_from_quadra()
     euro_amount = 0
     for i in base_2021_classifyed:
         if i.month == 'Февраль':

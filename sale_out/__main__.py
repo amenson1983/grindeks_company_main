@@ -1,10 +1,12 @@
-
+import csv
 import tkinter
 from tkinter import Tk
 
 
 from items_GUI import Items_GUI
-from sale_out.database import CEXtract_database_tertiary
+from sale_out.database import CEXtract_database_tertiary, CBase_2021_quadra_workout, \
+    Upload_2021_base_from_quadra_for_daily_totals_distr
+from sale_out.items_class import SKU_WORKOUT
 
 
 def Main():
@@ -74,9 +76,42 @@ def actual_secondary_sales_2020():
         print(f'Год: 2020; Месяц: {month}: \t\t\t\t', '{0:,}'.format(y.__round__(2)).replace(",", " "), 'euro')
 
 if __name__ == '__main__':
-    Main()
+    #Main()
     #actual_secondary_sales_2020()
     #actual_secondary_sales_2021()
+    list_months_quadra = ['Январь']
+    x = CBase_2021_quadra_workout()
+    base_2021_classifyed = x.upload_2021_base_from_quadra()
+    items = []
+    count_items = 0
+
+    for i in base_2021_classifyed:
+             if i.item_quadra not in items:
+                items.append(str(i.item_quadra))
+                count_items += 1
+    print(count_items)
+    result = []
+
+    for i in base_2021_classifyed:
+        result.append(Upload_2021_base_from_quadra_for_daily_totals_distr(i.year,i.month,i.week,i.sales_method, i.distributor_name,i.item_quadra,i.sale_in_quantity,i.sales_euro_))
+    res = []
+    for i in result:
+        for it in items:
+            sum_ = 0
+            if i.item_quadra == it:
+                sum_ += i.sales_euro_
+                res.append({it:sum_})
+
+    res_2 = []
+    for item in items:
+        summ = 0
+        for re in res:
+            x = re.get(item)
+            summ += x
+        res_2.append({item:summ})
+
+    print(res_2)
+
 
 
 

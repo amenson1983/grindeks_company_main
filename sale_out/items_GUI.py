@@ -5,8 +5,7 @@ import matplotlib.pyplot as plt
 import csv
 import sqlite3
 from items_class import SKU_WORKOUT, CSKU, CItemsDAO
-from sale_out.database import CEXtract_database_tertiary, Tertiary_download_structure
-
+from sale_out.database import CEXtract_database_tertiary, Tertiary_download_structure, CBase_2021_quadra_workout
 
 conn = sqlite3.connect("tertiary_sales_database.db")
 items_ = CItemsDAO.read_tertiary(conn)
@@ -90,14 +89,17 @@ class Items_GUI(tkinter.Frame):
         self.show_button_sro.pack(side='left')
         self.show_button_weight_sro = tkinter.Button(self.button_frame, text='Weighted SRO', command=self.show_weighted_sro)
         self.show_button_weight_sro.pack(side='left')
-        self.ok_button = tkinter.Button(self.button_frame, text='Sales in euro', command=self.onclick_euro)
+        self.ok_button = tkinter.Button(self.button_frame, text='Sale-out in euro', command=self.onclick_euro)
         self.ok_button.pack(side='left')
         self.quit_button = tkinter.Button(self.button_frame, text='Quit', command=self.master.destroy)
         self.quit_button.pack(side='left')
         self.button_frame.pack()
         lb = tkinter.Listbox(self, width='70', height='15')
-        self.ok_button_quantity = tkinter.Button(self.button_frame, text='Sales in packs', command=self.onclick_quantity)
+        self.ok_button_quantity = tkinter.Button(self.button_frame, text='Sale-out in packs', command=self.onclick_quantity)
         self.ok_button_quantity.pack(side='left')
+        self.secondary_euro = tkinter.Button(self.button_frame, text='Sale-in euro', command=self.secondary_sales_euro_2021)
+        self.secondary_euro.pack(side='left')
+
 
         i_list = []
         for i in range(0,len(acts_)):
@@ -151,6 +153,87 @@ class Items_GUI(tkinter.Frame):
         self.rb3.pack()
         self.top_frame.pack(side='bottom')
         self.left_frame.pack(side='top')
+
+    def secondary_sales_euro_2021(self):
+        self.month = ''
+        self.amount_euro = 0
+        year = self.radio_var.get()
+        list = []
+        list_months_quadra = []
+        if self.check_var1.get() == 1:
+            self.month = 'Jan'
+            list.append(self.month)
+            list_months_quadra.append('Январь')
+        if self.check_var2.get() == 1:
+            self.month = 'Feb'
+            list.append(self.month)
+            list_months_quadra.append('Февраль')
+        if self.check_var3.get() == 1:
+            self.month = 'Mar'
+            list.append(self.month)
+            list_months_quadra.append('Март')
+        if self.check_var4.get() == 1:
+            self.month = 'Apr'
+            list.append(self.month)
+            list_months_quadra.append('Апрель')
+        if self.check_var5.get() == 1:
+            self.month = 'May'
+            list.append(self.month)
+            list_months_quadra.append('Май')
+        if self.check_var6.get() == 1:
+            self.month = 'Jun'
+            list.append(self.month)
+            list_months_quadra.append('Июнь')
+        if self.check_var7.get() == 1:
+            self.month = 'Jul'
+            list.append(self.month)
+            list_months_quadra.append('Июль')
+        if self.check_var8.get() == 1:
+            self.month = 'Aug'
+            list.append(self.month)
+            list_months_quadra.append('Август')
+        if self.check_var9.get() == 1:
+            self.month = 'Sep'
+            list.append(self.month)
+            list_months_quadra.append('Сентябрь')
+        if self.check_var10.get() == 1:
+            self.month = 'Oct'
+            list.append(self.month)
+            list_months_quadra.append('Октябрь')
+        if self.check_var11.get() == 1:
+            self.month = 'Nov'
+            list.append(self.month)
+            list_months_quadra.append('Ноябрь')
+        if self.check_var12.get() == 1:
+            self.month = 'Dec'
+            list.append(self.month)
+            list_months_quadra.append('Декабрь')
+
+        x_coord = list_months_quadra
+        x = CBase_2021_quadra_workout()
+        base_2021_classifyed = x.upload_2021_base_from_quadra()
+        basic_list = []
+        y = SKU_WORKOUT()
+        list_items_2021 = y.read_item_2021_local_item()
+        with open('item_dict1.csv', "r", newline="") as file:
+            reader = csv.DictReader(file)
+            dict_items = {}
+            for row in reader:
+                dict_items.update({row[0]:row[1]})
+        for i in base_2021_classifyed:
+
+            if i.month in list_months_quadra and dict_items[f'{i.item_quadra}'] == self.info_var.get():
+                basic_list.append(float(i.sales_euro_))
+
+        for i in basic_list:
+            self.amount_euro += float(i)
+        y_coord = basic_list
+        print(self.amount_euro)
+        tkinter.messagebox.showinfo('INFO', f'Sales in euro: {self.amount_euro} euro')
+        plt.title(f'Вторичные продажи в евро по месяцам по SKU: \n{self.info_var.get()}')
+        plt.grid(True)
+        plt.plot(x_coord, y_coord, marker='s')
+        plt.show()
 
     def show_weighted_penetration(self):
         self.month = ''
@@ -336,6 +419,8 @@ class Items_GUI(tkinter.Frame):
         plt.grid(True)
         plt.plot(x_coord,y_coord,marker='s')
         plt.show()
+
+
     def show_sro(self):
         self.month = ''
         self.amount_euro = 0
