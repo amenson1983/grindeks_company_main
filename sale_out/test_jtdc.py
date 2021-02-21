@@ -1,7 +1,7 @@
 import sys
 import jaydebeapi
 
-from sale_out.database import Quadra_direct_629, CBase_2021_quadra_workout
+from database import CBase_2021_quadra_workout
 
 
 def upload_2021_base_from_quadra():
