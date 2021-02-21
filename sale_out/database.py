@@ -734,8 +734,6 @@ class CTest_SAles_report_creation:
         items = []
         distributor_name = []
         weeks = []
-        secondary_sales_packs = 0
-        secondary_sales_euro = 0
         for i in base_raw:
             if i.year not in years:
                 years.append(i.year)
@@ -757,6 +755,22 @@ class CTest_SAles_report_creation:
                                 if i.year == year and i.month == month and i.week == week and i.distributor_name == distr and i.item_quadra == item:
                                     sales_by_product.append(CTest_SAles_report_classification(i.year, i.month,i.week,i.distributor_name,i.item_quadra, i.sale_in_quantity, i.sales_euro_))
         return sales_by_product
+
+
+
+    def print_actual_MTD_sales(base_raw,year,month_local):
+        report_test = CTest_SAles_report_creation()
+        report = report_test.test_rep(base_raw)
+        sales_euro = 0
+        week = ''
+        distr = ''
+        item_quadra = ''
+        quantity = 0
+        for i in report:
+            if i.year == year and i.month == month_local:
+                sales_euro += i.sec_euro
+                quantity += i.sec_quantity
+        print(f"Год: {year}\nМесяц: {month_local}\nОбщие продажи в упаковках:", '{0:,}'.format(quantity.__round__(2)).replace(",", " "), "packs\nОбщие продажи в евро:", '{0:,}'.format(sales_euro.__round__(2)).replace(",", " "), 'euro')
 
 
 

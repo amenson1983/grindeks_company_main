@@ -1,5 +1,6 @@
 import csv
 import tkinter
+from datetime import date
 from tkinter import Tk
 
 
@@ -81,23 +82,12 @@ if __name__ == '__main__':
     #actual_secondary_sales_2021()
     x = CBase_2021_quadra_workout()
     base_raw = x.upload_2021_base_from_quadra()
+    y = CTest_SAles_report_creation
+    month = date.today().month
+    if month == 2:
+        month = 'Февраль'
+    y.print_actual_MTD_sales(base_raw, 2021, month)
 
-
-
-    report_test = CTest_SAles_report_creation()
-    report = report_test.test_rep(base_raw)
-    sales_euro = 0
-    year = 2021
-    month = 'Февраль'
-    week = ''
-    distr = ''
-    item_quadra = ''
-    quantity = 0
-    for i in report:
-        if i.year == year and i.month == month:
-            sales_euro += i.sec_euro
-            quantity += i.sec_quantity
-    print(year, month, quantity, sales_euro)
     #base_2021_classifyed = x.save_base_2021_to_csv()
 
 
