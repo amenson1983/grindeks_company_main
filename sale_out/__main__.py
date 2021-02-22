@@ -81,14 +81,15 @@ if __name__ == '__main__':
     #actual_secondary_sales_2020()
     #actual_secondary_sales_2021()
     x = CBase_2021_quadra_workout()
-    base_raw = x.upload_2021_base_from_quadra()
-    y = CTest_SAles_report_creation
-    month = date.today().month
-    if month == 2:
-        month = 'Февраль'
-    y.print_actual_MTD_sales(base_raw, 2021, month)
+    #base_raw = x.upload_2021_base_from_quadra()
+    #y = CTest_SAles_report_creation
+    #month = date.today().month
+    #if month == 2:
+    #    month = 'Февраль'
+    #y.print_actual_MTD_sales(base_raw, 2021, month)
 
     #base_2021_classifyed = x.save_base_2021_to_csv()
+    x.save_base_629_2021_to_xlsx()
 
 
 

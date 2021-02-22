@@ -2,7 +2,7 @@ import csv
 import sqlite3
 import pandas as pd
 from pandas import Series
-
+import xlsxwriter
 
 import jaydebeapi
 import pytest
@@ -479,9 +479,8 @@ class CBase_2021_quadra_workout:
         except Exception as err:
             print(str(err))
 
-    def save_base_2021_to_csv(self):
+    def save_base_629_2021_to_xlsx(self):
         global base_2021_classifyed_, item
-        filename = 'base_2021.csv'
         final_list = []
         try:
             # jTDS Driver.
@@ -661,59 +660,138 @@ class CBase_2021_quadra_workout:
         except Exception as err:
             print(str(err))
         sum_tot_euro = 0
-        with open('work_base.csv', "w", newline="", encoding='utf-16') as file:
-            columns = ['year', 'month', 'ff_region', 'country_region', 'city_town', 'organization_name',
-                       'organization_adress', 'sales_method',
-                       'product_code', 'item_quadra', 'organization_etalon_id', 'organization_etalon_name',
-                       'distributor_etalon_name',
-                       'distributor_name', 'distributor_okpo', 'sales_euro_', 'promotion', 'organization_type',
-                       'organization_status',
-                       'etalon_code_okpo', 'delivery_date', 'office_head_organization', 'head_office_okpo',
-                       'quarter_year', 'half_year',
-                       'annual_sales_category', 'med_representative_name', 'kam_name', 'week', 'territory_name',
-                       'brik_name', 'sale_in_quantity']
-            writer = csv.writer(file)
-            list_base_2021 = [['year', 'month', 'ff_region', 'country_region', 'city_town', 'organization_name',
-                       'organization_adress', 'sales_method',
-                       'product_code', 'item_quadra', 'organization_etalon_id', 'organization_etalon_name',
-                       'distributor_etalon_name',
-                       'distributor_name', 'distributor_okpo', 'sales_euro_', 'promotion', 'organization_type',
-                       'organization_status',
-                       'etalon_code_okpo', 'delivery_date', 'office_head_organization', 'head_office_okpo',
-                       'quarter_year', 'half_year',
-                       'annual_sales_category', 'med_representative_name', 'kam_name', 'week', 'territory_name',
-                       'brik_name', 'sale_in_quantity']]
-            for item in base_2021_classifyed_:
-                z0 = str(item.year).replace(",", "")
-                y1 = str(item.sales_euro_).replace(".", ",")
-                y2 = str(item.sale_in_quantity).replace(".", ",")
-                item_ = [[str(z0), str(item.month), str(item.ff_region),
-                         str(item.country_region), str(item.city_town),
-                         str(item.organization_name), str(item.organization_adress),
-                         str(item.sales_method),
-                         str(item.product_code), str(item.item_quadra),
-                         str(item.organization_etalon_id),
-                         str(item.organization_etalon_name),
-                         str(item.distributor_etalon_name),
-                         str(item.distributor_name), str(item.distributor_okpo),
-                         str(y1), str(item.promotion), str(item.organization_type),
-                         str(item.organization_status),
-                         str(item.etalon_code_okpo), str(item.delivery_date),
-                         str(item.office_head_organization),
-                         str(item.head_office_okpo), str(item.quarter_year),
-                         str(item.half_year),
-                         str(item.annual_sales_category),
-                         str(item.med_representative_name), str(item.kam_name),
-                         str(item.week), str(item.territory_name), str(item.brik_name),
-                         str(y2)]]
-                list_base_2021.append(item_)
+        workbook = xlsxwriter.Workbook('C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\0.new_629_report_2021.xlsx')
+        worksheet = workbook.add_worksheet()
+
+        # Widen the first column to make the text clearer.
+        #worksheet.set_column('A:A', 20)
+        bold = workbook.add_format({'bold': True},)
+        worksheet.write('A1', "Год", bold)
+        worksheet.write('B1', "Месяц", bold)
+        worksheet.write('C1', "Область", bold)
+        worksheet.write('D1', "Регион", bold)
+        worksheet.write('E1', "Населенный пункт", bold)
+        worksheet.write('F1', "Организация", bold)
+        worksheet.write('G1', "Почтовый адрес (организация)", bold)
+        worksheet.write('H1', "Группа товара", bold)
+        worksheet.write('I1', "product_code", bold)
+        worksheet.write('J1', 'Товар', bold)
+        worksheet.write('K1', 'Организация(эталонId)', bold)
+        worksheet.write('L1', 'Организация(эталон)', bold)
+        worksheet.write('M1', 'Дистрибьютор (эталон)', bold)
+        worksheet.write('N1', 'Дистрибьютор', bold)
+        worksheet.write('O1', 'ОКПО (дистрибъютор)', bold)
+        worksheet.write('P1', 'Сумма (IN)', bold)
+        worksheet.write('Q1', 'Группа товара 2', bold)
+        worksheet.write('R1', 'Вид организации', bold)
+        worksheet.write('S1', 'Тип организации', bold)
+        worksheet.write('T1', 'ОКПО', bold)
+        worksheet.write('U1', 'Дата отгрузки', bold)
+        worksheet.write('V1', 'Гл. Офис Сети', bold)
+        worksheet.write('W1', 'Гл. Офис ОКПО', bold)
+        worksheet.write('X1', 'Квартал', bold)
+        worksheet.write('Y1', 'Полугодие', bold)
+        worksheet.write('Z1', 'Категория товарооборота', bold)
+        worksheet.write('AA1', 'Сотрудник', bold)
+        worksheet.write('AB1', 'КАМ', bold)
+        worksheet.write('AC1', 'Неделя', bold)
+        worksheet.write('AD1', 'Территория', bold)
+        worksheet.write('AE1', 'Полигон', bold)
+        worksheet.write('AF1', 'Количество (IN)', bold)
+
+        columns = ['year', 'month', 'ff_region', 'country_region', 'city_town', 'organization_name',
+                   'organization_adress', 'sales_method',
+                   'product_code', 'item_quadra', 'organization_etalon_id', 'organization_etalon_name',
+                   'distributor_etalon_name',
+                   'distributor_name', 'distributor_okpo', 'sales_euro_', 'promotion', 'organization_type',
+                   'organization_status',
+                   'etalon_code_okpo', 'delivery_date', 'office_head_organization', 'head_office_okpo',
+                   'quarter_year', 'half_year',
+                   'annual_sales_category', 'med_representative_name', 'kam_name', 'week', 'territory_name',
+                   'brik_name', 'sale_in_quantity']
+
+        list_base_2021 = []
+        row_index = 1
+
+        for item in base_2021_classifyed_:
+            z0 = str(item.year).replace(",", "")
+            y1 = str(item.sales_euro_).replace(".", ",")
+            y2 = str(item.sale_in_quantity).replace(".", ",")
+            item_ = [[str(z0),
+                     str(item.month),
+                     str(item.ff_region),
+                     str(item.country_region),
+                     str(item.city_town),
+                     str(item.organization_name),
+                     str(item.organization_adress),
+                     str(item.sales_method),
+                     str(item.product_code),
+                     str(item.item_quadra),
+                     str(item.organization_etalon_id),
+                     str(item.organization_etalon_name),
+                     str(item.distributor_etalon_name),
+                     str(item.distributor_name),
+                     str(item.distributor_okpo),
+                     str(y1),
+                     str(item.promotion),
+                     str(item.organization_type),
+                     str(item.organization_status),
+                     str(item.etalon_code_okpo),
+                     str(item.delivery_date),
+                     str(item.office_head_organization),
+                     str(item.head_office_okpo),
+                     str(item.quarter_year),
+                     str(item.half_year),
+                     str(item.annual_sales_category),
+                     str(item.med_representative_name),
+                     str(item.kam_name),
+                     str(item.week),
+                     str(item.territory_name),
+                     str(item.brik_name),
+                     str(y2)]]
+
+            list_base_2021.append(item_)
+            worksheet.write(int(row_index), int(0),str(z0))
+            worksheet.write(int(row_index), int(1),str(item.month))
+            worksheet.write(int(row_index), int(2),str(item.ff_region))
+            worksheet.write(int(row_index), int(3),str(item.country_region))
+            worksheet.write(int(row_index), int(4),str(item.city_town))
+            worksheet.write(int(row_index), int(5),str(item.organization_name))
+            worksheet.write(int(row_index), int(6),str(item.organization_adress))
+            worksheet.write(int(row_index), int(7),str(item.sales_method))
+            worksheet.write(int(row_index), int(8),str(item.product_code))
+            worksheet.write(int(row_index), int(9),str(item.item_quadra))
+            worksheet.write(int(row_index), int(10),str(item.organization_etalon_id))
+            worksheet.write(int(row_index), int(11),str(item.organization_etalon_name))
+            worksheet.write(int(row_index), int(12),str(item.distributor_etalon_name))
+            worksheet.write(int(row_index), int(13),str(item.distributor_name))
+            worksheet.write(int(row_index), int(14),str(item.distributor_okpo))
+            worksheet.write(int(row_index), int(15),str(y1))
+            worksheet.write(int(row_index), int(16),str(item.promotion))
+            worksheet.write(int(row_index), int(17),str(item.organization_type))
+            worksheet.write(int(row_index), int(18),str(item.organization_status))
+            worksheet.write(int(row_index), int(19),str(item.etalon_code_okpo))
+            worksheet.write(int(row_index), int(20),str(item.delivery_date))
+            worksheet.write(int(row_index), int(21),str(item.office_head_organization))
+            worksheet.write(int(row_index), int(22),str(item.head_office_okpo))
+            worksheet.write(int(row_index), int(23),str(item.quarter_year))
+            worksheet.write(int(row_index), int(24),str(item.half_year))
+            worksheet.write(int(row_index), int(25),str(item.annual_sales_category))
+            worksheet.write(int(row_index), int(26),str(item.med_representative_name))
+            worksheet.write(int(row_index), int(27),str(item.kam_name))
+            worksheet.write(int(row_index), int(28),str(item.week))
+            worksheet.write(int(row_index), int(29),str(item.territory_name))
+            worksheet.write(int(row_index), int(30),str(item.brik_name))
+            worksheet.write(int(row_index), int(31),str(y2))
+
+            row_index +=1
+
+        workbook.close()
 
 
 
-            sum_tot_euro += item.sales_euro_
-            writer.writerows(list_base_2021)
 
-        print(sum_tot_euro)
+
 
 class CTest_SAles_report_classification:
     def __init__(self,year,month,week,distr,item_quadra,sec_quantity,sec_euro):
