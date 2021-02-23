@@ -13,7 +13,7 @@ from sale_out.items_class import SKU_WORKOUT
 def Main():
     root = Tk()
     ex = Items_GUI()
-    root.geometry("800x550+350+30")
+    root.geometry("800x650+350+30")
     main_menu = tkinter.Menu()
     file_menu = tkinter.Menu()
     save_menu = tkinter.Menu()

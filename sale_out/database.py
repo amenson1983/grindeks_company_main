@@ -7,6 +7,7 @@ import xlsxwriter
 import jaydebeapi
 import pytest
 import xlwt
+from pandas.tests.io.excel.test_openpyxl import openpyxl
 
 
 class Tertiary_download_structure:
@@ -178,7 +179,7 @@ class CBase_2021_quadra_workout:
                      annual_sales_category,med_representative_name,kam_name,week,territory_name,brik_name,sale_in_quantity)
             base_2021_classifyed.append(entry)
         return base_2021_classifyed
-    def classify_base_from_xlxs(self,item):
+    def classify_base_2021_from_xlxs(self, item):
         base_2021_classified_ = []
         year = str(item[0])
         month = str(item[1])
@@ -891,6 +892,46 @@ class CBase_2021_quadra_workout:
             row_index +=1
 
         workbook.close()
+
+    def get_secondary_2021_by_month(self):
+        path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\0.new_629_report_2021.xlsx"
+        wb_obj = openpyxl.load_workbook(path)
+        sheet_obj = wb_obj.active
+        rows_count = str(sheet_obj.calculate_dimension()).rsplit(':')
+        rows_count = int(str(rows_count[1])[2:])
+        string = []
+        classified_base_2021 = []
+        for row in range(1, rows_count + 1):
+            str_ = []
+            for col in range(1, 33):
+                cell_obj = sheet_obj.cell(row=row, column=col)
+                str_.append(cell_obj.value)
+            string.append(str_)
+        for i in string:
+            x = CBase_2021_quadra_workout()
+            string_class = x.classify_base_2021_from_xlxs(i)
+            classified_base_2021.append(string_class)
+        return classified_base_2021
+
+    def get_secondary_2020_by_month(self):
+        path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\0.new_629_report_2020.xlsx"
+        wb_obj = openpyxl.load_workbook(path)
+        sheet_obj = wb_obj.active
+        rows_count = str(sheet_obj.calculate_dimension()).rsplit(':')
+        rows_count = int(str(rows_count[1])[2:])
+        string = []
+        classified_base_2020 = []
+        for row in range(1, rows_count + 1):
+            str_ = []
+            for col in range(1, 33):
+                cell_obj = sheet_obj.cell(row=row, column=col)
+                str_.append(cell_obj.value)
+            string.append(str_)
+        for i in string:
+            x = CBase_2021_quadra_workout()
+            string_class = x.classify_base_2021_from_xlxs(i)
+            classified_base_2020.append(string_class)
+        return classified_base_2020
 
     #def get_629_from_xlxs(self):
 

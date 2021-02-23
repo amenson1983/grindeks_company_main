@@ -54,7 +54,6 @@ def demo_reader():
     rows_count = str(sheet_obj.calculate_dimension()).rsplit(':')
 
     rows_count = int(str(rows_count[1])[2:])
-    print(rows_count)
     string = []
     classified_base_2021 = []
     for row in range(1, rows_count+1):
@@ -67,13 +66,13 @@ def demo_reader():
 
     for i in string:
         x = CBase_2021_quadra_workout()
-        string_class = x.classify_base_from_xlxs(i)
+        string_class = x.classify_base_2021_from_xlxs(i)
         classified_base_2021.append(string_class)
     total = 0
     for z in classified_base_2021[1:]:
         for d in z:
             total += float(d.sales_euro)
-    print(total)
+    return total
 
 
 

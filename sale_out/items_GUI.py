@@ -8,6 +8,7 @@ import csv
 import sqlite3
 
 from dateutil.utils import today
+from pandas.tests.io.excel.test_openpyxl import openpyxl
 from win32timezone import now
 
 from items_class import SKU_WORKOUT, CSKU, CItemsDAO
@@ -20,6 +21,7 @@ class Items_GUI(tkinter.Frame):
 
     def __init__(self):
         super().__init__()
+
         self.initUI()
 
     def initUI(self):
@@ -31,11 +33,11 @@ class Items_GUI(tkinter.Frame):
         self.button_frame = tkinter.Frame(self.master)
         self.left_frame = tkinter.Frame(self.master)
         self.radio_var = tkinter.IntVar()
-        self.radio_var.set(2020)
+        self.radio_var.set(2021)
         self.check_var1 = tkinter.IntVar()
         self.check_var1.set(0)
         self.check_var2 = tkinter.IntVar()
-        self.check_var2.set(0)
+        self.check_var2.set(1)
         self.check_var3 = tkinter.IntVar()
         self.check_var3.set(0)
         self.check_var4 = tkinter.IntVar()
@@ -56,10 +58,12 @@ class Items_GUI(tkinter.Frame):
         self.check_var11.set(0)
         self.check_var12 = tkinter.IntVar()
         self.check_var12.set(0)
-        self.secondary_button_name = 'Update the base 629 for 2021'
-
         my_font = tkinter.font.Font(family='Arial', size=14, weight='bold')
         my_font1 = tkinter.font.Font(family='Arial', size=11)
+        self.specific_data = tkinter.StringVar()
+        self.specific_data_label = tkinter.Label(self, text='Specific data', textvariable=self.specific_data, font=my_font)
+        self.specific_data_label.pack()
+
         self.chb1 = tkinter.Checkbutton(self.top_frame, text='Jan', variable=self.check_var1,
                                         font=my_font1)
 
@@ -107,10 +111,14 @@ class Items_GUI(tkinter.Frame):
         self.ok_button_quantity = tkinter.Button(self.button_frame, text='Sale-out in packs', command=self.onclick_quantity)
         self.ok_button_quantity.pack(side='left')
         self.upper_frame.pack()
-        self.secondary_euro = tkinter.Button(self.upper_frame, text=str(self.secondary_button_name), command=self.secondary_sales_euro_upload)
+        self.secondary_euro = tkinter.Button(self.upper_frame, text='Update database', command=self.secondary_sales_euro_upload)
         self.secondary_euro.pack(side='left')
         self.quit_button = tkinter.Button(self.upper_frame, text='Quit', command=self.master.destroy)
         self.quit_button.pack(side='left')
+        self.show_button_sec_euro = tkinter.Button(self.upper_frame, text='Total secondary sales euro', command=self.secondary_sales_euro_2021_for_chart)
+        self.show_button_sec_euro.pack(side='left')
+
+
 
 
         i_list = []
@@ -144,9 +152,37 @@ class Items_GUI(tkinter.Frame):
         self.var = tkinter.StringVar()
         self.label = tkinter.Label(self, text=0, textvariable=self.var)
         self.label.pack()
-        self.update_on = tkinter.StringVar()
-        self.update_on_label = tkinter.Label(self, text=0, textvariable=self.update_on)
-        self.update_on_label.pack()
+        self.tot_sec_2021_packs = tkinter.StringVar()
+        self.tot_sec_2021_euro = tkinter.StringVar()
+        self.mtd_sec_2021_packs = tkinter.StringVar()
+        self.mtd_sec_2021_euro = tkinter.StringVar()
+        self.secondary_2021_total_pack_euro() #launch secondary workout
+        self.label_tot_sec_2021_packs = tkinter.Label(self, text='YTD 2021 secondary sales in packs: ', textvariable=self.tot_sec_2021_packs)
+        self.label_tot_sec_2021_packs.pack()
+
+        self.label_tot_sec_2021_euro = tkinter.Label(self, text='YTD 2021 secondary sales in euro: ', textvariable=self.tot_sec_2021_euro)
+        self.label_tot_sec_2021_euro.pack()
+
+        self.mtd_sec_2021_packs_label = tkinter.Label(self, text='MTD 2021 secondary sales in packs: ', textvariable=self.mtd_sec_2021_packs)
+        self.mtd_sec_2021_packs_label.pack()
+
+        self.mtd_sec_2021_euro_label = tkinter.Label(self, text='MTD 2021 secondary sales in euro: ', textvariable=self.mtd_sec_2021_euro)
+        self.mtd_sec_2021_euro_label.pack()
+        list, list_months_quadra, year = self.radiobutton_months()
+        selected_period_euro = 0
+        selected_period_packs = 0
+        if year  == 2021:
+            x = CBase_2021_quadra_workout()
+            base_2021_classifyed = x.get_secondary_2021_by_month()
+            for month in list_months_quadra:
+                for string in base_2021_classifyed:
+                    for item in string:
+                        if month == item.month:
+                            selected_period_euro += float(item.sales_euro)
+                            selected_period_packs += float(item.sales_packs)
+        self.mtd_sec_2021_euro.set('MTD 2021 secondary sales in euro:   '+'{0:,}'.format(selected_period_euro.__round__(2)).replace(",", " ")+' euro')
+        self.mtd_sec_2021_packs.set('MTD 2021 secondary sales in packs:   '+'{0:,}'.format(selected_period_packs.__round__(0)).replace(",", " ") + ' packs')
+
         self.info_var = tkinter.StringVar()
         self.info_label = tkinter.Label(self, text=0, textvariable=self.info_var)
         self.info_label.pack()
@@ -177,7 +213,101 @@ class Items_GUI(tkinter.Frame):
         self.update_on.set(self.secondary_button_name)
         return self.secondary_button_name
 
-    def secondary_sales_euro_2021(self):  #реализовать график из экселя базы
+    def secondary_2021_total_pack_euro(self):
+        # Give the location of the file
+        path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\0.new_629_report_2021.xlsx"
+
+        # To open the workbook
+        # workbook object is created
+        wb_obj = openpyxl.load_workbook(path)
+
+        # Get workbook active sheet object
+        # from the active attribute
+        sheet_obj = wb_obj.active
+
+        # Cell objects also have a row, column,
+        # and coordinate attributes that provide
+        # location information for the cell.
+
+        # Note: The first row or
+        # column integer is 1, not 0.
+
+        # Cell object is created by using
+        # sheet object's cell() method.
+        rows_count = str(sheet_obj.calculate_dimension()).rsplit(':')
+
+        rows_count = int(str(rows_count[1])[2:])
+        string = []
+        classified_base_2021 = []
+        for row in range(1, rows_count + 1):
+            str_ = []
+            for col in range(1, 33):
+                cell_obj = sheet_obj.cell(row=row, column=col)
+                str_.append(cell_obj.value)
+            string.append(str_)
+
+        for i in string:
+            x = CBase_2021_quadra_workout()
+            string_class = x.classify_base_2021_from_xlxs(i)
+            classified_base_2021.append(string_class)
+        total_euro = 0
+        total_packs = 0
+        for z in classified_base_2021[1:]:
+            for d in z:
+                total_euro += float(d.sales_euro)
+                total_packs += float(d.sales_packs)
+
+
+        self.tot_sec_2021_euro.set('YTD 2021 secondary sales in euro:   '+'{0:,}'.format(total_euro.__round__(2)).replace(",", " ")+ ' euro')
+        self.tot_sec_2021_packs.set('YTD 2021 secondary sales in packs:   '+'{0:,}'.format(total_packs.__round__(0)).replace(",", " ") + ' packs')
+
+
+
+
+
+    def secondary_sales_euro_2021_for_chart(self):  #реализовать график из экселя базы
+        list, list_months_quadra, year = self.radiobutton_months()
+
+        x_coord = list_months_quadra
+        x = CBase_2021_quadra_workout()
+        if year  == 2021:
+            base_2021_classifyed = x.get_secondary_2021_by_month()
+            basic_list = []
+            for month in list_months_quadra:
+                selected_period_euro = 0
+                for string in base_2021_classifyed:
+                    for item in string:
+                        if month == item.month:
+                            selected_period_euro += float(item.sales_euro)
+                basic_list.append(selected_period_euro)
+            y_coord = basic_list
+            print(y_coord)
+            self.specific_data.set(f'Specific data: {y_coord}'.replace('[', '').replace(']', ''))
+            plt.title(f'Total secondary sales 2021 by month: \n{self.info_var.get()}')
+            plt.grid(True)
+            plt.plot(x_coord, y_coord, marker='s')
+            plt.show()
+
+        elif year  == 2020:
+            base_2020_classifyed = x.get_secondary_2020_by_month()
+            basic_list = []
+            for month in list_months_quadra:
+                selected_period_euro = 0
+                for string in base_2020_classifyed:
+                    for item in string:
+                        if month == item.month:
+                            selected_period_euro += round(float(item.sales_euro),0)
+                basic_list.append(selected_period_euro)
+            y_coord = basic_list
+            print(y_coord)
+            self.specific_data.set(f"Specific data: '{y_coord}'.replace('[', '').replace(']', '')")
+            plt.title(f'Total secondary sales 2020 by month: \n{self.info_var.get()}')
+            plt.grid(True)
+            plt.plot(x_coord, y_coord, marker='s')
+            plt.show()
+
+
+    def radiobutton_months(self):
         self.month = ''
         self.amount_euro = 0
         year = self.radio_var.get()
@@ -231,32 +361,7 @@ class Items_GUI(tkinter.Frame):
             self.month = 'Dec'
             list.append(self.month)
             list_months_quadra.append('Декабрь')
-
-        x_coord = list_months_quadra
-        x = CBase_2021_quadra_workout()
-        base_2021_classifyed = x.upload_2021_base_from_quadra()
-        basic_list = []
-        y = SKU_WORKOUT()
-        list_items_2021 = y.read_item_2021_local_item()
-        with open('item_dict1.csv', "r", newline="") as file:
-            reader = csv.DictReader(file)
-            dict_items = {}
-            for row in reader:
-                dict_items.update({row[0]:row[1]})
-        for i in base_2021_classifyed:
-
-            if i.month in list_months_quadra and dict_items[f'{i.item_quadra}'] == self.info_var.get():
-                basic_list.append(float(i.sales_euro_))
-
-        for i in basic_list:
-            self.amount_euro += float(i)
-        y_coord = basic_list
-        print(self.amount_euro)
-        tkinter.messagebox.showinfo('INFO', f'Sales in euro: {self.amount_euro} euro')
-        plt.title(f'Вторичные продажи в евро по месяцам по SKU: \n{self.info_var.get()}')
-        plt.grid(True)
-        plt.plot(x_coord, y_coord, marker='s')
-        plt.show()
+        return list, list_months_quadra, year
 
     def show_weighted_penetration(self):
         self.month = ''
@@ -308,11 +413,12 @@ class Items_GUI(tkinter.Frame):
                 basic_list.append(float(z.weight_pen))
                 print(basic_list)
         y_coord = basic_list
-
+        self.specific_data.set(f'Specific data: {y_coord}'.replace('[','').replace(']',''))
         plt.title(f'Взвешенная пенетрация по месяцам по выбранному SKU: \n{self.info_var.get()}')
         plt.grid(True)
         plt.plot(x_coord, y_coord,marker='s')
         plt.show()
+
     def onSelect(self, val):
         sender = val.widget
         idx = sender.curselection()
@@ -320,7 +426,7 @@ class Items_GUI(tkinter.Frame):
         x = value
         self.info_var.set(value)
 
-        self.var.set(f"Для отображения динамики роста ключевых показателей:\n1. Bыберите месяцы\n2. Выберите препарат (на некоторые - нет данных)\n3. Нажмите соответствующую кнопку\nВЫБРАННЫЙ ПРЕПАРАТ:")
+        self.var.set(f"Для отображения динамики роста ключевых показателей:\n1. Bыберите месяцы\n2. Выберите препарат (на некоторые - нет данных)\n3. Нажмите соответствующую кнопку")
     def show_penetration(self):
         self.month = ''
         self.amount_euro = 0
@@ -376,11 +482,12 @@ class Items_GUI(tkinter.Frame):
 
         y_coord = basic_list
         print(self.amount_euro)
-
+        self.specific_data.set(f'Specific data: {y_coord}'.replace('[','').replace(']',''))
         plt.title(f'Пенетрация по месяцам по SKU: \n{self.info_var.get()}')
         plt.grid(True)
         plt.plot(x_coord,y_coord,marker='s')
         plt.show()
+
     def onclick_euro(self):
         self.month = ''
         self.amount_euro = 0
@@ -437,6 +544,7 @@ class Items_GUI(tkinter.Frame):
             self.amount_euro += float(i)
         y_coord = basic_list
         print(self.amount_euro)
+        self.specific_data.set(f'Specific data: {y_coord}'.replace('[','').replace(']',''))
         tkinter.messagebox.showinfo('INFO', f'Sales in euro: {self.amount_euro} euro')
         plt.title(f'Третичные продажи в евро по месяцам по SKU: \n{self.info_var.get()}')
         plt.grid(True)
@@ -498,12 +606,13 @@ class Items_GUI(tkinter.Frame):
                 print(basic_list)
 
         y_coord = basic_list
-
+        self.specific_data.set(f'Specific data: {y_coord}'.replace('[','').replace(']',''))
 
         plt.title(f'SRO: \n{self.info_var.get()}')
         plt.grid(True)
         plt.plot(x_coord,y_coord,marker='s')
         plt.show()
+
     def show_weighted_sro(self):
         self.month = ''
         self.amount_euro = 0
@@ -558,7 +667,7 @@ class Items_GUI(tkinter.Frame):
                 print(basic_list)
 
         y_coord = basic_list
-
+        self.specific_data.set(f'Specific data: {y_coord}'.replace('[','').replace(']',''))
 
         plt.title(f'Weighted SRO: \n{self.info_var.get()}')
         plt.grid(True)
@@ -759,12 +868,14 @@ class Items_GUI(tkinter.Frame):
             self.quantity += float(i)
         y_coord = basic_list
         print(self.quantity)
+        self.specific_data.set(f'Specific data: {y_coord}'.replace('[','').replace(']',''))
         tkinter.messagebox.showinfo('INFO',
                                     f'Sales in packs: {self.quantity} pcs')
         plt.title(f'Третичные продажи в упаковках по месяцам по SKU: \n{self.info_var.get()}')
         plt.grid(True)
         plt.plot(x_coord, y_coord,  color='g')
         plt.show()
+
 
     def save_weight_pen_month_to_csv(self):
         year = self.radio_var.get()
