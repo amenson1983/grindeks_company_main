@@ -57,7 +57,7 @@ def demo_reader():
     print(rows_count)
     string = []
     classified_base_2021 = []
-    for row in range(1, rows_count):
+    for row in range(1, rows_count+1):
         str_ = []
         for col in range(1,33):
             cell_obj = sheet_obj.cell(row=row, column=col)
@@ -69,10 +69,11 @@ def demo_reader():
         x = CBase_2021_quadra_workout()
         string_class = x.classify_base_from_xlxs(i)
         classified_base_2021.append(string_class)
-
-    for z in classified_base_2021:
+    total = 0
+    for z in classified_base_2021[1:]:
         for d in z:
-            print(d.year, d.month, d.item_quadra, d.sales_packs)
+            total += float(d.sales_euro)
+    print(total)
 
 
 
