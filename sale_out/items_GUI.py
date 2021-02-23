@@ -1,9 +1,15 @@
 import json
 import tkinter
+from datetime import date
+from time import strftime
 from tkinter import font, messagebox, BOTH, END
 import matplotlib.pyplot as plt
 import csv
 import sqlite3
+
+from dateutil.utils import today
+from win32timezone import now
+
 from items_class import SKU_WORKOUT, CSKU, CItemsDAO
 from sale_out.database import CEXtract_database_tertiary, Tertiary_download_structure, CBase_2021_quadra_workout
 
@@ -18,10 +24,12 @@ class Items_GUI(tkinter.Frame):
 
     def initUI(self):
         self.master.title( "Tertiary sales by item")
-        self.pack(fill=BOTH, expand=1)
+        self.pack(fill=BOTH)
+        #self.pack(fill=BOTH, expand=1)
+        self.upper_frame = tkinter.Frame(self.master)
         self.top_frame = tkinter.Frame(self.master)
         self.button_frame = tkinter.Frame(self.master)
-        self.left_frame = tkinter.Frame()
+        self.left_frame = tkinter.Frame(self.master)
         self.radio_var = tkinter.IntVar()
         self.radio_var.set(2020)
         self.check_var1 = tkinter.IntVar()
@@ -48,23 +56,25 @@ class Items_GUI(tkinter.Frame):
         self.check_var11.set(0)
         self.check_var12 = tkinter.IntVar()
         self.check_var12.set(0)
+        self.secondary_button_name = 'Update the base 629 for 2021'
+
         my_font = tkinter.font.Font(family='Arial', size=14, weight='bold')
         my_font1 = tkinter.font.Font(family='Arial', size=11)
-        self.chb1 = tkinter.Checkbutton(self.left_frame, text='Jan', variable=self.check_var1,
+        self.chb1 = tkinter.Checkbutton(self.top_frame, text='Jan', variable=self.check_var1,
                                         font=my_font1)
 
-        self.rb1 = tkinter.Radiobutton(self.button_frame,text='2019',variable=self.radio_var,value=2019)
-        self.rb2 = tkinter.Radiobutton(self.button_frame, text='2020', variable=self.radio_var, value=2020)
-        self.rb3 = tkinter.Radiobutton(self.button_frame, text='2021', variable=self.radio_var, value=2021)
+        self.rb1 = tkinter.Radiobutton(self.top_frame,text='2019',variable=self.radio_var,value=2019)
+        self.rb2 = tkinter.Radiobutton(self.top_frame, text='2020', variable=self.radio_var, value=2020)
+        self.rb3 = tkinter.Radiobutton(self.top_frame, text='2021', variable=self.radio_var, value=2021)
 
-        self.chb2 = tkinter.Checkbutton(self.left_frame, text='Feb', variable=self.check_var2,
+        self.chb2 = tkinter.Checkbutton(self.top_frame, text='Feb', variable=self.check_var2,
                                         font=my_font1)
-        self.chb3 = tkinter.Checkbutton(self.left_frame, text='Mar', variable=self.check_var3,
+        self.chb3 = tkinter.Checkbutton(self.top_frame, text='Mar', variable=self.check_var3,
                                         font=my_font1)
-        self.chb4 = tkinter.Checkbutton(self.left_frame, text='Apr',
+        self.chb4 = tkinter.Checkbutton(self.top_frame, text='Apr',
                                         variable=self.check_var4, font=my_font1)
-        self.chb5 = tkinter.Checkbutton(self.left_frame, text='May', variable=self.check_var5, font=my_font1)
-        self.chb6 = tkinter.Checkbutton(self.left_frame, text='Jun', variable=self.check_var6,
+        self.chb5 = tkinter.Checkbutton(self.top_frame, text='May', variable=self.check_var5, font=my_font1)
+        self.chb6 = tkinter.Checkbutton(self.top_frame, text='Jun', variable=self.check_var6,
                                         font=my_font1)
         self.chb7 = tkinter.Checkbutton(self.top_frame, text='Jul', variable=self.check_var7,
                                         font=my_font1)
@@ -91,14 +101,16 @@ class Items_GUI(tkinter.Frame):
         self.show_button_weight_sro.pack(side='left')
         self.ok_button = tkinter.Button(self.button_frame, text='Sale-out in euro', command=self.onclick_euro)
         self.ok_button.pack(side='left')
-        self.quit_button = tkinter.Button(self.button_frame, text='Quit', command=self.master.destroy)
-        self.quit_button.pack(side='left')
+
         self.button_frame.pack()
-        lb = tkinter.Listbox(self, width='70', height='15')
+        lb = tkinter.Listbox(self, width='25', height='15')
         self.ok_button_quantity = tkinter.Button(self.button_frame, text='Sale-out in packs', command=self.onclick_quantity)
         self.ok_button_quantity.pack(side='left')
-        self.secondary_euro = tkinter.Button(self.button_frame, text='Sale-in euro', command=self.secondary_sales_euro_2021)
+        self.upper_frame.pack()
+        self.secondary_euro = tkinter.Button(self.upper_frame, text=str(self.secondary_button_name), command=self.secondary_sales_euro_upload)
         self.secondary_euro.pack(side='left')
+        self.quit_button = tkinter.Button(self.upper_frame, text='Quit', command=self.master.destroy)
+        self.quit_button.pack(side='left')
 
 
         i_list = []
@@ -127,11 +139,14 @@ class Items_GUI(tkinter.Frame):
 
         lb.bind("<<ListboxSelect>>", self.onSelect)
 
-        lb.pack(pady=15)
+        lb.pack(padx=10,pady=5,fill=tkinter.BOTH,expand=False)
 
         self.var = tkinter.StringVar()
         self.label = tkinter.Label(self, text=0, textvariable=self.var)
         self.label.pack()
+        self.update_on = tkinter.StringVar()
+        self.update_on_label = tkinter.Label(self, text=0, textvariable=self.update_on)
+        self.update_on_label.pack()
         self.info_var = tkinter.StringVar()
         self.info_label = tkinter.Label(self, text=0, textvariable=self.info_var)
         self.info_label.pack()
@@ -148,13 +163,21 @@ class Items_GUI(tkinter.Frame):
         self.chb10.pack(side='left')
         self.chb11.pack(side='left')
         self.chb12.pack(side='left')
-        self.rb1.pack()
-        self.rb2.pack()
-        self.rb3.pack()
+        self.rb1.pack(side='top')
+        self.rb2.pack(side='top')
+        self.rb3.pack(side='top')
         self.top_frame.pack(side='bottom')
-        self.left_frame.pack(side='top')
+        self.left_frame.pack(side='left')
 
-    def secondary_sales_euro_2021(self):
+    def secondary_sales_euro_upload(self):
+        x = CBase_2021_quadra_workout()
+        x.save_base_629_2021_to_xlsx()
+        self.secondary_button_name = now()
+        tkinter.messagebox.showinfo('INFO', f'Basic excel file for 2021 has been successfully updated!')
+        self.update_on.set(self.secondary_button_name)
+        return self.secondary_button_name
+
+    def secondary_sales_euro_2021(self):  #реализовать график из экселя базы
         self.month = ''
         self.amount_euro = 0
         year = self.radio_var.get()

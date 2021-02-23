@@ -13,7 +13,7 @@ from sale_out.items_class import SKU_WORKOUT
 def Main():
     root = Tk()
     ex = Items_GUI()
-    root.geometry("600x550+400+50")
+    root.geometry("800x550+350+30")
     main_menu = tkinter.Menu()
     file_menu = tkinter.Menu()
     save_menu = tkinter.Menu()
@@ -77,10 +77,10 @@ def actual_secondary_sales_2020():
         print(f'Год: 2020; Месяц: {month}: \t\t\t\t', '{0:,}'.format(y.__round__(2)).replace(",", " "), 'euro')
 
 if __name__ == '__main__':
-    #Main()
+    Main()
     #actual_secondary_sales_2020()
     #actual_secondary_sales_2021()
-    x = CBase_2021_quadra_workout()
+    #x = CBase_2021_quadra_workout()
     #base_raw = x.upload_2021_base_from_quadra()
     #y = CTest_SAles_report_creation
     #month = date.today().month
@@ -89,7 +89,8 @@ if __name__ == '__main__':
     #y.print_actual_MTD_sales(base_raw, 2021, month)
 
     #base_2021_classifyed = x.save_base_2021_to_csv()
-    x.save_base_629_2021_to_xlsx()
+    #x.save_base_629_2021_to_xlsx()
+    print('OK')
 
 
 
