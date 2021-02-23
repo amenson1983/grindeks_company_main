@@ -265,7 +265,47 @@ class Items_GUI(tkinter.Frame):
 
 
 
-    def secondary_sales_euro_2021_for_chart(self):  #реализовать график из экселя базы
+    def secondary_sales_euro_2021_for_chart(self):  #реализовать график из базы sqlite3 потому что через эксель медленно
+        list, list_months_quadra, year = self.radiobutton_months()
+
+        x_coord = list_months_quadra
+        x = CBase_2021_quadra_workout()
+        if year  == 2021:
+            base_2021_classifyed = x.get_secondary_2021_by_month()
+            basic_list = []
+            for month in list_months_quadra:
+                selected_period_euro = 0
+                for string in base_2021_classifyed:
+                    for item in string:
+                        if month == item.month:
+                            selected_period_euro += float(item.sales_euro)
+                basic_list.append(selected_period_euro)
+            y_coord = basic_list
+            print(y_coord)
+            self.specific_data.set(f'Specific data: {y_coord}'.replace('[', '').replace(']', ''))
+            plt.title(f'Total secondary sales 2021 by month: \n{self.info_var.get()}')
+            plt.grid(True)
+            plt.plot(x_coord, y_coord, marker='s')
+            plt.show()
+
+        elif year  == 2020:
+            base_2020_classifyed = x.get_secondary_2020_by_month()
+            basic_list = []
+            for month in list_months_quadra:
+                selected_period_euro = 0
+                for string in base_2020_classifyed:
+                    for item in string:
+                        if month == item.month:
+                            selected_period_euro += round(float(item.sales_euro),0)
+                basic_list.append(selected_period_euro)
+            y_coord = basic_list
+            print(y_coord)
+            self.specific_data.set(f'Specific data: {y_coord}'.replace('[','').replace(']',''))
+            plt.title(f'Total secondary sales 2020 by month: \n{self.info_var.get()}')
+            plt.grid(True)
+            plt.plot(x_coord, y_coord, marker='s')
+            plt.show()
+    def secondary_sales_euro_2021_for_chart_from_sqlite3(self):  #реализовать график из базы sqlite3 потому что через эксель медленно
         list, list_months_quadra, year = self.radiobutton_months()
 
         x_coord = list_months_quadra
@@ -305,7 +345,6 @@ class Items_GUI(tkinter.Frame):
             plt.grid(True)
             plt.plot(x_coord, y_coord, marker='s')
             plt.show()
-
 
     def radiobutton_months(self):
         self.month = ''
