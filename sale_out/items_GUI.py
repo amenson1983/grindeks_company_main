@@ -241,7 +241,7 @@ class Items_GUI(tkinter.Frame):
         classified_base_2021 = []
         for row in range(1, rows_count + 1):
             str_ = []
-            for col in range(1, 33):
+            for col in range(1, 34):
                 cell_obj = sheet_obj.cell(row=row, column=col)
                 str_.append(cell_obj.value)
             string.append(str_)
@@ -249,11 +249,13 @@ class Items_GUI(tkinter.Frame):
         for i in string:
             x = CBase_2021_quadra_workout()
             string_class = x.classify_base_2021_from_xlxs(i)
+
             classified_base_2021.append(string_class)
         total_euro = 0
         total_packs = 0
         for z in classified_base_2021[1:]:
             for d in z:
+                print(d.position_code)
                 total_euro += float(d.sales_euro)
                 total_packs += float(d.sales_packs)
 

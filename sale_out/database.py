@@ -54,8 +54,9 @@ class Quadra_direct_629():
     def __init__(self,year,month,ff_region,country_region,city_town,organization_name,organization_adress,sales_method,
                  product_code,item_quadra,organization_etalon_id,organization_etalon_name,distributor_etalon_name,
                  distributor_name,distributor_okpo,sales_euro_,promotion,organization_type,organization_status,
-                 etalon_code_okpo,delivery_date,office_head_organization,head_office_okpo,quarter_year,half_year,
+                 etalon_code_okpo,delivery_date,position_code,office_head_organization,head_office_okpo,quarter_year,half_year,
                  annual_sales_category,med_representative_name,kam_name,week,territory_name,brik_name,sale_in_quantity):
+        self.position_code = position_code
         self.sale_in_quantity = sale_in_quantity
         self.brik_name = brik_name
         self.territory_name = territory_name
@@ -96,10 +97,11 @@ class Quadra_from_xlxs_629():
                  distributor_etalon_name,
                  distributor_name, distributor_okpo, sales_euro, promotion, organization_type,
                  organization_status,
-                 etalon_code_okpo, delivery_date, office_head_organization, head_office_okpo,
+                 etalon_code_okpo, delivery_date,position_code, office_head_organization, head_office_okpo,
                  quarter_year, half_year,
                  annual_sales_category, med_representative_name, kam_name, week, territory_name,
                  brik_name, sales_packs):
+        self.position_code = position_code
         self.product_group = product_group
         self.sales_packs = sales_packs
         self.brik_name = brik_name
@@ -139,29 +141,30 @@ class Quadra_from_xlxs_629():
                f'{self.item_quadra}, {self.organization_etalon_id}, {self.organization_etalon_name},' \
                f'{self.distributor_etalon_name},{self.distributor_name},{self.distributor_okpo},' \
                f'{self.sales_euro},{self.promotion},{self.organization_type},{self.organization_status},' \
-               f'{self.etalon_code_okpo}, {self.delivery_date}, {self.office_head_organization}, ' \
+               f'{self.etalon_code_okpo}, {self.delivery_date}, {self.position_code}, {self.office_head_organization}, ' \
                f'{self.head_office_okpo},{self.quarter_year}, {self.half_year},{self.annual_sales_category},' \
                f'{self.med_representative_name},{self.kam_name},{self.week},{self.territory_name},' \
                f'{self.brik_name}, {self.sales_packs}'
     def __repr__(self):
-        return f'{self.year}, {self.month}, {self.ff_region}, {self.country_region}, {self.city_town}, {self.organization_name},{self.organization_adress}, {self.product_group},{self.product_code}, {self.item_quadra}, {self.organization_etalon_id}, {self.organization_etalon_name},{self.distributor_etalon_name},{self.distributor_name},{self.distributor_okpo},{self.sales_euro},{self.promotion},{self.organization_type},{self.organization_status},{self.etalon_code_okpo}, {self.delivery_date}, {self.office_head_organization}, {self.head_office_okpo},{self.quarter_year}, {self.half_year},{self.annual_sales_category},{self.med_representative_name},{self.kam_name},{self.week},{self.territory_name},{self.brik_name}, {self.sales_packs}'
+        return f'{self.year}, {self.month}, {self.ff_region}, {self.country_region}, {self.city_town}, {self.organization_name},{self.organization_adress}, {self.product_group},{self.product_code}, {self.item_quadra}, {self.organization_etalon_id}, {self.organization_etalon_name},{self.distributor_etalon_name},{self.distributor_name},{self.distributor_okpo},{self.sales_euro},{self.promotion},{self.organization_type},{self.organization_status},{self.etalon_code_okpo}, {self.delivery_date}, {self.position_code},{self.office_head_organization}, {self.head_office_okpo},{self.quarter_year}, {self.half_year},{self.annual_sales_category},{self.med_representative_name},{self.kam_name},{self.week},{self.territory_name},{self.brik_name}, {self.sales_packs}'
 
 class CBase_2021_quadra_workout:
     def classify_base_2021(self,base_2021):
         base_2021_classifyed = []
         for i in base_2021:
-            sale_in_quantity = i[31]
-            brik_name = i[30]
-            territory_name = i[29]
-            week = i[28]
-            kam_name = i[27]
-            med_representative_name = i[26]
-            annual_sales_category = i[25]
-            half_year = i[24]
-            quarter_year = i[23]
-            head_office_okpo = i[22]
-            office_head_organization = i[21]
+            sale_in_quantity = i[32]
+            brik_name = i[31]
+            territory_name = i[30]
+            week = i[29]
+            kam_name = i[28]
+            med_representative_name = i[27]
+            annual_sales_category = i[26]
+            half_year = i[25]
+            quarter_year = i[24]
+            head_office_okpo = i[23]
+            office_head_organization = i[22]
             delivery_date = i[20]
+            position_code = i[21]
             etalon_code_okpo = i[19]
             organization_status = i[18]
             organization_type = i[17]
@@ -185,7 +188,7 @@ class CBase_2021_quadra_workout:
             entry = Quadra_direct_629(year,month,ff_region,country_region,city_town,organization_name,organization_adress,sales_method,
                      product_code,item_quadra,organization_etalon_id,organization_etalon_name,distributor_etalon_name,
                      distributor_name,distributor_okpo,sales_euro_,promotion,organization_type,organization_status,
-                     etalon_code_okpo,delivery_date,office_head_organization,head_office_okpo,quarter_year,half_year,
+                     etalon_code_okpo,delivery_date,position_code,office_head_organization,head_office_okpo,quarter_year,half_year,
                      annual_sales_category,med_representative_name,kam_name,week,territory_name,brik_name,sale_in_quantity)
             base_2021_classifyed.append(entry)
         return base_2021_classifyed
@@ -212,17 +215,18 @@ class CBase_2021_quadra_workout:
         organization_status = str(item[18])
         etalon_code_okpo = str(item[19])
         delivery_date = str(item[20])
-        office_head_organization = str(item[21])
-        head_office_okpo = str(item[22])
-        quarter_year = str(item[23])
-        half_year = str(item[24])
-        annual_sales_category = str(item[25])
-        med_representative_name = str(item[26])
-        kam_name = str(item[27])
-        week = str(item[28])
-        territory_name = str(item[29])
-        brik_name = str(item[30])
-        sales_packs = str(item[31]).replace(',','.')
+        position_code = str(item[21])
+        office_head_organization = str(item[22])
+        head_office_okpo = str(item[23])
+        quarter_year = str(item[24])
+        half_year = str(item[25])
+        annual_sales_category = str(item[26])
+        med_representative_name = str(item[27])
+        kam_name = str(item[28])
+        week = str(item[29])
+        territory_name = str(item[30])
+        brik_name = str(item[31])
+        sales_packs = str(item[32]).replace(',','.')
 
         st = Quadra_from_xlxs_629(year, month, ff_region, country_region, city_town, organization_name,
                organization_adress, product_group,
@@ -230,7 +234,7 @@ class CBase_2021_quadra_workout:
                distributor_etalon_name,
                distributor_name, distributor_okpo, sales_euro, promotion, organization_type,
                organization_status,
-               etalon_code_okpo, delivery_date, office_head_organization, head_office_okpo,
+               etalon_code_okpo, delivery_date, position_code, office_head_organization, head_office_okpo,
                quarter_year, half_year,
                annual_sales_category, med_representative_name,kam_name, week, territory_name,
                brik_name, sales_packs)
@@ -267,6 +271,7 @@ class CBase_2021_quadra_workout:
 
             # Execute test query.
             cursor.execute("SELECT orgSalesByProduct.year AS year,"
+
                            + " month.name AS month,"
                            + " region.name AS ff_region,"
                            + " province.name AS country_region,"
@@ -287,6 +292,7 @@ class CBase_2021_quadra_workout:
                            + " organizationStatus.name AS organization_status,"
                            + " orgSalesByProduct.etalon_code_okpo AS etalon_code_okpo,"
                            + " orgSalesByProduct.delivery_date AS delivery_date,"
+                           + " empl.bar_code AS position_code,"  # added position code
                            + " 	   "
                            + " ("
                            + " SELECT MAX(orgOf.name+' '+sType.name+' '+orgOf.street_name+', '+orgOf.street_number)"
@@ -466,6 +472,7 @@ class CBase_2021_quadra_workout:
                            + " organizationStatus.name AS organization_status,"
                            + " orgSalesByProduct.etalon_code_okpo AS etalon_code_okpo,"
                            + " orgSalesByProduct.delivery_date AS delivery_date,"
+                           + " empl.bar_code AS position_code,"  # added position code
                            + " 	   "
                            + " ("
                            + " SELECT MAX(orgOf.name+' '+sType.name+' '+orgOf.street_name+', '+orgOf.street_number)"
@@ -625,6 +632,7 @@ class CBase_2021_quadra_workout:
 
         # Execute test query.
         cursor.execute("SELECT orgSalesByProduct.year AS year,"
+
                        + " month.name AS month,"
                        + " region.name AS ff_region,"
                        + " province.name AS country_region,"
@@ -645,6 +653,7 @@ class CBase_2021_quadra_workout:
                        + " organizationStatus.name AS organization_status,"
                        + " orgSalesByProduct.etalon_code_okpo AS etalon_code_okpo,"
                        + " orgSalesByProduct.delivery_date AS delivery_date,"
+                       + " empl.bar_code AS position_code,"  # added position code
                        + " 	   "
                        + " ("
                        + " SELECT MAX(orgOf.name+' '+sType.name+' '+orgOf.street_name+', '+orgOf.street_number)"
@@ -802,17 +811,19 @@ class CBase_2021_quadra_workout:
         worksheet.write('S1', 'Тип организации', bold)
         worksheet.write('T1', 'ОКПО', bold)
         worksheet.write('U1', 'Дата отгрузки', bold)
-        worksheet.write('V1', 'Гл. Офис Сети', bold)
-        worksheet.write('W1', 'Гл. Офис ОКПО', bold)
-        worksheet.write('X1', 'Квартал', bold)
-        worksheet.write('Y1', 'Полугодие', bold)
-        worksheet.write('Z1', 'Категория товарооборота', bold)
-        worksheet.write('AA1', 'Сотрудник', bold)
-        worksheet.write('AB1', 'КАМ', bold)
-        worksheet.write('AC1', 'Неделя', bold)
-        worksheet.write('AD1', 'Территория', bold)
-        worksheet.write('AE1', 'Полигон', bold)
-        worksheet.write('AF1', 'Количество (IN)', bold)
+        worksheet.write('V1', 'Код позиции', bold)
+        worksheet.write('W1', 'Гл. Офис Сети', bold)
+        worksheet.write('X1', 'Гл. Офис ОКПО', bold)
+        worksheet.write('Y1', 'Квартал', bold)
+        worksheet.write('Z1', 'Полугодие', bold)
+        worksheet.write('AA1', 'Категория товарооборота', bold)
+        worksheet.write('AB1', 'Сотрудник', bold)
+        worksheet.write('AC1', 'КАМ', bold)
+        worksheet.write('AD1', 'Неделя', bold)
+        worksheet.write('AE1', 'Территория', bold)
+        worksheet.write('AF1', 'Полигон', bold)
+        worksheet.write('AG1', 'Количество (IN)', bold)
+
 
         columns = ['year', 'month', 'ff_region', 'country_region', 'city_town', 'organization_name',
                    'organization_adress', 'sales_method',
@@ -820,7 +831,7 @@ class CBase_2021_quadra_workout:
                    'distributor_etalon_name',
                    'distributor_name', 'distributor_okpo', 'sales_euro_', 'promotion', 'organization_type',
                    'organization_status',
-                   'etalon_code_okpo', 'delivery_date', 'office_head_organization', 'head_office_okpo',
+                   'etalon_code_okpo', 'delivery_date', 'position_code','office_head_organization', 'head_office_okpo',
                    'quarter_year', 'half_year',
                    'annual_sales_category', 'med_representative_name', 'kam_name', 'week', 'territory_name',
                    'brik_name', 'sale_in_quantity']
@@ -853,6 +864,7 @@ class CBase_2021_quadra_workout:
                      str(item.organization_status),
                      str(item.etalon_code_okpo),
                      str(item.delivery_date),
+                     str(item.position_code),
                      str(item.office_head_organization),
                      str(item.head_office_okpo),
                      str(item.quarter_year),
@@ -887,17 +899,18 @@ class CBase_2021_quadra_workout:
             worksheet.write(int(row_index), int(18),str(item.organization_status))
             worksheet.write(int(row_index), int(19),str(item.etalon_code_okpo))
             worksheet.write(int(row_index), int(20),str(item.delivery_date))
-            worksheet.write(int(row_index), int(21),str(item.office_head_organization))
-            worksheet.write(int(row_index), int(22),str(item.head_office_okpo))
-            worksheet.write(int(row_index), int(23),str(item.quarter_year))
-            worksheet.write(int(row_index), int(24),str(item.half_year))
-            worksheet.write(int(row_index), int(25),str(item.annual_sales_category))
-            worksheet.write(int(row_index), int(26),str(item.med_representative_name))
-            worksheet.write(int(row_index), int(27),str(item.kam_name))
-            worksheet.write(int(row_index), int(28),str(item.week))
-            worksheet.write(int(row_index), int(29),str(item.territory_name))
-            worksheet.write(int(row_index), int(30),str(item.brik_name))
-            worksheet.write(int(row_index), int(31),str(y2))
+            worksheet.write(int(row_index), int(21),str(item.position_code))
+            worksheet.write(int(row_index), int(22),str(item.office_head_organization))
+            worksheet.write(int(row_index), int(23),str(item.head_office_okpo))
+            worksheet.write(int(row_index), int(24),str(item.quarter_year))
+            worksheet.write(int(row_index), int(25),str(item.half_year))
+            worksheet.write(int(row_index), int(26),str(item.annual_sales_category))
+            worksheet.write(int(row_index), int(27),str(item.med_representative_name))
+            worksheet.write(int(row_index), int(28),str(item.kam_name))
+            worksheet.write(int(row_index), int(29),str(item.week))
+            worksheet.write(int(row_index), int(30),str(item.territory_name))
+            worksheet.write(int(row_index), int(31),str(item.brik_name))
+            worksheet.write(int(row_index), int(32),str(y2))
 
             row_index +=1
 
@@ -909,11 +922,12 @@ class CBase_2021_quadra_workout:
         sheet_obj = wb_obj.active
         rows_count = str(sheet_obj.calculate_dimension()).rsplit(':')
         rows_count = int(str(rows_count[1])[2:])
+        print(rows_count)
         string = []
         classified_base_2021 = []
         for row in range(1, rows_count + 1):
             str_ = []
-            for col in range(1, 33):
+            for col in range(1, 34):
                 cell_obj = sheet_obj.cell(row=row, column=col)
                 str_.append(cell_obj.value)
             string.append(str_)
