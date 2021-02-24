@@ -12,7 +12,8 @@ from pandas.tests.io.excel.test_openpyxl import openpyxl
 from win32timezone import now
 
 from items_class import SKU_WORKOUT, CSKU, CItemsDAO
-from sale_out.database import CEXtract_database_tertiary, Tertiary_download_structure, CBase_2021_quadra_workout
+from sale_out.database import CEXtract_database_tertiary, Tertiary_download_structure, CBase_2021_quadra_workout, \
+    Kam_plans
 
 conn = sqlite3.connect("tertiary_sales_database.db")
 items_ = CItemsDAO.read_tertiary(conn)
@@ -115,7 +116,7 @@ class Items_GUI(tkinter.Frame):
         self.secondary_euro.pack(side='left')
         self.quit_button = tkinter.Button(self.upper_frame, text='Quit', command=self.master.destroy)
         self.quit_button.pack(side='left')
-        self.show_button_sec_euro = tkinter.Button(self.upper_frame, text='Total secondary sales euro', command=self.secondary_sales_euro_2021_for_chart)
+        self.show_button_sec_euro = tkinter.Button(self.upper_frame, text='Total secondary sales euro plan KAM', command=self.kam_plans_for_chart_from_sqlite3)
         self.show_button_sec_euro.pack(side='left')
 
 
@@ -210,7 +211,6 @@ class Items_GUI(tkinter.Frame):
         x.save_base_629_2021_to_xlsx()
         self.secondary_button_name = now()
         tkinter.messagebox.showinfo('INFO', f'Basic excel file for 2021 has been successfully updated!')
-        self.update_on.set(self.secondary_button_name)
         return self.secondary_button_name
 
     def secondary_2021_total_pack_euro(self):
@@ -260,91 +260,6 @@ class Items_GUI(tkinter.Frame):
 
         self.tot_sec_2021_euro.set('YTD 2021 secondary sales in euro:   '+'{0:,}'.format(total_euro.__round__(2)).replace(",", " ")+ ' euro')
         self.tot_sec_2021_packs.set('YTD 2021 secondary sales in packs:   '+'{0:,}'.format(total_packs.__round__(0)).replace(",", " ") + ' packs')
-
-
-
-
-
-    def secondary_sales_euro_2021_for_chart(self):  #реализовать график из базы sqlite3 потому что через эксель медленно
-        list, list_months_quadra, year = self.radiobutton_months()
-
-        x_coord = list_months_quadra
-        x = CBase_2021_quadra_workout()
-        if year  == 2021:
-            base_2021_classifyed = x.get_secondary_2021_by_month()
-            basic_list = []
-            for month in list_months_quadra:
-                selected_period_euro = 0
-                for string in base_2021_classifyed:
-                    for item in string:
-                        if month == item.month:
-                            selected_period_euro += float(item.sales_euro)
-                basic_list.append(selected_period_euro)
-            y_coord = basic_list
-            print(y_coord)
-            self.specific_data.set(f'Specific data: {y_coord}'.replace('[', '').replace(']', ''))
-            plt.title(f'Total secondary sales 2021 by month: \n{self.info_var.get()}')
-            plt.grid(True)
-            plt.plot(x_coord, y_coord, marker='s')
-            plt.show()
-
-        elif year  == 2020:
-            base_2020_classifyed = x.get_secondary_2020_by_month()
-            basic_list = []
-            for month in list_months_quadra:
-                selected_period_euro = 0
-                for string in base_2020_classifyed:
-                    for item in string:
-                        if month == item.month:
-                            selected_period_euro += round(float(item.sales_euro),0)
-                basic_list.append(selected_period_euro)
-            y_coord = basic_list
-            print(y_coord)
-            self.specific_data.set(f'Specific data: {y_coord}'.replace('[','').replace(']',''))
-            plt.title(f'Total secondary sales 2020 by month: \n{self.info_var.get()}')
-            plt.grid(True)
-            plt.plot(x_coord, y_coord, marker='s')
-            plt.show()
-    def secondary_sales_euro_2021_for_chart_from_sqlite3(self):  #реализовать график из базы sqlite3 потому что через эксель медленно
-        list, list_months_quadra, year = self.radiobutton_months()
-
-        x_coord = list_months_quadra
-        x = CBase_2021_quadra_workout()
-        if year  == 2021:
-            base_2021_classifyed = x.get_secondary_2021_by_month()
-            basic_list = []
-            for month in list_months_quadra:
-                selected_period_euro = 0
-                for string in base_2021_classifyed:
-                    for item in string:
-                        if month == item.month:
-                            selected_period_euro += float(item.sales_euro)
-                basic_list.append(selected_period_euro)
-            y_coord = basic_list
-            print(y_coord)
-            self.specific_data.set(f'Specific data: {y_coord}'.replace('[', '').replace(']', ''))
-            plt.title(f'Total secondary sales 2021 by month: \n{self.info_var.get()}')
-            plt.grid(True)
-            plt.plot(x_coord, y_coord, marker='s')
-            plt.show()
-
-        elif year  == 2020:
-            base_2020_classifyed = x.get_secondary_2020_by_month()
-            basic_list = []
-            for month in list_months_quadra:
-                selected_period_euro = 0
-                for string in base_2020_classifyed:
-                    for item in string:
-                        if month == item.month:
-                            selected_period_euro += round(float(item.sales_euro),0)
-                basic_list.append(selected_period_euro)
-            y_coord = basic_list
-            print(y_coord)
-            self.specific_data.set(f"Specific data: '{y_coord}'.replace('[', '').replace(']', '')")
-            plt.title(f'Total secondary sales 2020 by month: \n{self.info_var.get()}')
-            plt.grid(True)
-            plt.plot(x_coord, y_coord, marker='s')
-            plt.show()
 
     def radiobutton_months(self):
         self.month = ''
@@ -401,6 +316,85 @@ class Items_GUI(tkinter.Frame):
             list.append(self.month)
             list_months_quadra.append('Декабрь')
         return list, list_months_quadra, year
+
+
+
+    def secondary_sales_euro_2021_for_chart(self):  #реализовать график из базы sqlite3 потому что через эксель медленно
+        list, list_months_quadra, year = self.radiobutton_months()
+
+        x_coord = list_months_quadra
+        x = CBase_2021_quadra_workout()
+        if year  == 2021:
+            base_2021_classifyed = x.get_secondary_2021_by_month()
+            basic_list = []
+            for month in list_months_quadra:
+                selected_period_euro = 0
+                for string in base_2021_classifyed:
+                    for item in string:
+                        if month == item.month:
+                            selected_period_euro += float(item.sales_euro)
+                basic_list.append(selected_period_euro)
+            y_coord = basic_list
+            print(y_coord)
+            self.specific_data.set(f'Specific data: {y_coord}'.replace('[', '').replace(']', ''))
+            plt.title(f'Total secondary sales 2021 by month: \n{self.info_var.get()}')
+            plt.grid(True)
+            plt.plot(x_coord, y_coord, marker='s')
+            plt.show()
+
+        elif year  == 2020:
+            base_2020_classifyed = x.get_secondary_2020_by_month()
+            basic_list = []
+            for month in list_months_quadra:
+                selected_period_euro = 0
+                for string in base_2020_classifyed:
+                    for item in string:
+                        if month == item.month:
+                            selected_period_euro += round(float(item.sales_euro),0)
+                basic_list.append(selected_period_euro)
+            y_coord = basic_list
+            print(y_coord)
+            self.specific_data.set(f'Specific data: {y_coord}'.replace('[','').replace(']',''))
+            plt.title(f'Total secondary sales 2020 by month: \n{self.info_var.get()}')
+            plt.grid(True)
+            plt.plot(x_coord, y_coord, marker='s')
+            plt.show()
+    def kam_plans_for_chart_from_sqlite3(self):  #реализовать график из базы sqlite3 потому что через эксель медленно
+        list, list_months_quadra, year = self.radiobutton_months()
+
+        x_coord = []
+        y_coord = []
+        x = Kam_plans()
+        basic_list = []
+        plan_list = x.read_kam_plan()
+
+
+        for string in plan_list:
+            if string.code_sf not in x_coord:
+                x_coord.append(string.code_sf)
+
+        for sf in x_coord:
+            plan_euro_sum = 0
+            for string in plan_list:
+                if string.code_sf == sf:
+                    for month in list_months_quadra:
+                        if month == string.month_local:
+                            string.plan_euro = str(string.plan_euro).replace(' ','')
+                            string.plan_euro = round(float(string.plan_euro),2)
+                            plan_euro_sum += string.plan_euro
+            y_coord.append(plan_euro_sum)
+        print(x_coord)
+        print(y_coord)
+
+        self.specific_data.set(f'Specific data: {y_coord}'.replace('[', '').replace(']', ''))
+        plt.title(f'Total secondary sales plan for KAM 2021 by month')
+        plt.grid(True)
+        plt.bar(x_coord, y_coord)
+        plt.show()
+
+
+
+
 
     def show_weighted_penetration(self):
         self.month = ''
@@ -464,8 +458,7 @@ class Items_GUI(tkinter.Frame):
         value = sender.get(idx)
         x = value
         self.info_var.set(value)
-
-        self.var.set(f"Для отображения динамики роста ключевых показателей:\n1. Bыберите месяцы\n2. Выберите препарат (на некоторые - нет данных)\n3. Нажмите соответствующую кнопку")
+        self.var.set(f"Проработать словарь и выводить сюда информацию о SKU\nтакже оптимизировать обработку материнской базы, переподключив выборку\nТакже нужно создать пакет для загрузки в BI")
     def show_penetration(self):
         self.month = ''
         self.amount_euro = 0

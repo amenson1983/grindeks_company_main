@@ -1,0 +1,1 @@
+# SQL for item_quadra, code_sf,month_local, quarter,plan_packs, plan_euro: select distinct kam_plan.item_quadra, kam_plan.code, kam_plan.month,  ymm.Квартал, kam_plan.plan_packs, kam_plan.plan_euro from kam_plan join ymm on ymm.Месяц = kam_plan.month

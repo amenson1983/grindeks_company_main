@@ -23,6 +23,16 @@ class Tertiary_download_structure:
         self.year = year
         self.item_kpi = item_kpi
 
+class Kam_plan_download_structure:
+    def __init__(self,item_quadra, code_sf,month_local, quarter,plan_packs, plan_euro):
+        self.plan_euro = plan_euro
+        self.plan_packs = plan_packs
+        self.quarter = quarter
+        self.month_local = month_local
+        self.code_sf = code_sf
+        self.item_quadra = item_quadra
+
+
 class Secondary_total_2021:
     def __init__(self,item_quadra,sales_euro):
         self.sales_euro = sales_euro
@@ -1319,4 +1329,20 @@ class CEXtract_database_tertiary:
             for i in secondary_list:
                 sum += float(i.sales_euro)
             return sum
-
+class Kam_plans:
+    def read_kam_plan(conn):
+        plan_list = []
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute(f"select distinct kam_plan.item_quadra, kam_plan.code, kam_plan.month,  ymm.Квартал, kam_plan.plan_packs, kam_plan.plan_euro from kam_plan join ymm on ymm.Месяц = kam_plan.month")
+            results = cursor.fetchall()
+            for i in results:
+                y_1 = str(i[0])
+                y_2 = str(i[1])
+                y_3 = str(i[2])
+                y_4 = str(i[3])
+                y_5 = str(i[4])
+                y_6 = str(i[5]).replace(',', '.')
+                z = Kam_plan_download_structure(y_1, y_2, y_3,y_4, y_5, y_6)
+                plan_list.append(z)
+        return plan_list
