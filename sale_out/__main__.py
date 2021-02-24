@@ -1,15 +1,7 @@
-import csv
 import tkinter
-from datetime import date
 from tkinter import Tk
-
-
 from items_GUI import Items_GUI
-from sale_out.database import CEXtract_database_tertiary, CBase_2021_quadra_workout, \
-    Upload_2021_base_from_quadra_for_daily_totals_distr, CTest_SAles_report_creation
-from sale_out.items_class import SKU_WORKOUT
-
-
+from sale_out.database import CEXtract_database_tertiary
 def Main():
     root = Tk()
     ex = Items_GUI()
@@ -67,7 +59,6 @@ def actual_secondary_sales_2021():
     for month in month_list:
         y = x.test_secondary_2021(month)
         print(f'Год: 2021; Месяц: {month}: \t\t\t\t', '{0:,}'.format(y.__round__(2)).replace(",", " "), 'euro')
-
 def actual_secondary_sales_2020():
     x = CEXtract_database_tertiary()
     month_list = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь',

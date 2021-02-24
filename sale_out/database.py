@@ -1,13 +1,42 @@
 import csv
 import sqlite3
-import pandas as pd
-from pandas import Series
 import xlsxwriter
-
 import jaydebeapi
-import pytest
-import xlwt
 from pandas.tests.io.excel.test_openpyxl import openpyxl
+class Plan_ff_main_2021_download:
+    def __init__(self,month_local,item_quadra,med_rep_code,plan_packs,plan_euro):
+        self.month_local = month_local
+        self.item_quadra = item_quadra
+        self.med_rep_code = med_rep_code
+        self.plan_packs = plan_packs
+        self.plan_euro = plan_euro
+class CEXtract_database_plan_ff:
+    def read_plan_ff_main(conn):
+        rep_plan_list = []
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute(f"select distinct ff_plan.month_local, ff_plan.item_quadra, ff_plan.med_representative_code, ff_plan.packs_plan, ff_plan.euro_plan from ff_plan where ff_plan.year = '2021' and ff_plan.euro_plan <> 0")
+            results = cursor.fetchall()
+            for i in results:
+                y_1 = str(i[0])
+                y_2 = str(i[1])
+                y_3 = str(i[2])
+                y_4 = str(i[3]).replace(',', '.')
+                y_5 = str(i[4]).replace(',', '.')
+
+                z = Plan_ff_main_2021_download(y_1, y_2, y_3, y_4, y_5)
+                rep_plan_list.append(z)
+        return rep_plan_list
+    def get_axes_for_ff_sec_plan(conn,rep_plan_list,list_months_quadra):
+        base = []
+        for string in rep_plan_list:
+            for i in string:
+
+                for month in list_months_quadra:
+                    if i.month == month:
+                        base.append([i.code_sf,i.item_quadra,i.month,i.sales_euro])
+        print(base)
+
 
 
 class Tertiary_download_structure:
@@ -22,7 +51,6 @@ class Tertiary_download_structure:
         self.month = month
         self.year = year
         self.item_kpi = item_kpi
-
 class Kam_plan_download_structure:
     def __init__(self,item_quadra, code_sf,month_local, quarter,plan_packs, plan_euro):
         self.plan_euro = plan_euro
@@ -31,13 +59,10 @@ class Kam_plan_download_structure:
         self.month_local = month_local
         self.code_sf = code_sf
         self.item_quadra = item_quadra
-
-
 class Secondary_total_2021:
     def __init__(self,item_quadra,sales_euro):
         self.sales_euro = sales_euro
         self.item_quadra = item_quadra
-
 class Upload_2021_base_from_quadra_for_daily_totals_distr:
     def __init__(self,year,month,week,sales_method,distributor_name, item_quadra,sale_in_quantity,sales_euro_):
 
@@ -49,7 +74,6 @@ class Upload_2021_base_from_quadra_for_daily_totals_distr:
         self.week = week
         self.month = month
         self.year = year
-
 class Quadra_direct_629():
     def __init__(self,year,month,ff_region,country_region,city_town,organization_name,organization_adress,sales_method,
                  product_code,item_quadra,organization_etalon_id,organization_etalon_name,distributor_etalon_name,
@@ -89,7 +113,6 @@ class Quadra_direct_629():
         self.ff_region = ff_region
         self.month = month
         self.year = year
-
 class Quadra_from_xlxs_629():
     def __init__(self, year, month, ff_region, country_region, city_town, organization_name,
                  organization_adress, product_group,
@@ -147,7 +170,6 @@ class Quadra_from_xlxs_629():
                f'{self.brik_name}, {self.sales_packs}'
     def __repr__(self):
         return f'{self.year}, {self.month}, {self.ff_region}, {self.country_region}, {self.city_town}, {self.organization_name},{self.organization_adress}, {self.product_group},{self.product_code}, {self.item_quadra}, {self.organization_etalon_id}, {self.organization_etalon_name},{self.distributor_etalon_name},{self.distributor_name},{self.distributor_okpo},{self.sales_euro},{self.promotion},{self.organization_type},{self.organization_status},{self.etalon_code_okpo}, {self.delivery_date}, {self.position_code},{self.office_head_organization}, {self.head_office_okpo},{self.quarter_year}, {self.half_year},{self.annual_sales_category},{self.med_representative_name},{self.kam_name},{self.week},{self.territory_name},{self.brik_name}, {self.sales_packs}'
-
 class CBase_2021_quadra_workout:
     def classify_base_2021(self,base_2021):
         base_2021_classifyed = []
@@ -958,13 +980,6 @@ class CBase_2021_quadra_workout:
         return classified_base_2020
 
     #def get_629_from_xlxs(self):
-
-
-
-
-
-
-
 class CTest_SAles_report_classification:
     def __init__(self,year,month,week,distr,item_quadra,sec_quantity,sec_euro):
         self.sec_euro = sec_euro
@@ -974,9 +989,6 @@ class CTest_SAles_report_classification:
         self.week = week
         self.month = month
         self.year = year
-
-
-
 class CTest_SAles_report_creation:
     def test_rep(self,base_raw):
         years = []
@@ -1021,9 +1033,6 @@ class CTest_SAles_report_creation:
                 sales_euro += i.sec_euro
                 quantity += i.sec_quantity
         print(f"Год: {year}\nМесяц: {month_local}\nОбщие продажи в упаковках:", '{0:,}'.format(quantity.__round__(2)).replace(",", " "), "packs\nОбщие продажи в евро:", '{0:,}'.format(sales_euro.__round__(2)).replace(",", " "), 'euro')
-
-
-
 class CEXtract_database_tertiary:
     def read_item(conn, year):
         tertiary_list = []
@@ -1041,8 +1050,6 @@ class CEXtract_database_tertiary:
                 z = Tertiary_download_structure(i[0], i[1], i[2], i[3], y_1, y_2, y_3, y_4, y_5,y_6)
                 tertiary_list.append(z)
         return tertiary_list
-
-
     def read_item_2020_w_commas(conn,year):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
@@ -1054,7 +1061,6 @@ class CEXtract_database_tertiary:
                 z = Tertiary_download_structure(i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8],i[9])
                 tertiary_list.append(z)
         return tertiary_list
-
     def save_2020_items_to_csv(self, filename, list_months,year):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
@@ -1085,7 +1091,6 @@ class CEXtract_database_tertiary:
             writer.writeheader()
             for item in final_list:
                 writer.writerows(item)
-
     def save_items_2020_to_csv_with_commas(self, filename, list_months,year):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
@@ -1111,7 +1116,6 @@ class CEXtract_database_tertiary:
             writer.writeheader()
             for item in final_list:
                 writer.writerows(item)
-
     def read_item_2020_OTC(conn,year):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
@@ -1130,7 +1134,6 @@ class CEXtract_database_tertiary:
 
                 tertiary_list_otc.append(z)
         return tertiary_list_otc
-
     def save_items_otc_to_csv_2020(self, filename,list_months,year):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
@@ -1179,7 +1182,6 @@ class CEXtract_database_tertiary:
 
                 tertiary_list_otc.append(z)
         return tertiary_list_otc
-
     def save_items_otc_to_csv_2020_with_commas(self, filename,list_months,year):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
@@ -1210,7 +1212,6 @@ class CEXtract_database_tertiary:
             writer.writeheader()
             for item in final_list:
                 writer.writerows(item)
-
     def read_item_2020_RX_with_commas(conn,year):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
@@ -1229,7 +1230,6 @@ class CEXtract_database_tertiary:
 
                 tertiary_list_otc.append(z)
         return tertiary_list_otc
-
     def save_items_RX_to_csv_2020_with_commas(self, filename,list_months,year):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
@@ -1279,7 +1279,6 @@ class CEXtract_database_tertiary:
 
                 tertiary_list_otc.append(z)
         return tertiary_list_otc
-
     def save_items_RX_to_csv_2020(self, filename,list_months,year):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
@@ -1310,7 +1309,6 @@ class CEXtract_database_tertiary:
             writer.writeheader()
             for item in final_list:
                 writer.writerows(item)
-
     def test_secondary_2021(self,month_ru):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()

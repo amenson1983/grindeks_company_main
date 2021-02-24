@@ -15,7 +15,7 @@ from items_class import SKU_WORKOUT, CSKU, CItemsDAO
 from sale_out.database import CEXtract_database_tertiary, Tertiary_download_structure, CBase_2021_quadra_workout, \
     Kam_plans
 
-conn = sqlite3.connect("tertiary_sales_database.db")
+conn = sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db")
 items_ = CItemsDAO.read_tertiary(conn)
 
 class Items_GUI(tkinter.Frame):
@@ -118,10 +118,6 @@ class Items_GUI(tkinter.Frame):
         self.quit_button.pack(side='left')
         self.show_button_sec_euro = tkinter.Button(self.upper_frame, text='Total secondary sales euro plan KAM', command=self.kam_plans_for_chart_from_sqlite3)
         self.show_button_sec_euro.pack(side='left')
-
-
-
-
         i_list = []
         for i in range(0,len(acts_)):
             for entry in acts_[i]:
@@ -212,7 +208,6 @@ class Items_GUI(tkinter.Frame):
         self.secondary_button_name = now()
         tkinter.messagebox.showinfo('INFO', f'Basic excel file for 2021 has been successfully updated!')
         return self.secondary_button_name
-
     def secondary_2021_total_pack_euro(self):
         # Give the location of the file
         path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\0.new_629_report_2021.xlsx"
@@ -262,7 +257,6 @@ class Items_GUI(tkinter.Frame):
 
         self.tot_sec_2021_euro.set('YTD 2021 secondary sales in euro:   '+'{0:,}'.format(total_euro.__round__(2)).replace(",", " ")+ ' euro')
         self.tot_sec_2021_packs.set('YTD 2021 secondary sales in packs:   '+'{0:,}'.format(total_packs.__round__(0)).replace(",", " ") + ' packs')
-
     def radiobutton_months(self):
         self.month = ''
         self.amount_euro = 0
@@ -318,10 +312,7 @@ class Items_GUI(tkinter.Frame):
             list.append(self.month)
             list_months_quadra.append('Декабрь')
         return list, list_months_quadra, year
-
-
-
-    def secondary_sales_euro_2021_for_chart(self):  #реализовать график из базы sqlite3 потому что через эксель медленно
+    def secondary_sales_euro_2021_for_chart(self):
         list, list_months_quadra, year = self.radiobutton_months()
 
         x_coord = list_months_quadra
@@ -361,7 +352,7 @@ class Items_GUI(tkinter.Frame):
             plt.grid(True)
             plt.plot(x_coord, y_coord, marker='s')
             plt.show()
-    def kam_plans_for_chart_from_sqlite3(self):  #реализовать график из базы sqlite3 потому что через эксель медленно
+    def kam_plans_for_chart_from_sqlite3(self):
         list, list_months_quadra, year = self.radiobutton_months()
 
         x_coord = []
@@ -393,11 +384,6 @@ class Items_GUI(tkinter.Frame):
         plt.grid(True)
         plt.bar(x_coord, y_coord)
         plt.show()
-
-
-
-
-
     def show_weighted_penetration(self):
         self.month = ''
         year = self.radio_var.get()
@@ -453,7 +439,6 @@ class Items_GUI(tkinter.Frame):
         plt.grid(True)
         plt.plot(x_coord, y_coord,marker='s')
         plt.show()
-
     def onSelect(self, val):
         sender = val.widget
         idx = sender.curselection()
@@ -521,7 +506,6 @@ class Items_GUI(tkinter.Frame):
         plt.grid(True)
         plt.plot(x_coord,y_coord,marker='s')
         plt.show()
-
     def onclick_euro(self):
         self.month = ''
         self.amount_euro = 0
@@ -584,8 +568,6 @@ class Items_GUI(tkinter.Frame):
         plt.grid(True)
         plt.plot(x_coord,y_coord,marker='s')
         plt.show()
-
-
     def show_sro(self):
         self.month = ''
         self.amount_euro = 0
@@ -646,7 +628,6 @@ class Items_GUI(tkinter.Frame):
         plt.grid(True)
         plt.plot(x_coord,y_coord,marker='s')
         plt.show()
-
     def show_weighted_sro(self):
         self.month = ''
         self.amount_euro = 0
@@ -708,7 +689,6 @@ class Items_GUI(tkinter.Frame):
         plt.plot(x_coord,y_coord,marker='s')
         plt.savefig(f"weighted SRO_{year}.pdf", bbox_inches='tight')
         plt.show()
-
     def save_quant_month_to_json(self):
         year = self.radio_var.get()
         FILENAME = f"{self.info_var.get()}_month_quantity_{year}.json"
@@ -909,8 +889,6 @@ class Items_GUI(tkinter.Frame):
         plt.grid(True)
         plt.plot(x_coord, y_coord,  color='g')
         plt.show()
-
-
     def save_weight_pen_month_to_csv(self):
         year = self.radio_var.get()
         FILENAME = f"{self.info_var.get()}_month_weight_pen_{year}.csv"
@@ -1248,7 +1226,6 @@ class Items_GUI(tkinter.Frame):
         ss.save_items_otc_to_csv_2020_with_commas(FILENAME,list,year)
         tkinter.messagebox.showinfo('INFO',
                                     f'File {FILENAME} has been succesfully written!')
-
     def save_rx_items_to_csv_with_commas(self):
         year = self.radio_var.get()
         FILENAME = f"Rx_items_all_data2020_with_commas_{year}.csv"
