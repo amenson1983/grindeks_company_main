@@ -265,6 +265,7 @@ class CBase_2021_quadra_workout:
         return base_2021_classified_
 
 
+
     def upload_2021_base_from_quadra(self):
         try:
             # jTDS Driver.
@@ -978,6 +979,36 @@ class CBase_2021_quadra_workout:
             string_class = x.classify_base_2021_from_xlxs(i)
             classified_base_2020.append(string_class)
         return classified_base_2020
+    def rewrite_629_2021_in_database(conn):
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute("CREATE TABLE IF NOT EXISTS secondary_2021_629 (year, month, ff_region, country_region, city_town, organization_name,organization_adress, product_group,product_code, item_quadra, organization_etalon_id, organization_etalon_name,distributor_etalon_name, distributor_name, distributor_okpo, sales_euro, promotion, organization_type,organization_status, etalon_code_okpo, delivery_date, position_code, office_head_organization,head_office_okpo, quarter_year, half_year, annual_sales_category,med_representative_name, kam_name, week, territory_name, brik_name, sales_packs);")
+            path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\0.new_629_report_2021.xlsx"
+            conn.commit()
+            wb_obj = openpyxl.load_workbook(path)
+            sheet_obj = wb_obj.active
+            rows_count = str(sheet_obj.calculate_dimension()).rsplit(':')
+            rows_count = int(str(rows_count[1])[2:])
+            string = []
+            classified_base_2021 = []
+            for row in range(1, rows_count + 1):
+                str_ = []
+                for col in range(1, 34):
+                    cell_obj = sheet_obj.cell(row=row, column=col)
+                    str_.append(cell_obj.value)
+                string.append(str_)
+            for i in string:
+                x = CBase_2021_quadra_workout()
+                string_class = x.classify_base_2021_from_xlxs(i)
+                classified_base_2021.append(string_class)
+            for string in classified_base_2021:
+                for row in string:
+                    strin = [row.year,row.month,row.ff_region, row.country_region, row.city_town, row.organization_name,row.organization_adress, row.product_group, row.product_code, row.item_quadra, row.organization_etalon_id, row.organization_etalon_name,row.distributor_etalon_name,row.distributor_name, row.distributor_okpo, row.sales_euro, row.promotion, row.organization_type,row.organization_status,row.etalon_code_okpo, row.delivery_date, row.position_code, row.office_head_organization, row.head_office_okpo,row.quarter_year, row.half_year,row.annual_sales_category, row.med_representative_name,row.kam_name, row.week, row.territory_name,row.brik_name, row.sales_packs]
+                    cursor.execute("INSERT INTO secondary_2021_629 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",strin)
+            conn.commit()
+            print('OK')
+
+
 
     #def get_629_from_xlxs(self):
 class CTest_SAles_report_classification:

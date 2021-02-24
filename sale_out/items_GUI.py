@@ -112,12 +112,15 @@ class Items_GUI(tkinter.Frame):
         self.ok_button_quantity = tkinter.Button(self.button_frame, text='Sale-out in packs', command=self.onclick_quantity)
         self.ok_button_quantity.pack(side='left')
         self.upper_frame.pack()
-        self.secondary_euro = tkinter.Button(self.upper_frame, text='Update database', command=self.secondary_sales_euro_upload)
+        self.secondary_euro = tkinter.Button(self.upper_frame, text='Update 629 xlxs', command=self.secondary_sales_euro_upload)
         self.secondary_euro.pack(side='left')
         self.quit_button = tkinter.Button(self.upper_frame, text='Quit', command=self.master.destroy)
         self.quit_button.pack(side='left')
         self.show_button_sec_euro = tkinter.Button(self.upper_frame, text='Total secondary sales euro plan KAM', command=self.kam_plans_for_chart_from_sqlite3)
         self.show_button_sec_euro.pack(side='left')
+        self.rewrite_629_base_button_sec_euro = tkinter.Button(self.upper_frame, text='Rewrite the base 2021', command=self.rewrite_2021_629_base)
+        self.rewrite_629_base_button_sec_euro.pack(side='left')
+
         i_list = []
         for i in range(0,len(acts_)):
             for entry in acts_[i]:
@@ -1326,3 +1329,6 @@ class Items_GUI(tkinter.Frame):
         ss.save_items_RX_to_csv_2020(FILENAME,list,year)
         tkinter.messagebox.showinfo('INFO',
                                     f'File {FILENAME} has been succesfully written!')
+    def rewrite_2021_629_base(self):
+        x = CBase_2021_quadra_workout()
+        x.rewrite_629_2021_in_database()
