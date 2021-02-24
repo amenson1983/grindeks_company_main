@@ -1027,7 +1027,7 @@ class CTest_SAles_report_creation:
 class CEXtract_database_tertiary:
     def read_item(conn, year):
         tertiary_list = []
-        with sqlite3.connect("tertiary_sales_database.db") as conn:
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
             cursor.execute(f"SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = {year}")
             results = cursor.fetchall()
@@ -1044,7 +1044,7 @@ class CEXtract_database_tertiary:
 
 
     def read_item_2020_w_commas(conn,year):
-        with sqlite3.connect("tertiary_sales_database.db") as conn:
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
                 f"SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = {year}")
@@ -1056,7 +1056,7 @@ class CEXtract_database_tertiary:
         return tertiary_list
 
     def save_2020_items_to_csv(self, filename, list_months,year):
-        with sqlite3.connect("tertiary_sales_database.db") as conn:
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
                 f"SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = {year}")
@@ -1087,7 +1087,7 @@ class CEXtract_database_tertiary:
                 writer.writerows(item)
 
     def save_items_2020_to_csv_with_commas(self, filename, list_months,year):
-        with sqlite3.connect("tertiary_sales_database.db") as conn:
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
                 f"SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = {year}")
@@ -1113,7 +1113,7 @@ class CEXtract_database_tertiary:
                 writer.writerows(item)
 
     def read_item_2020_OTC(conn,year):
-        with sqlite3.connect("tertiary_sales_database.db") as conn:
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
                 f"SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = {year} and items.sales_method = 'OTC'")
@@ -1132,7 +1132,7 @@ class CEXtract_database_tertiary:
         return tertiary_list_otc
 
     def save_items_otc_to_csv_2020(self, filename,list_months,year):
-        with sqlite3.connect("tertiary_sales_database.db") as conn:
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
                 f"SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = {year} and items.sales_method = 'OTC'")
@@ -1162,7 +1162,7 @@ class CEXtract_database_tertiary:
             for item in final_list:
                 writer.writerows(item)
     def read_item_2020_OTC_with_commas(conn,year):
-        with sqlite3.connect("tertiary_sales_database.db") as conn:
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
                 f"SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = {year} and items.sales_method = 'OTC'")
@@ -1181,7 +1181,7 @@ class CEXtract_database_tertiary:
         return tertiary_list_otc
 
     def save_items_otc_to_csv_2020_with_commas(self, filename,list_months,year):
-        with sqlite3.connect("tertiary_sales_database.db") as conn:
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
                 f"SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = {year} and items.sales_method = 'OTC'")
@@ -1212,7 +1212,7 @@ class CEXtract_database_tertiary:
                 writer.writerows(item)
 
     def read_item_2020_RX_with_commas(conn,year):
-        with sqlite3.connect("tertiary_sales_database.db") as conn:
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
                 f"SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = {year} and items.sales_method = 'RX'")
@@ -1231,7 +1231,7 @@ class CEXtract_database_tertiary:
         return tertiary_list_otc
 
     def save_items_RX_to_csv_2020_with_commas(self, filename,list_months,year):
-        with sqlite3.connect("tertiary_sales_database.db") as conn:
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
                 f"SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = {year} and items.sales_method = 'RX'")
@@ -1262,7 +1262,7 @@ class CEXtract_database_tertiary:
             for item in final_list:
                 writer.writerows(item)
     def read_item_2020_RX(conn,year):
-        with sqlite3.connect("tertiary_sales_database.db") as conn:
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
                 f"SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = {year} and items.sales_method = 'RX'")
@@ -1281,7 +1281,7 @@ class CEXtract_database_tertiary:
         return tertiary_list_otc
 
     def save_items_RX_to_csv_2020(self, filename,list_months,year):
-        with sqlite3.connect("tertiary_sales_database.db") as conn:
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
                 f"SELECT DISTINCT items.item_kpi_report, tertiary_sales.Year, tertiary_sales.PeriodName, items.brand, tertiary_sales.WeightPenetration,  tertiary_sales.SRO, tertiary_sales.Penetration, tertiary_sales.Quantity, tertiary_sales.Volume, tertiary_sales.WeightSRO from items join tertiary_sales on tertiary_sales.Fullmedicationname = items.item_proxima WHERE tertiary_sales.Year = {year} and items.sales_method = 'RX'")
@@ -1312,7 +1312,7 @@ class CEXtract_database_tertiary:
                 writer.writerows(item)
 
     def test_secondary_2021(self,month_ru):
-        with sqlite3.connect("tertiary_sales_database.db") as conn:
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
                 f"select secondary_sales_2021.item_quadra, secondary_sales_2021.cip_fact from secondary_sales_2021 where secondary_sales_2021.month_ru = '{month_ru}'")
@@ -1328,7 +1328,7 @@ class CEXtract_database_tertiary:
                 sum += float(i.sales_euro)
             return sum
     def test_secondary_2020(self,month_ru):
-        with sqlite3.connect("tertiary_sales_database.db") as conn:
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
             cursor.execute(
                 f"select secondary_sales_2020.item_quadra, secondary_sales_2020.cip_fact from secondary_sales_2020 where secondary_sales_2020.month_ru = '{month_ru}'")

@@ -255,7 +255,7 @@ class Items_GUI(tkinter.Frame):
         total_packs = 0
         for z in classified_base_2021[1:]:
             for d in z:
-                print(d.position_code)
+
                 total_euro += float(d.sales_euro)
                 total_packs += float(d.sales_packs)
 
@@ -389,7 +389,7 @@ class Items_GUI(tkinter.Frame):
         print(y_coord)
 
         self.specific_data.set(f'Specific data: {y_coord}'.replace('[', '').replace(']', ''))
-        plt.title(f'Total secondary sales plan for KAM 2021 by month')
+        plt.title(f'Total secondary sales plan euro for KAM 2021 by month')
         plt.grid(True)
         plt.bar(x_coord, y_coord)
         plt.show()
