@@ -169,17 +169,15 @@ class Items_GUI(tkinter.Frame):
         self.mtd_sec_2021_euro_label = tkinter.Label(self, text='MTD 2021 secondary sales in euro: ', textvariable=self.mtd_sec_2021_euro)
         self.mtd_sec_2021_euro_label.pack()
         list, list_months_quadra, year = self.radiobutton_months()
+        self.rewrite_2021_629_base()
         selected_period_euro = 0
         selected_period_packs = 0
         if year  == 2021:
             x = CBase_2021_quadra_workout()
-            base_2021_classifyed = x.get_secondary_2021_by_month()
-            for month in list_months_quadra:
-                for string in base_2021_classifyed:
-                    for item in string:
-                        if month == item.month:
-                            selected_period_euro += float(item.sales_euro)
-                            selected_period_packs += float(item.sales_packs)
+            print(list_months_quadra[0])
+            mtd_packs, mtd_euro = x.get_secondary_2021_by_month_from_sqlite3(str(list_months_quadra[0]))
+            selected_period_euro = mtd_euro
+            selected_period_packs = mtd_packs
         self.mtd_sec_2021_euro.set('MTD 2021 secondary sales in euro:   '+'{0:,}'.format(selected_period_euro.__round__(2)).replace(",", " ")+' euro')
         self.mtd_sec_2021_packs.set('MTD 2021 secondary sales in packs:   '+'{0:,}'.format(selected_period_packs.__round__(0)).replace(",", " ") + ' packs')
 
@@ -212,52 +210,9 @@ class Items_GUI(tkinter.Frame):
         tkinter.messagebox.showinfo('INFO', f'Basic excel file for 2021 has been successfully updated!')
         return self.secondary_button_name
     def secondary_2021_total_pack_euro(self):
-        # Give the location of the file
-        path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\0.new_629_report_2021.xlsx"
-
-        # To open the workbook
-        # workbook object is created
-        wb_obj = openpyxl.load_workbook(path)
-
-        # Get workbook active sheet object
-        # from the active attribute
-        sheet_obj = wb_obj.active
-
-        # Cell objects also have a row, column,
-        # and coordinate attributes that provide
-        # location information for the cell.
-
-        # Note: The first row or
-        # column integer is 1, not 0.
-
-        # Cell object is created by using
-        # sheet object's cell() method.
-        rows_count = str(sheet_obj.calculate_dimension()).rsplit(':')
-
-        rows_count = int(str(rows_count[1])[2:])
-        string = []
-        classified_base_2021 = []
-        for row in range(1, rows_count + 1):
-            str_ = []
-            for col in range(1, 34):
-                cell_obj = sheet_obj.cell(row=row, column=col)
-                str_.append(cell_obj.value)
-            string.append(str_)
-
-        for i in string:
-            x = CBase_2021_quadra_workout()
-            string_class = x.classify_base_2021_from_xlxs(i)
-
-            classified_base_2021.append(string_class)
-        total_euro = 0
-        total_packs = 0
-        for z in classified_base_2021[1:]:
-            for d in z:
-
-                total_euro += float(d.sales_euro)
-                total_packs += float(d.sales_packs)
-
-
+        x = CBase_2021_quadra_workout()
+        x.rewrite_629_2021_in_database()
+        total_packs, total_euro = x.get_629_2021_from_sqlite3()
         self.tot_sec_2021_euro.set('YTD 2021 secondary sales in euro:   '+'{0:,}'.format(total_euro.__round__(2)).replace(",", " ")+ ' euro')
         self.tot_sec_2021_packs.set('YTD 2021 secondary sales in packs:   '+'{0:,}'.format(total_packs.__round__(0)).replace(",", " ") + ' packs')
     def radiobutton_months(self):

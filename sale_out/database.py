@@ -960,6 +960,20 @@ class CBase_2021_quadra_workout:
             classified_base_2021.append(string_class)
         return classified_base_2021
 
+    def get_secondary_2021_by_month_from_sqlite3(self,month):
+        mtd_euro = 0
+        mtd_packs = 0
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute(f"select secondary_2021_629.sales_packs, secondary_2021_629.sales_euro from secondary_2021_629 where secondary_2021_629.month = '{month}'")
+            conn.commit()
+            results = cursor.fetchall()
+            for i in results:
+                mtd_euro +=float(i[1])
+                mtd_packs += float(i[0])
+        return mtd_packs, mtd_euro
+
+
     def get_secondary_2020_by_month(self):
         path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\0.new_629_report_2020.xlsx"
         wb_obj = openpyxl.load_workbook(path)
@@ -982,6 +996,7 @@ class CBase_2021_quadra_workout:
     def rewrite_629_2021_in_database(conn):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
+            cursor.execute("DROP TABLE secondary_2021_629")
             cursor.execute("CREATE TABLE IF NOT EXISTS secondary_2021_629 (year, month, ff_region, country_region, city_town, organization_name,organization_adress, product_group,product_code, item_quadra, organization_etalon_id, organization_etalon_name,distributor_etalon_name, distributor_name, distributor_okpo, sales_euro, promotion, organization_type,organization_status, etalon_code_okpo, delivery_date, position_code, office_head_organization,head_office_okpo, quarter_year, half_year, annual_sales_category,med_representative_name, kam_name, week, territory_name, brik_name, sales_packs);")
             path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\0.new_629_report_2021.xlsx"
             conn.commit()
@@ -1010,7 +1025,22 @@ class CBase_2021_quadra_workout:
 
 
 
-    #def get_629_from_xlxs(self):
+    def get_629_2021_from_sqlite3(conn):
+        total_euro = 0
+        total_packs = 0
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute("select sum(secondary_2021_629.sales_packs),sum(secondary_2021_629.sales_euro)  from secondary_2021_629")
+            conn.commit()
+            results = cursor.fetchall()
+            for i in results:
+                total_euro +=i[1]
+                total_packs += i[0]
+            print(total_packs)
+            print(total_euro)
+        return total_packs, total_euro
+
+
 class CTest_SAles_report_classification:
     def __init__(self,year,month,week,distr,item_quadra,sec_quantity,sec_euro):
         self.sec_euro = sec_euro
