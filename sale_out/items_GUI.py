@@ -26,7 +26,7 @@ class Items_GUI(tkinter.Frame):
         self.initUI()
 
     def initUI(self):
-        self.master.title( "Tertiary sales by item")
+        self.master.title( "Work helper")
         self.pack(fill=BOTH)
         #self.pack(fill=BOTH, expand=1)
         self.upper_frame = tkinter.Frame(self.master)
@@ -59,8 +59,8 @@ class Items_GUI(tkinter.Frame):
         self.check_var11.set(0)
         self.check_var12 = tkinter.IntVar()
         self.check_var12.set(0)
-        my_font = tkinter.font.Font(family='Arial', size=14, weight='bold')
-        my_font1 = tkinter.font.Font(family='Arial', size=11)
+        my_font = tkinter.font.Font(family='Arial', size=12, weight='bold')
+        my_font1 = tkinter.font.Font(family='Arial', size=11,weight='bold')
         self.specific_data = tkinter.StringVar()
         self.specific_data_label = tkinter.Label(self, text='Specific data', textvariable=self.specific_data, font=my_font)
         self.specific_data_label.pack()
@@ -68,9 +68,9 @@ class Items_GUI(tkinter.Frame):
         self.chb1 = tkinter.Checkbutton(self.top_frame, text='Jan', variable=self.check_var1,
                                         font=my_font1)
 
-        self.rb1 = tkinter.Radiobutton(self.top_frame,text='2019',variable=self.radio_var,value=2019)
-        self.rb2 = tkinter.Radiobutton(self.top_frame, text='2020', variable=self.radio_var, value=2020)
-        self.rb3 = tkinter.Radiobutton(self.top_frame, text='2021', variable=self.radio_var, value=2021)
+        self.rb1 = tkinter.Radiobutton(self.top_frame,text='2019',variable=self.radio_var,value=2019,font=my_font1)
+        self.rb2 = tkinter.Radiobutton(self.top_frame, text='2020', variable=self.radio_var, value=2020,font=my_font1)
+        self.rb3 = tkinter.Radiobutton(self.top_frame, text='2021', variable=self.radio_var, value=2021,font=my_font1)
 
         self.chb2 = tkinter.Checkbutton(self.top_frame, text='Feb', variable=self.check_var2,
                                         font=my_font1)
@@ -157,16 +157,16 @@ class Items_GUI(tkinter.Frame):
         self.mtd_sec_2021_packs = tkinter.StringVar()
         self.mtd_sec_2021_euro = tkinter.StringVar()
         self.secondary_2021_total_pack_euro() #launch secondary workout
-        self.label_tot_sec_2021_packs = tkinter.Label(self, text='YTD 2021 secondary sales in packs: ', textvariable=self.tot_sec_2021_packs)
+        self.label_tot_sec_2021_packs = tkinter.Label(self, text='YTD 2021 secondary sales in packs: ', textvariable=self.tot_sec_2021_packs,font=my_font1)
         self.label_tot_sec_2021_packs.pack()
 
-        self.label_tot_sec_2021_euro = tkinter.Label(self, text='YTD 2021 secondary sales in euro: ', textvariable=self.tot_sec_2021_euro)
+        self.label_tot_sec_2021_euro = tkinter.Label(self, text='YTD 2021 secondary sales in euro: ', textvariable=self.tot_sec_2021_euro,font=my_font1)
         self.label_tot_sec_2021_euro.pack()
 
-        self.mtd_sec_2021_packs_label = tkinter.Label(self, text='MTD 2021 secondary sales in packs: ', textvariable=self.mtd_sec_2021_packs)
+        self.mtd_sec_2021_packs_label = tkinter.Label(self, text='MTD 2021 secondary sales in packs: ', textvariable=self.mtd_sec_2021_packs,font=my_font1)
         self.mtd_sec_2021_packs_label.pack()
 
-        self.mtd_sec_2021_euro_label = tkinter.Label(self, text='MTD 2021 secondary sales in euro: ', textvariable=self.mtd_sec_2021_euro)
+        self.mtd_sec_2021_euro_label = tkinter.Label(self, text='MTD 2021 secondary sales in euro: ', textvariable=self.mtd_sec_2021_euro,font=my_font1)
         self.mtd_sec_2021_euro_label.pack()
         list, list_months_quadra, year = self.radiobutton_months()
         selected_period_euro = 0
@@ -181,7 +181,7 @@ class Items_GUI(tkinter.Frame):
         self.mtd_sec_2021_packs.set('MTD 2021 secondary sales in packs:   '+'{0:,}'.format(selected_period_packs.__round__(0)).replace(",", " ") + ' packs')
 
         self.info_var = tkinter.StringVar()
-        self.info_label = tkinter.Label(self, text=0, textvariable=self.info_var)
+        self.info_label = tkinter.Label(self, text=0, textvariable=self.info_var,font=my_font1)
         self.info_label.pack()
 
         self.chb1.pack(side='left')
