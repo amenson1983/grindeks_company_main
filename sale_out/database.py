@@ -1040,6 +1040,69 @@ class CBase_2021_quadra_workout:
             print(total_euro)
         return total_packs, total_euro
 
+    def save_1_tramsform_for_sales_report_with_filter_to_xlsx(self):
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute("select ymm.half_month, items.cip_euro, secondary_2021_629.month, secondary_2021_629.delivery_date, secondary_2021_629.item_quadra, secondary_2021_629.sales_packs, secondary_2021_629.sales_euro, secondary_2021_629.distributor_name, secondary_2021_629.distributor_etalon_name from secondary_2021_629 join ymm on ymm.Дата = secondary_2021_629.delivery_date join items on items.item_quadra = secondary_2021_629.item_quadra and secondary_2021_629.month = items.month_ru where items.year = '2021'")
+            conn.commit()
+            results = cursor.fetchall()
+        sum_tot_euro = 0
+        workbook = xlsxwriter.Workbook('C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\transform_files\\0.transform_for_1_sales_report_with_filter.xlsx')
+        worksheet = workbook.add_worksheet('BASE')
+
+        # Widen the first column to make the text clearer.
+        #worksheet.set_column('A:A', 20)
+        bold = workbook.add_format({'bold': True},)
+
+        worksheet.write('B1', "Часть месяца", bold)
+        worksheet.write('C1', "Актуальная CIP", bold)
+        worksheet.write('E1', "Месяц", bold)
+        worksheet.write('F1', "Дата отгрузки", bold)
+        worksheet.write('G1', "Товар", bold)
+        worksheet.write('H1', "Количество упаковок", bold)
+        worksheet.write('I1', "Сумма евро", bold)
+        worksheet.write('J1', 'Дистрибьютор', bold)
+        worksheet.write('K1', 'Дистрибьютор (эталон)', bold)
+
+
+        columns = ['year', 'month', 'ff_region', 'country_region', 'city_town', 'organization_name',
+                   'organization_adress', 'sales_method',
+                   'product_code', 'item_quadra', 'organization_etalon_id', 'organization_etalon_name',
+                   'distributor_etalon_name',
+                   'distributor_name', 'distributor_okpo', 'sales_euro_', 'promotion', 'organization_type',
+                   'organization_status',
+                   'etalon_code_okpo', 'delivery_date', 'position_code','office_head_organization', 'head_office_okpo',
+                   'quarter_year', 'half_year',
+                   'annual_sales_category', 'med_representative_name', 'kam_name', 'week', 'territory_name',
+                   'brik_name', 'sale_in_quantity']
+
+        list_base_2021 = []
+        row_index = 1
+
+        for item in results:
+            item_ = [[str(item[0]).replace('_',' '),
+                     str(item[1]),
+                     str(item[2]),
+                     str(item[3]),
+                     str(item[4]),
+                     str(item[5]).replace('.',','),
+                     str(item[6]).replace('.',','),
+                     str(item[7]),
+                     str(item[8])]]
+
+            list_base_2021.append(item_)
+            worksheet.write(int(row_index), int(1),str(item[0]).replace('_',' '))
+            worksheet.write(int(row_index), int(2),str(item[1]))
+            worksheet.write(int(row_index), int(4),str(item[2]))
+            worksheet.write(int(row_index), int(5),str(item[3]))
+            worksheet.write(int(row_index), int(6),str(item[4]).replace('.',','))
+            worksheet.write(int(row_index), int(7),str(item[5]).replace('.',','))
+            worksheet.write(int(row_index), int(8),str(item[6]).replace('.',','))
+            worksheet.write(int(row_index), int(9),str(item[7]))
+            worksheet.write(int(row_index), int(10), str(item[8]))
+            row_index +=1
+
+        workbook.close()
 
 class CTest_SAles_report_classification:
     def __init__(self,year,month,week,distr,item_quadra,sec_quantity,sec_euro):

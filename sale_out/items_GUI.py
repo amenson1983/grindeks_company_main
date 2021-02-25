@@ -120,6 +120,9 @@ class Items_GUI(tkinter.Frame):
         self.show_button_sec_euro.pack(side='left')
         self.rewrite_629_base_button_sec_euro = tkinter.Button(self.upper_frame, text='Rewrite the base 2021', command=self.rewrite_2021_629_base)
         self.rewrite_629_base_button_sec_euro.pack(side='left')
+        self.rewrite_629_base_button_sec_euro = tkinter.Button(self.upper_frame, text='Save transformations', command=self.save_transformations_for_riga_sales_report)
+        self.rewrite_629_base_button_sec_euro.pack(side='left')
+
 
         i_list = []
         for i in range(0,len(acts_)):
@@ -1286,3 +1289,7 @@ class Items_GUI(tkinter.Frame):
     def rewrite_2021_629_base(self):
         x = CBase_2021_quadra_workout()
         x.rewrite_629_2021_in_database()
+    def save_transformations_for_riga_sales_report(self):
+        x = CBase_2021_quadra_workout()
+        x.save_1_tramsform_for_sales_report_with_filter_to_xlsx()
+        tkinter.messagebox.showinfo('INFO', f'0.transform_for_1_sales_report_with_filter.xlsx file has been successfully updated!')
