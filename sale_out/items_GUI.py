@@ -169,7 +169,6 @@ class Items_GUI(tkinter.Frame):
         self.mtd_sec_2021_euro_label = tkinter.Label(self, text='MTD 2021 secondary sales in euro: ', textvariable=self.mtd_sec_2021_euro)
         self.mtd_sec_2021_euro_label.pack()
         list, list_months_quadra, year = self.radiobutton_months()
-        self.rewrite_2021_629_base()
         selected_period_euro = 0
         selected_period_packs = 0
         if year  == 2021:
