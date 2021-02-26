@@ -1292,6 +1292,8 @@ class Items_GUI(tkinter.Frame):
     def rewrite_2021_629_base(self):
         x = CBase_2021_quadra_workout()
         x.rewrite_629_2021_in_database()
+        tkinter.messagebox.showinfo('INFO',
+                                    f'The base local_main_base.db has been successfully updated!')
     def Update_2020_629_xlxs(self):
         x = CBase_2021_quadra_workout()
         x.save_base_629_2020_to_xlsx()
@@ -1302,4 +1304,6 @@ class Items_GUI(tkinter.Frame):
     def rewrite_2020_629_base(self):
         x = CBase_2021_quadra_workout()
         x.rewrite_629_2020_in_database()
+        tkinter.messagebox.showinfo('INFO',
+                                    f'The base local_main_base.db has been successfully updated!')
 

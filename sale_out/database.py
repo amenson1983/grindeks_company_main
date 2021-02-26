@@ -1385,7 +1385,7 @@ class CBase_2021_quadra_workout:
     def save_1_tramsform_for_sales_report_with_filter_to_xlsx(self):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
-            cursor.execute("select ymm.Год,ymm.half_month, items.cip_euro, items.brand, secondary_2021_629.month, secondary_2021_629.delivery_date, secondary_2021_629.item_quadra, secondary_2021_629.sales_packs, secondary_2021_629.sales_euro, secondary_2021_629.distributor_name, secondary_2021_629.distributor_etalon_name from secondary_2021_629 join ymm on ymm.Дата = secondary_2021_629.delivery_date join items on items.item_quadra = secondary_2021_629.item_quadra and secondary_2021_629.month = items.month_ru where items.year = '2021'")
+            cursor.execute("select ymm.Год,ymm.half_month, items.cip_euro, items.brand, secondary_2021_629.month, secondary_2021_629.delivery_date, items.item_kpi_report, secondary_2021_629.sales_packs, secondary_2021_629.sales_euro, secondary_2021_629.distributor_name, secondary_2021_629.distributor_etalon_name from secondary_2021_629 join ymm on ymm.Дата = secondary_2021_629.delivery_date join items on items.item_quadra = secondary_2021_629.item_quadra and secondary_2021_629.month = items.month_ru where items.year = '2021'")
             conn.commit()
             results = cursor.fetchall()
         sum_tot_euro = 0
