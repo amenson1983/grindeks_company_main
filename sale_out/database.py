@@ -939,6 +939,320 @@ class CBase_2021_quadra_workout:
 
         workbook.close()
 
+    def save_base_629_2020_to_xlsx(self):
+        final_list = []
+
+        # jTDS Driver.
+        driver_name = "net.sourceforge.jtds.jdbc.Driver"
+
+        # jTDS Connection string.
+        connection_url = "jdbc:jtds:sqlserver://62.149.15.123:1433/medowl_grindex"
+
+        # jTDS Connection properties.
+        # Some additional connection properties you may want to use
+        # "domain": "<domain>"
+        # "ssl": "require"
+        # "useNTLMv2": "true"
+        # See the FAQ for details http://jtds.sourceforge.net/faq.html
+        connection_properties = {
+            "user": "grindex",
+            "password": "xednirg",
+        }
+
+        # Path to jTDS Jar
+        jar_path = 'C:\jtds-1.3.1-dist\\jtds-1.3.1.jar'
+
+        # Establish connection.
+        connection = jaydebeapi.connect(driver_name, connection_url, connection_properties, jar_path)
+        cursor = connection.cursor()
+
+        # Execute test query.
+        cursor.execute("SELECT orgSalesByProduct.year AS year,"
+
+                       + " month.name AS month,"
+                       + " region.name AS ff_region,"
+                       + " province.name AS country_region,"
+                       + " town.name AS city_town,"
+                       + " organization.name AS organization_name,"
+                       + " organization.postal_address AS organization_adress,"
+                       + " category.name AS sales_method,"
+                       + " product.code AS product_code,"
+                       + " product.name AS item_quadra,"
+                       + " orgSalesByProduct.organization_etalon_id AS organization_etalon_id,"
+                       + " orgSalesByProduct.organization_etalon_name AS organization_etalon_name,"
+                       + " orgSalesByProduct.distributor_etalon_name AS distributor_etalon_name,"
+                       + " distributor.name AS distributor_name,"
+                       + " orgSalesByProduct.distributor_okpo AS distributor_okpo,"
+                       + " productPriceDynamics.price_fact * ROUND(orgSalesByProduct.quantity, 2) AS sales_euro_,"
+                       + " productCategory2.name AS promotion,"
+                       + " organizationType.name AS organization_type,"
+                       + " organizationStatus.name AS organization_status,"
+                       + " orgSalesByProduct.etalon_code_okpo AS etalon_code_okpo,"
+                       + " orgSalesByProduct.delivery_date AS delivery_date,"
+                       + " empl.bar_code AS position_code,"  # added position code
+                       + " 	   "
+                       + " ("
+                       + " SELECT MAX(orgOf.name+' '+sType.name+' '+orgOf.street_name+', '+orgOf.street_number)"
+                       + " FROM organization AS orgOf"
+                       + "     LEFT JOIN street_type sType ON sType.id = orgOf.street_type_id"
+                       + " WHERE orgOf.etalon_id = orgSalesByProduct.head_organization_etalon_id"
+                       + " ) AS office_head_organization,"
+                       + " CASE"
+                       + "     WHEN orgSalesByProduct.head_office_okpo IS NOT NULL"
+                       + "     THEN orgSalesByProduct.head_office_okpo"
+                       + "     ELSE ''"
+                       + " END AS head_office_okpo,"
+                       + " CASE"
+                       + "     WHEN month.id = 1"
+                       + "         OR month.id = 2"
+                       + "         OR month.id = 3"
+                       + "     THEN '1-й квартал'"
+                       + "     ELSE CASE"
+                       + "             WHEN month.id = 4"
+                       + "                     OR month.id = 5"
+                       + "                     OR month.id = 6"
+                       + "             THEN '2-й квартал'"
+                       + "             ELSE CASE"
+                       + "                         WHEN month.id = 7"
+                       + "                             OR month.id = 8"
+                       + "                             OR month.id = 9"
+                       + "                         THEN '3-й квартал'"
+                       + "                         ELSE CASE"
+                       + "                                 WHEN month.id = 10"
+                       + "                                     OR month.id = 11"
+                       + "                                     OR month.id = 12"
+                       + "                                 THEN '4-й квартал'"
+                       + "                                 ELSE ''"
+                       + "                             END"
+                       + "                     END"
+                       + "         END"
+                       + " END AS quarter_year,"
+                       + " "
+                       + " CASE"
+                       + "     WHEN month.id IN(1, 2, 3, 4, 5, 6)"
+                       + "     THEN '1-е полугодие'"
+                       + "     ELSE '2-е полугодие'"
+                       + " END AS half_year,"
+                       + " "
+                       + " ("
+                       + " SELECT sbm.name"
+                       + " FROM sales_by_month_category AS sbm"
+                       + " WHERE sbm.pos_status = 0"
+                       + "     AND sbm.id ="
+                       + " ("
+                       + " SELECT orgfet.sales_by_month_category_id"
+                       + " FROM organization_from_etalon AS orgfet"
+                       + " WHERE orgfet.pos_status = 0"
+                       + "         AND orgfet.etalon_id = organization.etalon_id"
+                       + " )"
+                       + " ) AS annual_sales_category,"
+                       + " "
+                       + " "
+                       + " "
+                       + " CASE"
+                       + "     WHEN empl.id IS NOT NULL"
+                       + "         AND emplSG.role_id = 3"
+                       + "         AND empl.status_id = 1"
+                       + "     THEN empl.last_name+' '+empl.first_name"
+                       + "     ELSE ''"
+                       + " END AS med_representative_name,"
+                       + " CASE"
+                       + "     WHEN kam.id IS NOT NULL"
+                       + "     THEN kam.last_name+' '+kam.first_name"
+                       + "     ELSE ''"
+                       + " END AS kam_name,"
+                       + " DATEPART(ISO_WEEK, orgSalesByProduct.delivery_date) AS week,"
+                       + " territory.name AS territory_name,"
+                       + " brick.name AS brik_name,"
+                       + " ROUND(orgSalesByProduct.quantity, 2) AS sale_in_quantity"
+                       + " "
+                       + " "
+                       + " "
+                       + " FROM organization_sales_by_product AS orgSalesByProduct"
+                       + " LEFT JOIN month_classifier month ON orgSalesByProduct.month_id = month.id"
+                       + " LEFT JOIN organization organization ON organization.id = orgSalesByProduct.organization_id"
+                       + " LEFT JOIN registration_type registration ON organization.registration_type_id = registration.id"
+                       + " LEFT JOIN rayon rayon ON organization.rayon_id = rayon.id"
+                       + " LEFT JOIN town town ON town.id = orgSalesByProduct.town_id"
+                       + " LEFT JOIN oblast province ON province.id = town.oblast_id"
+                       + " LEFT JOIN region region ON region.id = province.region_id"
+                       + " LEFT JOIN region region2 ON region2.id = province.region2_id"
+                       + " LEFT JOIN region region3 ON region3.id = province.region3_id"
+                       + " LEFT JOIN region region4 ON region4.id = province.region4_id"
+                       + " LEFT JOIN oblast_rayon admRayon ON admRayon.id = town.oblast_rayon_id"
+                       + " LEFT JOIN organization_type organizationType ON organizationType.id = organization.organization_type_id"
+                       + " LEFT JOIN organization_status organizationStatus ON organizationStatus.id = organizationType.organization_status_id"
+                       + " LEFT JOIN product product ON product.id = orgSalesByProduct.product_id"
+                       + " LEFT JOIN product_series series ON series.id = product.product_series_id"
+                       + " LEFT JOIN product_series_group psGroup ON psGroup.id = series.product_series_group_id"
+                       + " LEFT JOIN product_category category ON category.id = product.product_category_id"
+                       + " LEFT JOIN product_category2 category2 ON category2.id = product.product_category2_id"
+                       + " LEFT JOIN product_category_atc productCategoryAtc ON productCategoryAtc.id = product.product_category_atc_id"
+                       + " LEFT JOIN employee empl ON empl.id = orgSalesByProduct.employee_id"
+                       + " LEFT JOIN security_group emplSG ON emplSG.id = empl.security_group_id"
+                       + " LEFT JOIN organization_drugstore_office odo ON odo.organization_id = orgSalesByProduct.head_organization_id"
+                       + "                                             AND odo.pos_status = 0"
+                       + "                                             AND odo.active = 1"
+                       + " LEFT JOIN employee kam ON kam.id = odo.manager_id"
+                       + " LEFT JOIN organization_sales_by_product_op osbop ON osbop.organization_etalon_id = organization.etalon_id"
+                       + "                                                     AND osbop.product_id = product.id"
+                       + " LEFT JOIN territory_brick brick ON osbop.territory_brick_id = brick.id"
+                       + " LEFT JOIN territory territory ON brick.territory_id = territory.id"
+                       + " LEFT JOIN town headTown ON orgSalesByProduct.head_organization_town_id = headTown.id"
+                       + " LEFT JOIN oblast headObl ON headTown.oblast_id = headObl.id"
+                       + " LEFT JOIN organization distributor ON orgSalesByProduct.distributor_id = distributor.id"
+                       + " LEFT JOIN sales_by_month_category salesByMonthCategory ON salesByMonthCategory.id = organization.sales_by_month_category_id"
+                       + " LEFT JOIN category orgCat ON orgCat.id = organization.organization_category_id"
+                       + " LEFT JOIN product_price_dynamics productPriceDynamics ON productPriceDynamics.pos_status = 0"
+                       + "                                                         AND productPriceDynamics.month_id = orgSalesByProduct.month_id"
+                       + "                                                         AND productPriceDynamics.year = orgSalesByProduct.year"
+                       + "                                                         AND productPriceDynamics.product_id = orgSalesByProduct.product_id"
+                       + " LEFT JOIN product_category2 productCategory2 ON productPriceDynamics.product_category2_id = productCategory2.id"
+                       + " LEFT JOIN sales_type salesType ON organization.id = salesType.organization_id"
+                       + "                                 AND salesType.year = orgSalesByProduct.year"
+                       + "                                 AND salesType.month_id = month.id"
+                       + "                                 AND salesType.pos_status = 0"
+                       + " LEFT JOIN organization_specialization orgSpecialization ON organization.organization_specialization_id = orgSpecialization.id"
+                       + " WHERE orgSalesByProduct.year = 2020")
+        res = cursor.fetchall()
+
+        x = CBase_2021_quadra_workout()
+        base_2020_classifyed_ = x.classify_base_2021(res)
+
+        sum_tot_euro = 0
+        workbook = xlsxwriter.Workbook('C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\0.new_629_report_2020.xlsx')
+        worksheet = workbook.add_worksheet()
+
+        # Widen the first column to make the text clearer.
+        #worksheet.set_column('A:A', 20)
+        bold = workbook.add_format({'bold': True},)
+        worksheet.write('A1', "Год", bold)
+        worksheet.write('B1', "Месяц", bold)
+        worksheet.write('C1', "Область", bold)
+        worksheet.write('D1', "Регион", bold)
+        worksheet.write('E1', "Населенный пункт", bold)
+        worksheet.write('F1', "Организация", bold)
+        worksheet.write('G1', "Почтовый адрес (организация)", bold)
+        worksheet.write('H1', "Группа товара", bold)
+        worksheet.write('I1', "product_code", bold)
+        worksheet.write('J1', 'Товар', bold)
+        worksheet.write('K1', 'Организация(эталонId)', bold)
+        worksheet.write('L1', 'Организация(эталон)', bold)
+        worksheet.write('M1', 'Дистрибьютор (эталон)', bold)
+        worksheet.write('N1', 'Дистрибьютор', bold)
+        worksheet.write('O1', 'ОКПО (дистрибъютор)', bold)
+        worksheet.write('P1', 'Сумма (IN)', bold)
+        worksheet.write('Q1', 'Группа товара 2', bold)
+        worksheet.write('R1', 'Вид организации', bold)
+        worksheet.write('S1', 'Тип организации', bold)
+        worksheet.write('T1', 'ОКПО', bold)
+        worksheet.write('U1', 'Дата отгрузки', bold)
+        worksheet.write('V1', 'Код позиции', bold)
+        worksheet.write('W1', 'Гл. Офис Сети', bold)
+        worksheet.write('X1', 'Гл. Офис ОКПО', bold)
+        worksheet.write('Y1', 'Квартал', bold)
+        worksheet.write('Z1', 'Полугодие', bold)
+        worksheet.write('AA1', 'Категория товарооборота', bold)
+        worksheet.write('AB1', 'Сотрудник', bold)
+        worksheet.write('AC1', 'КАМ', bold)
+        worksheet.write('AD1', 'Неделя', bold)
+        worksheet.write('AE1', 'Территория', bold)
+        worksheet.write('AF1', 'Полигон', bold)
+        worksheet.write('AG1', 'Количество (IN)', bold)
+
+
+        columns = ['year', 'month', 'ff_region', 'country_region', 'city_town', 'organization_name',
+                   'organization_adress', 'sales_method',
+                   'product_code', 'item_quadra', 'organization_etalon_id', 'organization_etalon_name',
+                   'distributor_etalon_name',
+                   'distributor_name', 'distributor_okpo', 'sales_euro_', 'promotion', 'organization_type',
+                   'organization_status',
+                   'etalon_code_okpo', 'delivery_date', 'position_code','office_head_organization', 'head_office_okpo',
+                   'quarter_year', 'half_year',
+                   'annual_sales_category', 'med_representative_name', 'kam_name', 'week', 'territory_name',
+                   'brik_name', 'sale_in_quantity']
+
+        list_base_2020 = []
+        row_index = 1
+
+        for item in base_2020_classifyed_:
+            z0 = str(item.year).replace(",", "")
+            y1 = str(item.sales_euro_).replace(".", ",")
+            y2 = str(item.sale_in_quantity).replace(".", ",")
+            item_ = [[str(z0),
+                     str(item.month),
+                     str(item.ff_region),
+                     str(item.country_region),
+                     str(item.city_town),
+                     str(item.organization_name),
+                     str(item.organization_adress),
+                     str(item.sales_method),
+                     str(item.product_code),
+                     str(item.item_quadra),
+                     str(item.organization_etalon_id),
+                     str(item.organization_etalon_name),
+                     str(item.distributor_etalon_name),
+                     str(item.distributor_name),
+                     str(item.distributor_okpo),
+                     str(y1),
+                     str(item.promotion),
+                     str(item.organization_type),
+                     str(item.organization_status),
+                     str(item.etalon_code_okpo),
+                     str(item.delivery_date),
+                     str(item.position_code),
+                     str(item.office_head_organization),
+                     str(item.head_office_okpo),
+                     str(item.quarter_year),
+                     str(item.half_year),
+                     str(item.annual_sales_category),
+                     str(item.med_representative_name),
+                     str(item.kam_name),
+                     str(item.week),
+                     str(item.territory_name),
+                     str(item.brik_name),
+                     str(y2)]]
+
+            list_base_2020.append(item_)
+            worksheet.write(int(row_index), int(0),str(z0))
+            worksheet.write(int(row_index), int(1),str(item.month))
+            worksheet.write(int(row_index), int(2),str(item.ff_region))
+            worksheet.write(int(row_index), int(3),str(item.country_region))
+            worksheet.write(int(row_index), int(4),str(item.city_town))
+            worksheet.write(int(row_index), int(5),str(item.organization_name))
+            worksheet.write(int(row_index), int(6),str(item.organization_adress))
+            worksheet.write(int(row_index), int(7),str(item.sales_method))
+            worksheet.write(int(row_index), int(8),str(item.product_code))
+            worksheet.write(int(row_index), int(9),str(item.item_quadra))
+            worksheet.write(int(row_index), int(10),str(item.organization_etalon_id))
+            worksheet.write(int(row_index), int(11),str(item.organization_etalon_name))
+            worksheet.write(int(row_index), int(12),str(item.distributor_etalon_name))
+            worksheet.write(int(row_index), int(13),str(item.distributor_name))
+            worksheet.write(int(row_index), int(14),str(item.distributor_okpo))
+            worksheet.write(int(row_index), int(15),str(y1))
+            worksheet.write(int(row_index), int(16),str(item.promotion))
+            worksheet.write(int(row_index), int(17),str(item.organization_type))
+            worksheet.write(int(row_index), int(18),str(item.organization_status))
+            worksheet.write(int(row_index), int(19),str(item.etalon_code_okpo))
+            worksheet.write(int(row_index), int(20),str(item.delivery_date))
+            worksheet.write(int(row_index), int(21),str(item.position_code))
+            worksheet.write(int(row_index), int(22),str(item.office_head_organization))
+            worksheet.write(int(row_index), int(23),str(item.head_office_okpo))
+            worksheet.write(int(row_index), int(24),str(item.quarter_year))
+            worksheet.write(int(row_index), int(25),str(item.half_year))
+            worksheet.write(int(row_index), int(26),str(item.annual_sales_category))
+            worksheet.write(int(row_index), int(27),str(item.med_representative_name))
+            worksheet.write(int(row_index), int(28),str(item.kam_name))
+            worksheet.write(int(row_index), int(29),str(item.week))
+            worksheet.write(int(row_index), int(30),str(item.territory_name))
+            worksheet.write(int(row_index), int(31),str(item.brik_name))
+            worksheet.write(int(row_index), int(32),str(y2))
+
+            row_index +=1
+
+        workbook.close()
+
+
     def get_secondary_2021_by_month(self):
         path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\0.new_629_report_2021.xlsx"
         wb_obj = openpyxl.load_workbook(path)
@@ -1023,7 +1337,35 @@ class CBase_2021_quadra_workout:
             conn.commit()
             print('OK')
 
-
+    def rewrite_629_2020_in_database(conn):
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            cursor = conn.cursor()
+            #cursor.execute("DROP TABLE secondary_2020_629")
+            cursor.execute("CREATE TABLE IF NOT EXISTS secondary_2020_629 (year, month, ff_region, country_region, city_town, organization_name,organization_adress, product_group,product_code, item_quadra, organization_etalon_id, organization_etalon_name,distributor_etalon_name, distributor_name, distributor_okpo, sales_euro, promotion, organization_type,organization_status, etalon_code_okpo, delivery_date, position_code, office_head_organization,head_office_okpo, quarter_year, half_year, annual_sales_category,med_representative_name, kam_name, week, territory_name, brik_name, sales_packs);")
+            path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\0.new_629_report_2020.xlsx"
+            conn.commit()
+            wb_obj = openpyxl.load_workbook(path)
+            sheet_obj = wb_obj.active
+            rows_count = str(sheet_obj.calculate_dimension()).rsplit(':')
+            rows_count = int(str(rows_count[1])[2:])
+            string = []
+            classified_base_2021 = []
+            for row in range(1, rows_count + 1):
+                str_ = []
+                for col in range(1, 34):
+                    cell_obj = sheet_obj.cell(row=row, column=col)
+                    str_.append(cell_obj.value)
+                string.append(str_)
+            for i in string:
+                x = CBase_2021_quadra_workout()
+                string_class = x.classify_base_2021_from_xlxs(i)
+                classified_base_2021.append(string_class)
+            for string in classified_base_2021:
+                for row in string:
+                    strin = [row.year,row.month,row.ff_region, row.country_region, row.city_town, row.organization_name,row.organization_adress, row.product_group, row.product_code, row.item_quadra, row.organization_etalon_id, row.organization_etalon_name,row.distributor_etalon_name,row.distributor_name, row.distributor_okpo, row.sales_euro, row.promotion, row.organization_type,row.organization_status,row.etalon_code_okpo, row.delivery_date, row.position_code, row.office_head_organization, row.head_office_okpo,row.quarter_year, row.half_year,row.annual_sales_category, row.med_representative_name,row.kam_name, row.week, row.territory_name,row.brik_name, row.sales_packs]
+                    cursor.execute("INSERT INTO secondary_2020_629 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",strin)
+            conn.commit()
+            print('OK')
 
     def get_629_2021_from_sqlite3(conn):
         total_euro = 0
@@ -1043,7 +1385,7 @@ class CBase_2021_quadra_workout:
     def save_1_tramsform_for_sales_report_with_filter_to_xlsx(self):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
-            cursor.execute("select ymm.half_month, items.cip_euro, secondary_2021_629.month, secondary_2021_629.delivery_date, secondary_2021_629.item_quadra, secondary_2021_629.sales_packs, secondary_2021_629.sales_euro, secondary_2021_629.distributor_name, secondary_2021_629.distributor_etalon_name from secondary_2021_629 join ymm on ymm.Дата = secondary_2021_629.delivery_date join items on items.item_quadra = secondary_2021_629.item_quadra and secondary_2021_629.month = items.month_ru where items.year = '2021'")
+            cursor.execute("select ymm.Год,ymm.half_month, items.cip_euro, items.brand, secondary_2021_629.month, secondary_2021_629.delivery_date, secondary_2021_629.item_quadra, secondary_2021_629.sales_packs, secondary_2021_629.sales_euro, secondary_2021_629.distributor_name, secondary_2021_629.distributor_etalon_name from secondary_2021_629 join ymm on ymm.Дата = secondary_2021_629.delivery_date join items on items.item_quadra = secondary_2021_629.item_quadra and secondary_2021_629.month = items.month_ru where items.year = '2021'")
             conn.commit()
             results = cursor.fetchall()
         sum_tot_euro = 0
@@ -1053,9 +1395,10 @@ class CBase_2021_quadra_workout:
         # Widen the first column to make the text clearer.
         #worksheet.set_column('A:A', 20)
         bold = workbook.add_format({'bold': True},)
-
+        worksheet.write('A1', "Год", bold)
         worksheet.write('B1', "Часть месяца", bold)
         worksheet.write('C1', "Актуальная CIP", bold)
+        worksheet.write('D1', "Бренд", bold)
         worksheet.write('E1', "Месяц", bold)
         worksheet.write('F1', "Дата отгрузки", bold)
         worksheet.write('G1', "Товар", bold)
@@ -1064,42 +1407,34 @@ class CBase_2021_quadra_workout:
         worksheet.write('J1', 'Дистрибьютор', bold)
         worksheet.write('K1', 'Дистрибьютор (эталон)', bold)
 
-
-        columns = ['year', 'month', 'ff_region', 'country_region', 'city_town', 'organization_name',
-                   'organization_adress', 'sales_method',
-                   'product_code', 'item_quadra', 'organization_etalon_id', 'organization_etalon_name',
-                   'distributor_etalon_name',
-                   'distributor_name', 'distributor_okpo', 'sales_euro_', 'promotion', 'organization_type',
-                   'organization_status',
-                   'etalon_code_okpo', 'delivery_date', 'position_code','office_head_organization', 'head_office_okpo',
-                   'quarter_year', 'half_year',
-                   'annual_sales_category', 'med_representative_name', 'kam_name', 'week', 'territory_name',
-                   'brik_name', 'sale_in_quantity']
-
         list_base_2021 = []
         row_index = 1
 
         for item in results:
-            item_ = [[str(item[0]).replace('_',' '),
+            item_ = [[str(item[0]),
                      str(item[1]),
-                     str(item[2]),
+                     str(item[2]).replace('_',' '),
                      str(item[3]),
                      str(item[4]),
-                     str(item[5]).replace('.',','),
+                     str(item[5]),
                      str(item[6]).replace('.',','),
-                     str(item[7]),
-                     str(item[8])]]
+                     str(item[7]).replace('.',','),
+                     str(item[8]),
+                     str(item[9]),
+                     str(item[10])]]
 
             list_base_2021.append(item_)
-            worksheet.write(int(row_index), int(1),str(item[0]).replace('_',' '))
-            worksheet.write(int(row_index), int(2),str(item[1]))
-            worksheet.write(int(row_index), int(4),str(item[2]))
-            worksheet.write(int(row_index), int(5),str(item[3]))
-            worksheet.write(int(row_index), int(6),str(item[4]).replace('.',','))
-            worksheet.write(int(row_index), int(7),str(item[5]).replace('.',','))
-            worksheet.write(int(row_index), int(8),str(item[6]).replace('.',','))
-            worksheet.write(int(row_index), int(9),str(item[7]))
-            worksheet.write(int(row_index), int(10), str(item[8]))
+            worksheet.write(int(row_index), int(0),str(item[0]))
+            worksheet.write(int(row_index), int(1),str(item[1]).replace('_',' '))
+            worksheet.write(int(row_index), int(2), str(item[2]))
+            worksheet.write(int(row_index), int(3),str(item[3]))
+            worksheet.write(int(row_index), int(4),str(item[4]))
+            worksheet.write(int(row_index), int(5),str(item[5]).replace('.',','))
+            worksheet.write(int(row_index), int(6),str(item[6]).replace('.',','))
+            worksheet.write(int(row_index), int(7),str(item[7]).replace('.',','))
+            worksheet.write(int(row_index), int(8),str(item[8]).replace('.',','))
+            worksheet.write(int(row_index), int(9), str(item[9]))
+            worksheet.write(int(row_index), int(10), str(item[10]))
             row_index +=1
 
         workbook.close()

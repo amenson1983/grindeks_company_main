@@ -5,7 +5,7 @@ from sale_out.database import CEXtract_database_tertiary
 def Main():
     root = Tk()
     ex = Items_GUI()
-    root.geometry("800x650+350+30")
+    root.geometry("900x650+350+30")
     main_menu = tkinter.Menu()
     file_menu = tkinter.Menu()
     save_menu = tkinter.Menu()

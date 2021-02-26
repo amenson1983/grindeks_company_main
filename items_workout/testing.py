@@ -21,6 +21,7 @@ def open_file_from_location():
         print(filestart)
         if filestart[1] >= 80:
             os.startfile('C:\\Users\\Anastasia Siedykh\\Desktop\\' + filestart[0])
+            
         else:
             print('Файл не найден')
     except FileNotFoundError:
