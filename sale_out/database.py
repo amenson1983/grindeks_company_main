@@ -263,9 +263,6 @@ class CBase_2021_quadra_workout:
 
         base_2021_classified_.append(st)
         return base_2021_classified_
-
-
-
     def upload_2021_base_from_quadra(self):
         try:
             # jTDS Driver.
@@ -625,7 +622,6 @@ class CBase_2021_quadra_workout:
             return res
         except Exception as err:
             print(str(err))
-
     def save_base_629_2021_to_xlsx(self):
         final_list = []
 
@@ -938,7 +934,6 @@ class CBase_2021_quadra_workout:
             row_index +=1
 
         workbook.close()
-
     def save_base_629_2020_to_xlsx(self):
         final_list = []
 
@@ -1251,8 +1246,6 @@ class CBase_2021_quadra_workout:
             row_index +=1
 
         workbook.close()
-
-
     def get_secondary_2021_by_month(self):
         path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\0.new_629_report_2021.xlsx"
         wb_obj = openpyxl.load_workbook(path)
@@ -1273,7 +1266,6 @@ class CBase_2021_quadra_workout:
             string_class = x.classify_base_2021_from_xlxs(i)
             classified_base_2021.append(string_class)
         return classified_base_2021
-
     def get_secondary_2021_by_month_from_sqlite3(self,month):
         mtd_euro = 0
         mtd_packs = 0
@@ -1286,8 +1278,6 @@ class CBase_2021_quadra_workout:
                 mtd_euro +=float(i[1])
                 mtd_packs += float(i[0])
         return mtd_packs, mtd_euro
-
-
     def get_secondary_2020_by_month(self):
         path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\0.new_629_report_2020.xlsx"
         wb_obj = openpyxl.load_workbook(path)
@@ -1336,7 +1326,6 @@ class CBase_2021_quadra_workout:
                     cursor.execute("INSERT INTO secondary_2021_629 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",strin)
             conn.commit()
             print('OK')
-
     def rewrite_629_2020_in_database(conn):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
@@ -1366,7 +1355,6 @@ class CBase_2021_quadra_workout:
                     cursor.execute("INSERT INTO secondary_2020_629 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",strin)
             conn.commit()
             print('OK')
-
     def get_629_2021_from_sqlite3(conn):
         total_euro = 0
         total_packs = 0
@@ -1381,7 +1369,6 @@ class CBase_2021_quadra_workout:
             print(total_packs)
             print(total_euro)
         return total_packs, total_euro
-
     def save_1_tramsform_for_sales_report_with_filter_to_xlsx(self):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
@@ -1430,7 +1417,7 @@ class CBase_2021_quadra_workout:
             worksheet.write(int(row_index), int(3),str(item[3]))
             worksheet.write(int(row_index), int(4),str(item[4]))
             worksheet.write(int(row_index), int(5),str(item[5]).replace('.',','))
-            worksheet.write(int(row_index), int(6),str(item[6]).replace('.',','))
+            worksheet.write(int(row_index), int(6),str(item[6]))
             worksheet.write(int(row_index), int(7),str(item[7]).replace('.',','))
             worksheet.write(int(row_index), int(8),str(item[8]).replace('.',','))
             worksheet.write(int(row_index), int(9), str(item[9]))
@@ -1438,6 +1425,31 @@ class CBase_2021_quadra_workout:
             row_index +=1
 
         workbook.close()
+    def get_secondary_sales_sqlite3_for_big_table(conn,selected_months,year):
+        sql_ = f"select secondary_{year}_629.month,  sum(secondary_{year}_629.sales_packs), sum(secondary_{year}_629.sales_euro)from secondary_{year}_629 where secondary_{year}_629.month NOT LIKE 'Месяц'  group by secondary_{year}_629.month"
+        total_euro = 0
+        total_packs = 0
+        list_ = []
+        with sqlite3.connect(
+                "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute(sql_)
+            conn.commit()
+            results = cursor.fetchall()
+
+            for month in selected_months:
+
+                for i in results:
+
+                    if month == i[0]:
+                        total_euro = 0
+                        total_packs = 0
+                        total_euro += i[2]
+                        total_packs += i[1]
+                        list_.append([month, total_packs, total_euro])
+            print(total_packs)
+            print(total_euro)
+        return list_
 
 class CTest_SAles_report_classification:
     def __init__(self,year,month,week,distr,item_quadra,sec_quantity,sec_euro):

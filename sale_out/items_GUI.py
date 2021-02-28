@@ -64,6 +64,7 @@ class Items_GUI(tkinter.Frame):
         self.specific_data = tkinter.StringVar()
         self.specific_data_label = tkinter.Label(self, text='Specific data', textvariable=self.specific_data, font=my_font)
         self.specific_data_label.pack()
+        self.previous_day_sales = tkinter.StringVar()
 
         self.chb1 = tkinter.Checkbutton(self.top_frame, text='Jan', variable=self.check_var1,
                                         font=my_font1)
@@ -126,6 +127,9 @@ class Items_GUI(tkinter.Frame):
         self.update_629_base_2020_xlxs_button_sec_euro.pack(side='left')
         self.rewrite_629_base_2020_button_sec_euro = tkinter.Button(self.upper_frame, text='Rewrite the base 2020', command=self.rewrite_2020_629_base)
         self.rewrite_629_base_2020_button_sec_euro.pack(side='left')
+        self.show_secondary_sales_list = tkinter.Button(self.upper_frame, text='Sec_sales_list', command=self.show_secondary_sales_by_month)
+        self.show_secondary_sales_list.pack(side='left')
+
 
         i_list = []
         for i in range(0,len(acts_)):
@@ -1306,4 +1310,25 @@ class Items_GUI(tkinter.Frame):
         x.rewrite_629_2020_in_database()
         tkinter.messagebox.showinfo('INFO',
                                     f'The base local_main_base.db has been successfully updated!')
+    def show_secondary_sales_by_month(self):
+        list,list_quadra,year = self.radiobutton_months()
+        x = CBase_2021_quadra_workout()
+        list_by_month_sales_packs_euro = x.get_secondary_sales_sqlite3_for_big_table(list_quadra,year)
+        x_coord = list_quadra
+        y_coord_euro = []
+        y_coord_packs = []
+        print(list_by_month_sales_packs_euro)
+        for entry in list_by_month_sales_packs_euro:
+            for month in list_quadra:
+                if month == entry[0]:
+                    y_coord_euro.append(entry[2])
+                    y_coord_packs.append(entry[1])
+        plt.title(f'Total secondary sales by month euro')
+        plt.grid(True)
+        plt.plot(x_coord,y_coord_euro,marker='o')
+        plt.show()
+
+
+
+
 
