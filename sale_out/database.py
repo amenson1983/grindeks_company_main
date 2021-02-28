@@ -1450,6 +1450,29 @@ class CBase_2021_quadra_workout:
             print(total_packs)
             print(total_euro)
         return list_
+    def get_secondary_sales_sqlite3_for_big_table_by_item(conn,selected_months,year,item_selected):
+        sql_ = f"select secondary_{year}_629.month,  sum(secondary_{year}_629.sales_packs), sum(secondary_{year}_629.sales_euro) from secondary_{year}_629 where secondary_{year}_629.month NOT LIKE 'Месяц' and secondary_{year}_629.item_quadra = '{item_selected}' group by  secondary_{year}_629.month, secondary_{year}_629.item_quadra"
+        list_ = []
+        with sqlite3.connect(
+                "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute(sql_)
+            conn.commit()
+            results = cursor.fetchall()
+
+            for month in selected_months:
+
+                for i in results:
+
+                    if month == i[0]:
+                        total_euro = 0
+                        total_packs = 0
+
+                        total_euro += i[2]
+                        total_packs += i[1]
+                        list_.append([month, total_packs, total_euro])
+        return list_
+
 
 class CTest_SAles_report_classification:
     def __init__(self,year,month,week,distr,item_quadra,sec_quantity,sec_euro):

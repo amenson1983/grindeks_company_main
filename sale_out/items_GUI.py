@@ -127,11 +127,15 @@ class Items_GUI(tkinter.Frame):
         self.update_629_base_2020_xlxs_button_sec_euro.pack(side='left')
         self.rewrite_629_base_2020_button_sec_euro = tkinter.Button(self.upper_frame, text='Rewrite the base 2020', command=self.rewrite_2020_629_base)
         self.rewrite_629_base_2020_button_sec_euro.pack(side='left')
-        self.show_secondary_sales_list = tkinter.Button(self.upper_frame, text='Sec_sales_list', command=self.show_secondary_sales_by_month)
+        self.show_secondary_sales_list = tkinter.Button(self.upper_frame, text='Total secondary sales euro', command=self.show_secondary_sales_by_month)
         self.show_secondary_sales_list.pack(side='left')
+        self.show_secondary_sales_by_item = tkinter.Button(self.upper_frame, text='Secondary sales by item euro', command=self.show_secondary_sales_by_month_by_item)
+        self.show_secondary_sales_by_item.pack(side='left')
+
 
 
         i_list = []
+        self.dict_item = {}
         for i in range(0,len(acts_)):
             for entry in acts_[i]:
                 year = entry.get('year')
@@ -147,6 +151,7 @@ class Items_GUI(tkinter.Frame):
                 cip_euro = entry.get('cip_euro')
                 z = CSKU(year,sales_method,promotion,purpose,item_proxima,item_quadra,item_sales_report,item_kpi_report,brand,month,cip_euro)
                 i_list.append(str(z.item_kpi_report))
+                self.dict_item.update({z.item_kpi_report:z.item_quadra})
         i_list_1 = []
 
         for i in i_list:
@@ -1324,6 +1329,25 @@ class Items_GUI(tkinter.Frame):
                     y_coord_euro.append(entry[2])
                     y_coord_packs.append(entry[1])
         plt.title(f'Total secondary sales by month euro')
+        plt.grid(True)
+        plt.plot(x_coord,y_coord_euro,marker='o')
+        plt.show()
+    def show_secondary_sales_by_month_by_item(self):
+        list,list_quadra,year = self.radiobutton_months()
+        item_selected = str(self.dict_item.get(str(self.info_var.get())))
+        x = CBase_2021_quadra_workout()
+        list_by_month_sales_packs_euro = x.get_secondary_sales_sqlite3_for_big_table_by_item(list_quadra,year,item_selected)
+        x_coord = list
+        y_coord_euro = []
+        y_coord_packs = []
+
+        print(list_by_month_sales_packs_euro)
+        for entry in list_by_month_sales_packs_euro:
+            for month in list_quadra:
+                if month == entry[0]:
+                    y_coord_euro.append(entry[2])
+                    y_coord_packs.append(entry[1])
+        plt.title(f'Total secondary sales by month {self.info_var.get()} euro')
         plt.grid(True)
         plt.plot(x_coord,y_coord_euro,marker='o')
         plt.show()
