@@ -33,6 +33,7 @@ class Items_GUI(tkinter.Frame):
         self.top_frame = tkinter.Frame(self.master)
         self.button_frame = tkinter.Frame(self.master)
         self.left_frame = tkinter.Frame(self.master)
+        self.second_upper_frame = tkinter.Frame(self.master)
         self.radio_var = tkinter.IntVar()
         self.radio_var.set(2021)
         self.check_var1 = tkinter.IntVar()
@@ -59,12 +60,17 @@ class Items_GUI(tkinter.Frame):
         self.check_var11.set(0)
         self.check_var12 = tkinter.IntVar()
         self.check_var12.set(0)
+
+        self.previous_rows_count = tkinter.IntVar()
+        self.previous_rows_count_label = tkinter.Label(self, text='Row count base', textvariable=self.previous_rows_count)
+        self.previous_rows_count_label.pack()
+
         my_font = tkinter.font.Font(family='Arial', size=12, weight='bold')
         my_font1 = tkinter.font.Font(family='Arial', size=11,weight='bold')
         self.specific_data = tkinter.StringVar()
         self.specific_data_label = tkinter.Label(self, text='Specific data', textvariable=self.specific_data, font=my_font)
         self.specific_data_label.pack()
-        self.previous_day_sales = tkinter.StringVar()
+
 
         self.chb1 = tkinter.Checkbutton(self.top_frame, text='Jan', variable=self.check_var1,
                                         font=my_font1)
@@ -113,20 +119,25 @@ class Items_GUI(tkinter.Frame):
         self.ok_button_quantity = tkinter.Button(self.button_frame, text='Sale-out in packs', command=self.onclick_quantity)
         self.ok_button_quantity.pack(side='left')
         self.upper_frame.pack()
-        self.secondary_euro = tkinter.Button(self.upper_frame, text='Update 629 xlxs', command=self.secondary_sales_euro_upload)
+        self.secondary_euro = tkinter.Button(self.second_upper_frame, text='Update 629 xlxs', command=self.secondary_sales_euro_upload)
         self.secondary_euro.pack(side='left')
-        self.quit_button = tkinter.Button(self.upper_frame, text='Quit', command=self.master.destroy)
-        self.quit_button.pack(side='left')
+        self.update_629_base_2020_xlxs_button_sec_euro = tkinter.Button(self.second_upper_frame, text='Update 629 report xlxs 2020', command=self.Update_2020_629_xlxs)
+        self.update_629_base_2020_xlxs_button_sec_euro.pack(side='left')
+
         self.show_button_sec_euro = tkinter.Button(self.upper_frame, text='Total secondary sales euro plan KAM', command=self.kam_plans_for_chart_from_sqlite3)
         self.show_button_sec_euro.pack(side='left')
-        self.rewrite_629_base_button_sec_euro = tkinter.Button(self.upper_frame, text='Rewrite the base 2021', command=self.rewrite_2021_629_base)
+        self.rewrite_629_base_button_sec_euro = tkinter.Button(self.second_upper_frame, text='Rewrite the base 2021', command=self.rewrite_2021_629_base)
         self.rewrite_629_base_button_sec_euro.pack(side='left')
-        self.rewrite_629_base_button_sec_euro = tkinter.Button(self.upper_frame, text='Save transformations', command=self.save_transformations_for_riga_sales_report)
-        self.rewrite_629_base_button_sec_euro.pack(side='left')
-        self.update_629_base_2020_xlxs_button_sec_euro = tkinter.Button(self.upper_frame, text='Update 629 report xlxs 2020', command=self.Update_2020_629_xlxs)
-        self.update_629_base_2020_xlxs_button_sec_euro.pack(side='left')
-        self.rewrite_629_base_2020_button_sec_euro = tkinter.Button(self.upper_frame, text='Rewrite the base 2020', command=self.rewrite_2020_629_base)
+
+
+        self.rewrite_629_base_2020_button_sec_euro = tkinter.Button(self.second_upper_frame, text='Rewrite the base 2020', command=self.rewrite_2020_629_base)
         self.rewrite_629_base_2020_button_sec_euro.pack(side='left')
+        self.rewrite_629_base_button_sec_euro = tkinter.Button(self.second_upper_frame, text='Save transformations', command=self.save_transformations_for_riga_sales_report)
+        self.rewrite_629_base_button_sec_euro.pack(side='left')
+        self.refresh_button = tkinter.Button(self.second_upper_frame, text='Read data from Quadra server', command=self.secondary_2021_total_pack_euro,font=my_font1)
+        self.refresh_button.pack(side='left')
+        self.quit_button = tkinter.Button(self.second_upper_frame, text='Quit', command=self.master.destroy,font=my_font1)
+        self.quit_button.pack(side='left')
         self.show_secondary_sales_list = tkinter.Button(self.upper_frame, text='Total secondary sales euro', command=self.show_secondary_sales_by_month)
         self.show_secondary_sales_list.pack(side='left')
         self.show_secondary_sales_by_item = tkinter.Button(self.upper_frame, text='Secondary sales by item euro', command=self.show_secondary_sales_by_month_by_item)
@@ -174,13 +185,10 @@ class Items_GUI(tkinter.Frame):
         self.secondary_2021_total_pack_euro() #launch secondary workout
         self.label_tot_sec_2021_packs = tkinter.Label(self, text='YTD 2021 secondary sales in packs: ', textvariable=self.tot_sec_2021_packs,font=my_font1)
         self.label_tot_sec_2021_packs.pack()
-
         self.label_tot_sec_2021_euro = tkinter.Label(self, text='YTD 2021 secondary sales in euro: ', textvariable=self.tot_sec_2021_euro,font=my_font1)
         self.label_tot_sec_2021_euro.pack()
-
         self.mtd_sec_2021_packs_label = tkinter.Label(self, text='MTD 2021 secondary sales in packs: ', textvariable=self.mtd_sec_2021_packs,font=my_font1)
         self.mtd_sec_2021_packs_label.pack()
-
         self.mtd_sec_2021_euro_label = tkinter.Label(self, text='MTD 2021 secondary sales in euro: ', textvariable=self.mtd_sec_2021_euro,font=my_font1)
         self.mtd_sec_2021_euro_label.pack()
         list, list_months_quadra, year = self.radiobutton_months()
@@ -216,19 +224,38 @@ class Items_GUI(tkinter.Frame):
         self.rb3.pack(side='top')
         self.top_frame.pack(side='bottom')
         self.left_frame.pack(side='left')
+        self.second_upper_frame.pack(side='left')
+    def calculate_actual_rows_in_base_2021(self):
+        x = CBase_2021_quadra_workout()
+        status = x.calculate_rows_in_2021_base_from_quadra()
+        st_1 = 'Already updated database'
+        st_2 = 'Xlsx and database have just been updated'
+        if status == st_1:
+            self.previous_rows_count.set(status)
+        else:
+            self.secondary_sales_euro_upload()
+            self.rewrite_2021_629_base()
+            self.previous_rows_count.set(st_2)
+            tkinter.messagebox.showinfo('INFO',
+                                        f'Basic excel file for 2021 and corresponding database\nhas been successfully updated!')
+
 
     def secondary_sales_euro_upload(self):
         x = CBase_2021_quadra_workout()
         x.save_base_629_2021_to_xlsx()
         self.secondary_button_name = now()
-        tkinter.messagebox.showinfo('INFO', f'Basic excel file for 2021 has been successfully updated!')
+
         return self.secondary_button_name
+
     def secondary_2021_total_pack_euro(self):
         x = CBase_2021_quadra_workout()
         x.rewrite_629_2021_in_database()
         total_packs, total_euro = x.get_629_2021_from_sqlite3()
         self.tot_sec_2021_euro.set('YTD 2021 secondary sales in euro:   '+'{0:,}'.format(total_euro.__round__(2)).replace(",", " ")+ ' euro')
         self.tot_sec_2021_packs.set('YTD 2021 secondary sales in packs:   '+'{0:,}'.format(total_packs.__round__(0)).replace(",", " ") + ' packs')
+        self.calculate_actual_rows_in_base_2021()
+
+
     def radiobutton_months(self):
         self.month = ''
         self.amount_euro = 0
