@@ -2,6 +2,7 @@ import json
 import tkinter
 from datetime import date
 from time import strftime
+import xlwings as xw
 from tkinter import font, messagebox, BOTH, END
 import matplotlib.pyplot as plt
 import csv
@@ -238,15 +239,12 @@ class Items_GUI(tkinter.Frame):
             self.previous_rows_count.set(st_2)
             tkinter.messagebox.showinfo('INFO',
                                         f'Basic excel file for 2021 and corresponding database\nhas been successfully updated!')
-
-
     def secondary_sales_euro_upload(self):
         x = CBase_2021_quadra_workout()
         x.save_base_629_2021_to_xlsx()
         self.secondary_button_name = now()
 
         return self.secondary_button_name
-
     def secondary_2021_total_pack_euro(self):
         x = CBase_2021_quadra_workout()
         x.rewrite_629_2021_in_database()
@@ -254,8 +252,6 @@ class Items_GUI(tkinter.Frame):
         self.tot_sec_2021_euro.set('YTD 2021 secondary sales in euro:   '+'{0:,}'.format(total_euro.__round__(2)).replace(",", " ")+ ' euro')
         self.tot_sec_2021_packs.set('YTD 2021 secondary sales in packs:   '+'{0:,}'.format(total_packs.__round__(0)).replace(",", " ") + ' packs')
         self.calculate_actual_rows_in_base_2021()
-
-
     def radiobutton_months(self):
         self.month = ''
         self.amount_euro = 0
@@ -1337,6 +1333,9 @@ class Items_GUI(tkinter.Frame):
         x = CBase_2021_quadra_workout()
         x.save_1_tramsform_for_sales_report_with_filter_to_xlsx()
         tkinter.messagebox.showinfo('INFO', f'0.transform_for_1_sales_report_with_filter.xlsx file has been successfully updated!')
+        my_xlsx_excel_file = 'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\sales_report_riga\\1.Sales report with filter_new.xlsx'
+        wb = xw.Book(my_xlsx_excel_file)
+
     def rewrite_2020_629_base(self):
         x = CBase_2021_quadra_workout()
         x.rewrite_629_2020_in_database()
