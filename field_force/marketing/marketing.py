@@ -7,6 +7,8 @@ import scipy as scipy
 
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
+import requests
+import pprint
 
 
 # 'C:\\Users\\Anastasia Siedykh\\Desktop'
@@ -50,8 +52,21 @@ class gamma_classify:
         self.city = city
         self.employee = employee
         self.date = date
-
+class gamma_classify_2:
+    def __init__(self, adress, number):
+        self.number = number
+        self.adress = adress
+class gamma_classify_3:
+    def __init__(self, adress):
+        self.adress = adress
 class gamma_workout:
+    def classify_dict(self,item):
+        gamma_data_classified_ = []
+        adress = str(item[0])
+        number = str(item[1])
+        st = gamma_classify_2(adress,number)
+        gamma_data_classified_.append(st)
+        return gamma_data_classified_
     def classify_base_2021_from_xlxs(self, item):
         gamma_data_classified_ = []
         date = str(item[0])
@@ -70,7 +85,7 @@ class gamma_workout:
         return gamma_data_classified_
     def import_from_xlsx(self):
 
-        path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\python_projects\\grindeks_company_main\\field_force\\marketing\\gamma_testing.xlsx"
+        path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\python_projects\\grindeks_company_main\\field_force\\marketing\\0.gamma_in.xlsx"
         wb_obj = openpyxl.load_workbook(path)
         sheet_obj = wb_obj.active
         rows_count = str(sheet_obj.calculate_dimension()).rsplit(':')
@@ -79,14 +94,32 @@ class gamma_workout:
         classified_base_gamma = []
         for row in range(1, rows_count):
             str_ = []
-            for col in range(1, 12):
+            for col in range(1, 3):
                 cell_obj = sheet_obj.cell(row=row, column=col)
                 str_.append(cell_obj.value)
             string.append(str_)
         for i in string:
             x = gamma_workout()
-            string_class = x.classify_base_2021_from_xlxs(i)
+            string_class = x.classify_dict(i)
             classified_base_gamma.append(string_class)
+        return classified_base_gamma
+    def our_dict_from_xlsx(self):
+        path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\python_projects\\grindeks_company_main\\field_force\\marketing\\0.crm_base.xlsx"
+        wb_obj = openpyxl.load_workbook(path)
+        sheet_obj = wb_obj.active
+        rows_count = str(sheet_obj.calculate_dimension()).rsplit(':')
+        rows_count = int(str(rows_count[1])[1:])
+        string = []
+        classified_base_gamma = []
+        for row in range(1, rows_count):
+            str_ = []
+            for col in range(1, 2):
+                cell_obj = sheet_obj.cell(row=row, column=col)
+                str_.append(cell_obj.value)
+            string.append(str_)
+        for i in string:
+
+            classified_base_gamma.append(i)
         return classified_base_gamma
     def get_our_data_for_gamma(self):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
@@ -100,21 +133,30 @@ class gamma_workout:
 if __name__ == '__main__':
     #open_file_from_location()
     z = gamma_workout()
-    list_ = z.import_from_xlsx()
-    mapping_income_gamma = []
-    adress_gamma = []
-    for i in list_:
+    list_gamma = z.import_from_xlsx()
+    distinct_gamma_list = []
+    for i in list_gamma:
         for j in i:
-            mapping_income_gamma.append([j.region,j.adress,j.number])
-            adress_gamma.append(j.adress)
-    our_list = z.get_our_data_for_gamma()
-    dd = []
-    for i in our_list:
-        for j in mapping_income_gamma:
-            if i[1] == j[0]:
-                entry = process.extractOne(i[0], adress_gamma)
-                dd.append([i[0],entry,j[2]])
-    print(dd)
+            if j not in distinct_gamma_list:
+                distinct_gamma_list.append([j.adress])
+    x = gamma_workout()
+    list_crm = x.our_dict_from_xlsx()
+
+    mapped_list_for_append = []
+
+    for num in range(0,len(distinct_gamma_list)):
+        for entry in distinct_gamma_list:
+            mapped_str = fuzz.token_sort_ratio(str(entry), str(list_crm[num]))
+            if mapped_str >80:
+                mapped_list_for_append.append([entry,list_crm[num]])
+
+    for i in mapped_list_for_append:
+        print(i)
+    print(len(mapped_list_for_append))
+
+
+
+
 
 
 
