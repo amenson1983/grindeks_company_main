@@ -282,7 +282,12 @@ def run_update_monitoring():
 
 if __name__ == '__main__':
     ex = CBase_2021_quadra_workout()
-    ex.actual_sales_from_sqlite3_for_big_table()
+    ex.actual_sales_to_sqlite3_from_xlsx()
+    #ex.actual_sales_from_sqlite3_to_xlsx_for_big_table()
+    #ex.annual_plans_to_sqlite3_from_xlsx()
+    ex.plans_in_euro_from_sqlite3_to_xlsx_for_big_table()
+    ex.plans_in_packs_from_sqlite3_to_xlsx_for_big_table()
+    print('OK')
     #Main()
     #run_update_monitoring()
 
