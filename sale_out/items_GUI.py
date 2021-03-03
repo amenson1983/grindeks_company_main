@@ -1,4 +1,5 @@
 import json
+import os
 import tkinter
 from datetime import date
 from time import strftime
@@ -234,9 +235,12 @@ class Items_GUI(tkinter.Frame):
         if status == st_1:
             self.previous_rows_count.set(status)
         else:
+            os.startfile(
+                'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\Two In One - Wave Your Hands In The Air.mp3')
             self.secondary_sales_euro_upload()
             self.rewrite_2021_629_base()
             self.previous_rows_count.set(st_2)
+
             tkinter.messagebox.showinfo('INFO',
                                         f'Basic excel file for 2021 and corresponding database\nhas been successfully updated!')
     def secondary_sales_euro_upload(self):
