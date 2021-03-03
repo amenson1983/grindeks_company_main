@@ -1571,6 +1571,9 @@ class CBase_2021_quadra_workout:
             print(total_packs)
             print(total_euro)
         return total_packs, total_euro
+    def actual_sales_from_sqlite3_for_big_table(conn):
+
+
     def save_1_tramsform_for_sales_report_with_filter_to_xlsx(self):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()

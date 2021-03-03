@@ -14,6 +14,7 @@ import pprint
 # 'C:\\Users\\Anastasia Siedykh\\Desktop'
 # 'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\python_projects\\grindeks_company_main\\sale_out\\exampDir\\dist'
 from pandas.tests.io.excel.test_openpyxl import openpyxl
+from pandas.tests.io.excel.test_xlsxwriter import xlsxwriter
 
 
 def open_file_from_location():
@@ -130,8 +131,7 @@ class gamma_workout:
         return results
 
 
-if __name__ == '__main__':
-    #open_file_from_location()
+def mapping_by_adress_organization():
     z = gamma_workout()
     list_gamma = z.import_from_xlsx()
     distinct_gamma_list = []
@@ -141,19 +141,38 @@ if __name__ == '__main__':
                 distinct_gamma_list.append([j.adress])
     x = gamma_workout()
     list_crm = x.our_dict_from_xlsx()
-
     mapped_list_for_append = []
-
-    for num in range(0,len(distinct_gamma_list)):
+    for num in range(0, len(distinct_gamma_list)):
         for entry in distinct_gamma_list:
             mapped_str = fuzz.token_sort_ratio(str(entry), str(list_crm[num]))
-            if mapped_str >80:
-                mapped_list_for_append.append([entry,list_crm[num]])
+            if mapped_str > 70:
+                mapped_list_for_append.append([entry, list_crm[num]])
+    workbook = xlsxwriter.Workbook(
+        'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\python_projects\\grindeks_company_main\\field_force\\marketing\\result_map.xlsx')
+    worksheet = workbook.add_worksheet('BASE')
+    # Widen the first column to make the text clearer.
+    # worksheet.set_column('A:A', 20)
+    bold = workbook.add_format({'bold': True}, )
+    worksheet.write('A1', "Gamma", bold)
+    worksheet.write('B1', "Crm", bold)
+    result = []
+    row_index = 1
+    for item in mapped_list_for_append:
+        item_ = [[str(item[0]),
+                  str(item[1])]]
 
-    for i in mapped_list_for_append:
-        print(i)
-    print(len(mapped_list_for_append))
+        result.append(item_)
+        worksheet.write(int(row_index), int(0), str(item[0]).replace('[', '').replace(']', '').replace("'", ""))
+        worksheet.write(int(row_index), int(1), str(item[1]).replace('[', '').replace(']', '').replace("'", ""))
 
+        row_index += 1
+    workbook.close()
+
+
+if __name__ == '__main__':
+    #open_file_from_location()
+    #mapping gamma and crm
+    mapping_by_adress_organization()
 
 
 
