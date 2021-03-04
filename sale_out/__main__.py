@@ -266,9 +266,10 @@ def job():
         sheet_obj = wb_obj.active
         cell_obj = sheet_obj.cell(row=1, column=1)
         if cell_obj.value == count:
-            print(f'Updated. Checked at: {now}')
+            print(f'Updated already')
         else:
             print('Oh, we have an update, launching Job Helper )))')
+            print(f'Checked at: {now}')
             Main()
 
     except Exception as err:
@@ -289,8 +290,8 @@ if __name__ == '__main__':
     #ex.plans_in_euro_from_sqlite3_to_xlsx_for_big_table()
     #ex.plans_in_packs_from_sqlite3_to_xlsx_for_big_table()
     #print('OK')
-    #Main()
-    run_update_monitoring()
+    Main()
+    #run_update_monitoring()
 
 
 
