@@ -8,7 +8,7 @@ from pandas.tests.io.excel.test_openpyxl import openpyxl
 from pandas.tests.io.excel.test_xlsxwriter import xlsxwriter
 
 from items_GUI import Items_GUI
-from sale_out.database import CEXtract_database_tertiary, CBase_2021_quadra_workout
+from sale_out.database import CEXtract_database_tertiary, CBase_2021_quadra_workout, CStock_quadra_workout
 import schedule
 import time
 
@@ -292,6 +292,7 @@ if __name__ == '__main__':
     #print('OK')
     Main()
     #run_update_monitoring()
+
 
 
 

@@ -36,6 +36,54 @@ class CEXtract_database_plan_ff:
                     if i.month == month:
                         base.append([i.code_sf,i.item_quadra,i.month,i.sales_euro])
         print(base)
+class CStock_quadra:
+    def __init__(self,id,region,distributor_regional_branch,sales_type,code,item_quadra,item_brand_quadra,cip_price,
+                 stock_pack,stock_euro,week,year,ff_region,promotion, date_stock,distributor,full_name):
+        self.full_name = full_name
+        self.distributor = distributor
+        self.date_stock = date_stock
+        self.promotion = promotion
+        self.ff_region = ff_region
+        self.year = year
+        self.week = week
+        self.stock_euro = stock_euro
+        self.stock_pack = stock_pack
+        self.cip_price = cip_price
+        self.item_brand_quadra = item_brand_quadra
+        self.item_quadra = item_quadra
+        self.code = code
+        self.sales_type = sales_type
+        self.distributor_regional_branch = distributor_regional_branch
+        self.region = region
+        self.id = id
+class CStock_quadra_workout:
+    def classify_stock_quadra(self,stock_upload_list):
+        stock_2021_classifyed = []
+        for i in stock_upload_list:
+            full_name = i[16]
+            distributor = i[15]
+            date_stock = i[14]
+            promotion = i[13]
+            ff_region = i[12]
+            year = i[11]
+            week = i[10]
+            stock_euro = i[9]
+            stock_pack = i[8]
+            cip_price = i[7]
+            item_brand_quadra = i[6]
+            item_quadra = i[5]
+            code = i[4]
+            sales_type = i[3]
+            distributor_regional_branch = i[2]
+            region = i[1]
+            id = i[0]
+
+            entry = CStock_quadra(id,region,distributor_regional_branch,sales_type,code,item_quadra,item_brand_quadra,cip_price,
+                 stock_pack,stock_euro,week,year,ff_region,promotion, date_stock,distributor,full_name)
+            stock_2021_classifyed.append(entry)
+        return stock_2021_classifyed
+    #def upload_and_classify_stock_from_quadra(self):# TODO to get how to write SQL script from VStudio
+
 
 
 

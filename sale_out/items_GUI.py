@@ -1338,6 +1338,7 @@ class Items_GUI(tkinter.Frame):
         tkinter.messagebox.showinfo('INFO', f'0.transform_for_1_sales_report_with_filter.xlsx file has been successfully updated!')
         my_xlsx_excel_file = 'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\sales_report_riga\\1.Sales report with filter_new.xlsx'
         wb = xw.Book(my_xlsx_excel_file)
+        # TODO to add package for power BI
 
     def rewrite_2020_629_base(self):
         x = CBase_2021_quadra_workout()
