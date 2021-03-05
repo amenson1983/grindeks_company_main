@@ -89,7 +89,7 @@ class CStock_quadra_workout:
     def classify_stock_quadra(self,i):
         stock_2021_classifyed = []
 
-        print(i)
+
         num = i[7]
         amount_euro = i[6]
         quantity_packs = i[5]
@@ -112,17 +112,20 @@ class CStock_quadra_workout:
             wb_obj = openpyxl.load_workbook(path)
             sheet_obj = wb_obj.active
             rows_count = str(sheet_obj.calculate_dimension()).rsplit(':')
-            rows_count = int(str(rows_count[1])[2:])
+
+            rows_count = int(str(rows_count[1])[1:])
+
             string = []
             classified_base_2021 = []
             for row in range(2, rows_count + 1):
                 str_ = []
                 for col in range(1, 9):
                     cell_obj = sheet_obj.cell(row=row, column=col)
-                    str_.append(cell_obj.value)
+                    if cell_obj is not None:
+                        str_.append(cell_obj.value)
 
                 string.append(str_)
-            print(string)
+
             for i in string:
                 x = CStock_quadra_workout()
                 string_class = x.classify_stock_quadra(i)
@@ -133,9 +136,22 @@ class CStock_quadra_workout:
                     cursor.execute("INSERT INTO stock_at_distributors_wh VALUES (?,?,?,?,?,?,?,?);",strin)
             conn.commit()
             print('OK, check the base')
+            return classified_base_2021
     #def upload_and_classify_stock_from_quadra(self):# TODO to get how to write SQL script from VStudio
-
-
+    def get_stock_for_big_table(self):
+        classified_stock = self.classified_stock_to_sqlite()
+        for i in classified_stock:
+            for in_ in i:
+                print(in_.week) #todo записать в файл ексель
+        workbook = xlsxwriter.Workbook(
+            'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\transform_files\\0.transform_stock_actual.xlsx')
+        worksheet = workbook.add_worksheet()
+        bold = workbook.add_format({'bold': True}, )
+        worksheet.write('C1', "Дата", bold)
+        worksheet.write('D1', "Дистрибьютор", bold)
+        worksheet.write('E1', "Товар", bold)
+        worksheet.write('F1', "Упаковки", bold)
+        worksheet.write('G1', "Евро", bold)
 
 
 class Tertiary_download_structure:
