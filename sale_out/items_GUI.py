@@ -227,6 +227,7 @@ class Items_GUI(tkinter.Frame):
         self.top_frame.pack(side='bottom')
         self.left_frame.pack(side='left')
         self.second_upper_frame.pack(side='left')
+
     def calculate_actual_rows_in_base_2021(self):
         x = CBase_2021_quadra_workout()
         status = x.calculate_rows_in_2021_base_from_quadra()

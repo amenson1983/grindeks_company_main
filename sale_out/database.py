@@ -3,6 +3,23 @@ import sqlite3
 import xlsxwriter
 import jaydebeapi
 from pandas.tests.io.excel.test_openpyxl import openpyxl
+def run_refresh_in_big_table_report():
+    import xlwings as xw
+    wb = xw.Book(
+        'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\big_table_report_ukraine\\big_table_report_2021_new.xlsm')
+    app = wb.app
+    macro_vba = app.macro("'big_table_report_2021_new.xlsm'!refresh")
+    macro_vba()
+    wb.save()
+    wb.close()
+class Kam_plan_download_structure:
+    def __init__(self,item_quadra, code_sf,month_local, quarter,plan_packs, plan_euro):
+        self.plan_euro = plan_euro
+        self.plan_packs = plan_packs
+        self.quarter = quarter
+        self.month_local = month_local
+        self.code_sf = code_sf
+        self.item_quadra = item_quadra
 class Plan_ff_main_2021_download:
     def __init__(self,month_local,item_quadra,med_rep_code,plan_packs,plan_euro):
         self.month_local = month_local
@@ -10,7 +27,27 @@ class Plan_ff_main_2021_download:
         self.med_rep_code = med_rep_code
         self.plan_packs = plan_packs
         self.plan_euro = plan_euro
-class CEXtract_database_plan_ff:
+class Kam_plans:
+    def read_kam_plan(conn):
+        plan_list = []
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute(f"select distinct kam_plan.item_quadra, kam_plan.code, kam_plan.month,  ymm.Квартал, kam_plan.plan_packs, kam_plan.plan_euro from kam_plan join ymm on ymm.Месяц = kam_plan.month")
+            results = cursor.fetchall()
+            for i in results:
+                y_1 = str(i[0])
+                y_2 = str(i[1])
+                y_3 = str(i[2])
+                y_4 = str(i[3])
+                y_5 = str(i[4])
+                y_6 = str(i[5]).replace(',', '.')
+                z = Kam_plan_download_structure(y_1, y_2, y_3,y_4, y_5, y_6)
+                plan_list.append(z)
+        return plan_list
+    #def fact_kams_packs(self): #TODO to get actual Kam sales packs
+    #def fact_kams_euro(self): #TODO to get actual Kam sales euro
+    #def plan_fact_kams_packs(self): #TODO to marry
+class CEXtract_database_plan_ff: #TODO create ff_plans workout functions
     def read_plan_ff_main(conn):
         rep_plan_list = []
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
@@ -37,51 +74,65 @@ class CEXtract_database_plan_ff:
                         base.append([i.code_sf,i.item_quadra,i.month,i.sales_euro])
         print(base)
 class CStock_quadra:
-    def __init__(self,id,region,distributor_regional_branch,sales_type,code,item_quadra,item_brand_quadra,cip_price,
-                 stock_pack,stock_euro,week,year,ff_region,promotion, date_stock,distributor,full_name):
-        self.full_name = full_name
-        self.distributor = distributor
-        self.date_stock = date_stock
-        self.promotion = promotion
-        self.ff_region = ff_region
-        self.year = year
-        self.week = week
-        self.stock_euro = stock_euro
-        self.stock_pack = stock_pack
-        self.cip_price = cip_price
-        self.item_brand_quadra = item_brand_quadra
+    def __init__(self,week,date,country_region,distributor,item_quadra,quantity_packs,amount_euro,num):
+        self.num = num
+        self.amount_euro = amount_euro
+        self.quantity_packs = quantity_packs
         self.item_quadra = item_quadra
-        self.code = code
-        self.sales_type = sales_type
-        self.distributor_regional_branch = distributor_regional_branch
-        self.region = region
-        self.id = id
-class CStock_quadra_workout:
-    def classify_stock_quadra(self,stock_upload_list):
-        stock_2021_classifyed = []
-        for i in stock_upload_list:
-            full_name = i[16]
-            distributor = i[15]
-            date_stock = i[14]
-            promotion = i[13]
-            ff_region = i[12]
-            year = i[11]
-            week = i[10]
-            stock_euro = i[9]
-            stock_pack = i[8]
-            cip_price = i[7]
-            item_brand_quadra = i[6]
-            item_quadra = i[5]
-            code = i[4]
-            sales_type = i[3]
-            distributor_regional_branch = i[2]
-            region = i[1]
-            id = i[0]
+        self.distributor = distributor
+        self.country_region = country_region
+        self.date = date
+        self.week = week
 
-            entry = CStock_quadra(id,region,distributor_regional_branch,sales_type,code,item_quadra,item_brand_quadra,cip_price,
-                 stock_pack,stock_euro,week,year,ff_region,promotion, date_stock,distributor,full_name)
-            stock_2021_classifyed.append(entry)
+
+class CStock_quadra_workout:
+    def classify_stock_quadra(self,i):
+        stock_2021_classifyed = []
+
+        print(i)
+        num = i[7]
+        amount_euro = i[6]
+        quantity_packs = i[5]
+        item_quadra = i[4]
+        distributor = i[3]
+        country_region = i[2]
+        date = str(i[1])
+        week = i[0]
+
+        entry = CStock_quadra(week,str(date),country_region,distributor,item_quadra,quantity_packs,amount_euro,num)
+        stock_2021_classifyed.append(entry)
         return stock_2021_classifyed
+    def classified_stock_to_sqlite(self):
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute("DROP TABLE stock_at_distributors_wh")
+            cursor.execute("CREATE TABLE IF NOT EXISTS stock_at_distributors_wh (week,date,country_region,distributor,item_quadra,quantity_packs,amount_euro,num);")
+            path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\raw_data_files\\stock_distributors_wh\\stock_at_distributors_wh.xlsx"
+            conn.commit()
+            wb_obj = openpyxl.load_workbook(path)
+            sheet_obj = wb_obj.active
+            rows_count = str(sheet_obj.calculate_dimension()).rsplit(':')
+            rows_count = int(str(rows_count[1])[2:])
+            string = []
+            classified_base_2021 = []
+            for row in range(2, rows_count + 1):
+                str_ = []
+                for col in range(1, 9):
+                    cell_obj = sheet_obj.cell(row=row, column=col)
+                    str_.append(cell_obj.value)
+
+                string.append(str_)
+            print(string)
+            for i in string:
+                x = CStock_quadra_workout()
+                string_class = x.classify_stock_quadra(i)
+                classified_base_2021.append(string_class)
+            for string in classified_base_2021:
+                for row in string:
+                    strin = [row.week,row.date,row.country_region,row.distributor,row.item_quadra, row.quantity_packs,row.amount_euro,row.num]
+                    cursor.execute("INSERT INTO stock_at_distributors_wh VALUES (?,?,?,?,?,?,?,?);",strin)
+            conn.commit()
+            print('OK, check the base')
     #def upload_and_classify_stock_from_quadra(self):# TODO to get how to write SQL script from VStudio
 
 
@@ -99,14 +150,7 @@ class Tertiary_download_structure:
         self.month = month
         self.year = year
         self.item_kpi = item_kpi
-class Kam_plan_download_structure:
-    def __init__(self,item_quadra, code_sf,month_local, quarter,plan_packs, plan_euro):
-        self.plan_euro = plan_euro
-        self.plan_packs = plan_packs
-        self.quarter = quarter
-        self.month_local = month_local
-        self.code_sf = code_sf
-        self.item_quadra = item_quadra
+
 class Secondary_total_2021:
     def __init__(self,item_quadra,sales_euro):
         self.sales_euro = sales_euro
@@ -122,7 +166,7 @@ class Upload_2021_base_from_quadra_for_daily_totals_distr:
         self.week = week
         self.month = month
         self.year = year
-class Quadra_direct_629():
+class Quadra_direct_629(): #TODO rename into 'CSecondary_629_quadra_classify'
     def __init__(self,year,month,ff_region,country_region,city_town,organization_name,organization_adress,sales_method,
                  product_code,item_quadra,organization_etalon_id,organization_etalon_name,distributor_etalon_name,
                  distributor_name,distributor_okpo,sales_euro_,promotion,organization_type,organization_status,
@@ -161,7 +205,7 @@ class Quadra_direct_629():
         self.ff_region = ff_region
         self.month = month
         self.year = year
-class Quadra_from_xlxs_629():
+class Quadra_from_xlxs_629(): #TODO rename into 'CSecondary_629_quadra_classify_from_excel'
     def __init__(self, year, month, ff_region, country_region, city_town, organization_name,
                  organization_adress, product_group,
                  product_code, item_quadra, organization_etalon_id, organization_etalon_name,
@@ -1792,6 +1836,7 @@ class CBase_2021_quadra_workout:
                 row_index += 1
 
             workbook.close()
+            run_refresh_in_big_table_report()
 
     def save_1_tramsform_for_sales_report_with_filter_to_xlsx(self):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
@@ -2259,20 +2304,3 @@ class CEXtract_database_tertiary:
             for i in secondary_list:
                 sum += float(i.sales_euro)
             return sum
-class Kam_plans:
-    def read_kam_plan(conn):
-        plan_list = []
-        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
-            cursor = conn.cursor()
-            cursor.execute(f"select distinct kam_plan.item_quadra, kam_plan.code, kam_plan.month,  ymm.Квартал, kam_plan.plan_packs, kam_plan.plan_euro from kam_plan join ymm on ymm.Месяц = kam_plan.month")
-            results = cursor.fetchall()
-            for i in results:
-                y_1 = str(i[0])
-                y_2 = str(i[1])
-                y_3 = str(i[2])
-                y_4 = str(i[3])
-                y_5 = str(i[4])
-                y_6 = str(i[5]).replace(',', '.')
-                z = Kam_plan_download_structure(y_1, y_2, y_3,y_4, y_5, y_6)
-                plan_list.append(z)
-        return plan_list

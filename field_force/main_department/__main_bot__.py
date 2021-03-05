@@ -44,5 +44,5 @@ def tertiary_month(message, otc):
             total_euro += float(i[8])
             bot.send_message(message.from_user.id, f"{i[0]}, {i[8]}")
 
-
+# TODO to develop my bot
 bot.polling(none_stop=True, interval=0)

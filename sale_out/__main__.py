@@ -1,16 +1,19 @@
-import os
+import tkinter
+from tkinter import Tk
+
+import time
 import tkinter
 from tkinter import Tk
 
 import jaydebeapi
+import schedule
 from pandas.tests.dtypes.test_missing import now
 from pandas.tests.io.excel.test_openpyxl import openpyxl
-from pandas.tests.io.excel.test_xlsxwriter import xlsxwriter
 
 from items_GUI import Items_GUI
-from sale_out.database import CEXtract_database_tertiary, CBase_2021_quadra_workout, CStock_quadra_workout
-import schedule
-import time
+from sale_out.database import CEXtract_database_tertiary, run_refresh_in_big_table_report, CBase_2021_quadra_workout, \
+    CStock_quadra_workout
+
 
 def Main():
     root = Tk()
@@ -282,16 +285,26 @@ def run_update_monitoring():
         schedule.run_pending()
         time.sleep(1)
 
+
+
+#TODO logging!
+
 if __name__ == '__main__':
-    #ex = CBase_2021_quadra_workout()
+    ex = CBase_2021_quadra_workout()
     #ex.actual_sales_to_sqlite3_from_xlsx()
-    #ex.actual_sales_from_sqlite3_to_xlsx_for_big_table()
+
     #ex.annual_plans_to_sqlite3_from_xlsx()
     #ex.plans_in_euro_from_sqlite3_to_xlsx_for_big_table()
     #ex.plans_in_packs_from_sqlite3_to_xlsx_for_big_table()
     #print('OK')
-    Main()
+    #Main()
     #run_update_monitoring()
+    #ex.actual_sales_from_sqlite3_to_xlsx_for_big_table()
+    #run_refresh_in_big_table_report()
+    ez = CStock_quadra_workout()
+    ez.classified_stock_to_sqlite()
+
+
 
 
 
