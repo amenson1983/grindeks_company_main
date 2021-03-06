@@ -140,18 +140,36 @@ class CStock_quadra_workout:
     #def upload_and_classify_stock_from_quadra(self):# TODO to get how to write SQL script from VStudio
     def get_stock_for_big_table(self):
         classified_stock = self.classified_stock_to_sqlite()
+        stock_list = []
         for i in classified_stock:
             for in_ in i:
-                print(in_.week) #todo записать в файл ексель
+                stock_list.append([in_.week,in_.date,in_.country_region,in_.distributor,in_.item_quadra,in_.quantity_packs,in_.amount_euro])
+                 #todo записать в файл ексель
         workbook = xlsxwriter.Workbook(
             'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\transform_files\\0.transform_stock_actual.xlsx')
         worksheet = workbook.add_worksheet()
         bold = workbook.add_format({'bold': True}, )
-        worksheet.write('C1', "Дата", bold)
+        worksheet.write('A1', "Неделя", bold)
+        worksheet.write('B1', "Дата", bold)
+        worksheet.write('C1', "Область", bold)
         worksheet.write('D1', "Дистрибьютор", bold)
         worksheet.write('E1', "Товар", bold)
         worksheet.write('F1', "Упаковки", bold)
         worksheet.write('G1', "Евро", bold)
+
+        row_index = 1
+        for item in stock_list:
+            if item[0] != None:
+                worksheet.write(int(row_index), int(0), str(item[0]))
+                worksheet.write(int(row_index), int(1), str(item[1]))
+                worksheet.write(int(row_index), int(2), str(item[2]))
+                worksheet.write(int(row_index), int(3), str(item[3]))
+                worksheet.write(int(row_index), int(4), str(item[4]))
+                worksheet.write(int(row_index), int(5), str(item[5]))
+                worksheet.write(int(row_index), int(6), str(item[6]).replace(".",","))
+                print(item)
+            row_index +=1
+        workbook.close()
 
 
 class Tertiary_download_structure:
