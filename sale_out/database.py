@@ -144,7 +144,6 @@ class CStock_quadra_workout:
         for i in classified_stock:
             for in_ in i:
                 stock_list.append([in_.week,in_.date,in_.country_region,in_.distributor,in_.item_quadra,in_.quantity_packs,in_.amount_euro])
-                 #todo записать в файл ексель
         workbook = xlsxwriter.Workbook(
             'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\transform_files\\0.transform_stock_actual.xlsx')
         worksheet = workbook.add_worksheet()

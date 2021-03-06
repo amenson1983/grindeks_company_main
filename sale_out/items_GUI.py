@@ -15,7 +15,7 @@ from win32timezone import now
 
 from items_class import SKU_WORKOUT, CSKU, CItemsDAO
 from sale_out.database import CEXtract_database_tertiary, Tertiary_download_structure, CBase_2021_quadra_workout, \
-    Kam_plans
+    Kam_plans, CStock_quadra_workout, run_refresh_in_big_table_report
 
 conn = sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db")
 items_ = CItemsDAO.read_tertiary(conn)
@@ -1339,6 +1339,17 @@ class Items_GUI(tkinter.Frame):
         tkinter.messagebox.showinfo('INFO', f'0.transform_for_1_sales_report_with_filter.xlsx file has been successfully updated!')
         my_xlsx_excel_file = 'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\sales_report_riga\\1.Sales report with filter_new.xlsx'
         wb = xw.Book(my_xlsx_excel_file)
+        ex = CBase_2021_quadra_workout()
+        ex.actual_sales_to_sqlite3_from_xlsx()
+
+        ex.annual_plans_to_sqlite3_from_xlsx()
+        ex.plans_in_euro_from_sqlite3_to_xlsx_for_big_table()
+        ex.plans_in_packs_from_sqlite3_to_xlsx_for_big_table()
+        ez = CStock_quadra_workout()
+        ez.classified_stock_to_sqlite()
+        ez.get_stock_for_big_table()
+        ex.actual_sales_from_sqlite3_to_xlsx_for_big_table()
+        run_refresh_in_big_table_report()
         # TODO to add package for power BI
 
     def rewrite_2020_629_base(self):

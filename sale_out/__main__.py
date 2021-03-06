@@ -297,14 +297,10 @@ if __name__ == '__main__':
     #ex.plans_in_euro_from_sqlite3_to_xlsx_for_big_table()
     #ex.plans_in_packs_from_sqlite3_to_xlsx_for_big_table()
     #print('OK')
-    #Main()
+    Main()
     #run_update_monitoring()
     #ex.actual_sales_from_sqlite3_to_xlsx_for_big_table()
     #run_refresh_in_big_table_report()
-    ez = CStock_quadra_workout()
-    #ez.classified_stock_to_sqlite()
-    sql = 'select  stock_at_distributors_wh.date, stock_at_distributors_wh.week, stock_at_distributors_wh.distributor, stock_at_distributors_wh.item_quadra, sum(stock_at_distributors_wh.quantity_packs), sum(stock_at_distributors_wh.amount_euro) from stock_at_distributors_wh GROUP by stock_at_distributors_wh.date, stock_at_distributors_wh.week, stock_at_distributors_wh.distributor, stock_at_distributors_wh.item_quadra'
-    ez.get_stock_for_big_table()
 
 
 
