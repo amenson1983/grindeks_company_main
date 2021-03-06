@@ -6,10 +6,15 @@ from pandas.tests.io.excel.test_openpyxl import openpyxl
 def run_refresh_in_big_table_report():
     import xlwings as xw
     wb = xw.Book(
-        'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\big_table_report_ukraine\\big_table_report_2021_new.xlsm')
+        'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\big_table_report_ukraine\\big_table_report_2021_new_1.xlsm')
     app = wb.app
-    macro_vba = app.macro("'big_table_report_2021_new.xlsm'!refresh")
+    macro_vba = app.macro("'big_table_report_2021_new_1.xlsm'!open_tabs")
     macro_vba()
+    macro_vba = app.macro("'big_table_report_2021_new_1.xlsm'!refresh")
+    macro_vba()
+    macro_vba = app.macro("'big_table_report_2021_new_1.xlsm'!close_tabs")
+    macro_vba()
+    wb.to_pdf('C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\big_table_report_ukraine\\big_table_report_2021_new_1.pdf')
     wb.save()
     wb.close()
 class Kam_plan_download_structure:
@@ -1803,7 +1808,7 @@ class CBase_2021_quadra_workout:
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
             cursor.execute("DROP TABLE big_table_actual_sales")
-            cursor.execute("CREATE TABLE IF NOT EXISTS big_table_actual_sales (month, item_quadra, distributor_name, sales_euro,quarter_year, half_year, week,sales_packs);")
+            cursor.execute("CREATE TABLE IF NOT EXISTS big_table_actual_sales (month, item_quadra, distributor_name, country_region,sales_euro,quarter_year, half_year, week,sales_packs);")
             path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\0.new_629_report_2021.xlsx"
             conn.commit()
             wb_obj = openpyxl.load_workbook(path)
@@ -1824,16 +1829,16 @@ class CBase_2021_quadra_workout:
                 classified_base_2021.append(string_class)
             for string in classified_base_2021:
                 for row in string:
-                    strin = [row.month,row.item_quadra,row.distributor_name,row.sales_euro,row.quarter_year, row.half_year,row.week,row.sales_packs]
-                    cursor.execute("INSERT INTO big_table_actual_sales VALUES (?,?,?,?,?,?,?,?);",strin)
+                    strin = [row.month,row.item_quadra,row.distributor_name,row.ff_region,row.sales_euro,row.quarter_year, row.half_year,row.week,row.sales_packs]
+                    cursor.execute("INSERT INTO big_table_actual_sales VALUES (?,?,?,?,?,?,?,?,?);",strin)
             conn.commit()
             print('OK')
-
+#TODO!!!! Distributors shares
     def actual_sales_from_sqlite3_to_xlsx_for_big_table(conn):
 
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT big_table_actual_sales.month, big_table_actual_sales.item_quadra, big_table_actual_sales.distributor_name, sum(big_table_actual_sales.sales_packs), sum(big_table_actual_sales.sales_euro) from big_table_actual_sales group by big_table_actual_sales.month, big_table_actual_sales.item_quadra, big_table_actual_sales.distributor_name")
+            cursor.execute("SELECT big_table_actual_sales.month, big_table_actual_sales.item_quadra, big_table_actual_sales.distributor_name,big_table_actual_sales.country_region, sum(big_table_actual_sales.sales_packs), sum(big_table_actual_sales.sales_euro) from big_table_actual_sales group by big_table_actual_sales.month, big_table_actual_sales.item_quadra, big_table_actual_sales.distributor_name,big_table_actual_sales.country_region")
             conn.commit()
             results = cursor.fetchall()
             workbook = xlsxwriter.Workbook(
@@ -1846,8 +1851,9 @@ class CBase_2021_quadra_workout:
             worksheet.write('A1', "Месяц", bold)
             worksheet.write('B1', "Товар", bold)
             worksheet.write('C1', "Дистрибьютор", bold)
-            worksheet.write('D1', "Количество (IN)", bold)
-            worksheet.write('E1', "Сумма (IN)", bold)
+            worksheet.write('D1', "Область", bold)
+            worksheet.write('E1', "Количество (IN)", bold)
+            worksheet.write('F1', "Сумма (IN)", bold)
 
             list_base_2021 = []
             row_index = 1
@@ -1858,18 +1864,20 @@ class CBase_2021_quadra_workout:
                           str(item[1]),
                           str(item[2]),
                           str(item[3]),
-                          str(item[4])]]
+                          str(item[4]),
+                          str(item[5])]]
 
                 list_base_2021.append(item_)
                 worksheet.write(int(row_index), int(0), str(item[0]))
                 worksheet.write(int(row_index), int(1), str(item[1]))
                 worksheet.write(int(row_index), int(2), str(item[2]))
-                worksheet.write(int(row_index), int(3), str(item[3]).replace(".",","))
+                worksheet.write(int(row_index), int(3), str(item[3]))
                 worksheet.write(int(row_index), int(4), str(item[4]).replace(".",","))
+                worksheet.write(int(row_index), int(5), str(item[5]).replace(".",","))
                 row_index += 1
 
             workbook.close()
-            run_refresh_in_big_table_report()
+
 
     def save_1_tramsform_for_sales_report_with_filter_to_xlsx(self):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
