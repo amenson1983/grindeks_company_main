@@ -298,12 +298,14 @@ if __name__ == '__main__':
     #ex.plans_in_packs_from_sqlite3_to_xlsx_for_big_table()
     #print('OK')
     #Main()
-    run_update_monitoring()
+    #run_update_monitoring()
     #ex.actual_sales_from_sqlite3_to_xlsx_for_big_table()
     #ez = CStock_quadra_workout()
     #ez.classified_stock_to_sqlite()
     #ez.get_stock_for_big_table()
     #run_refresh_in_big_table_report()
+    x = open('C:\\Users\\Anastasia Siedykh\\PhpstormProjects\\grindex_main_company\\Form.html')
+    print(x)
 
 
 
