@@ -52,6 +52,9 @@ for receiver_email, receiver_name in zip(receiver_emails, receiver_names):
         msg['Subject'] =  receiver_name + f' , данные были обновлены сегодня - {now_}'
 
         msg.attach(MIMEText(email_body, 'html'))
+        part = MIMEApplication(open('C:\\Users\\Anastasia Siedykh\\PhpstormProjects\\grindex_main_company\\image002.png', 'rb').read())
+        part.add_header('Content-Disposition', 'attachment', filename='image002.png')
+        msg.attach(part)
         part = MIMEApplication(open('C:\\Users\\Anastasia Siedykh\\PhpstormProjects\\grindex_main_company\\logo.png', 'rb').read())
         part.add_header('Content-Disposition', 'attachment', filename='logo.png')
         msg.attach(part)
