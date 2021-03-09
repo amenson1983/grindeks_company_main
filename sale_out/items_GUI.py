@@ -134,10 +134,12 @@ class Items_GUI(tkinter.Frame):
 
         self.rewrite_629_base_2020_button_sec_euro = tkinter.Button(self.second_upper_frame, text='Rewrite the base 2020', command=self.rewrite_2020_629_base)
         self.rewrite_629_base_2020_button_sec_euro.pack(side='left')
-        self.rewrite_629_base_button_sec_euro = tkinter.Button(self.second_upper_frame, text='Save transformations', command=self.save_transformations_for_riga_sales_report)
+        self.rewrite_629_base_button_sec_euro = tkinter.Button(self.second_upper_frame, text='Save transformations for reports', command=self.save_transformations_for_riga_sales_report)
         self.rewrite_629_base_button_sec_euro.pack(side='left')
         self.refresh_button = tkinter.Button(self.second_upper_frame, text='Read data from Quadra server', command=self.secondary_2021_total_pack_euro,font=my_font1)
         self.refresh_button.pack(side='left')
+        self.send_big_table_button = tkinter.Button(self.second_upper_frame, text='Send Big table report', command=self.send_big_table_report,font=my_font1)
+        self.send_big_table_button.pack(side='left')
         self.quit_button = tkinter.Button(self.second_upper_frame, text='Quit', command=self.master.destroy,font=my_font1)
         self.quit_button.pack(side='left')
         self.show_secondary_sales_list = tkinter.Button(self.upper_frame, text='Total secondary sales euro', command=self.show_secondary_sales_by_month)
@@ -1334,11 +1336,6 @@ class Items_GUI(tkinter.Frame):
         x = CBase_2021_quadra_workout()
         x.save_base_629_2020_to_xlsx()
     def save_transformations_for_riga_sales_report(self):
-        x = CBase_2021_quadra_workout()
-        x.save_1_tramsform_for_sales_report_with_filter_to_xlsx()
-        tkinter.messagebox.showinfo('INFO', f'0.transform_for_1_sales_report_with_filter.xlsx file has been successfully updated!')
-        my_xlsx_excel_file = 'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\sales_report_riga\\1.Sales report with filter_new.xlsx'
-        wb = xw.Book(my_xlsx_excel_file)
         ex = CBase_2021_quadra_workout()
         ex.actual_sales_to_sqlite3_from_xlsx()
 
@@ -1350,7 +1347,120 @@ class Items_GUI(tkinter.Frame):
         ez.get_stock_for_big_table()
         ex.actual_sales_from_sqlite3_to_xlsx_for_big_table()
         run_refresh_in_big_table_report()
+        x = CBase_2021_quadra_workout()
+        x.save_1_tramsform_for_sales_report_with_filter_to_xlsx()
+        tkinter.messagebox.showinfo('INFO', f'0.transform_for_1_sales_report_with_filter.xlsx file has been successfully updated!')
+        my_xlsx_excel_file = 'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\sales_report_riga\\1.Sales report with filter_new.xlsx'
+        wb = xw.Book(my_xlsx_excel_file)
+
         # TODO to add package for power BI
+    def send_big_table_report(self):
+        from email.mime.application import MIMEApplication
+
+        import requests
+        import lxml
+        from pandas.tests.dtypes.test_missing import now
+
+        smtp_server = "smtp.gmail.com"
+        port = 587
+
+        login = "amenson1983@gmail.com"
+        password = "Chernayamast_16"
+        now_ = str(now)[0:10]
+
+        RECEIVER_EMAIL_1 = "aleksey.soloschenko@grindeks.ua"
+        RECEIVER_EMAIL_2 = "oksana.romanenko@grindeks.ua"
+        RECEIVER_EMAIL_3 = "oleg.martynchuk@grindeks.ua"
+        RECEIVER_EMAIL_4 = "anton.semerenko@grindeks.ua"
+        RECEIVER_EMAIL_5 = "vitalii.starchenko@grindeks.ua"
+        RECEIVER_EMAIL_6 = "dmytro.shershnov@grindeks.ua"
+        RECEIVER_NAME_1 = 'Лёша '
+        RECEIVER_NAME_2 = 'Оксана '
+        RECEIVER_NAME_3 = 'Олег Владимирович '
+        RECEIVER_NAME_4 = 'Антон '
+        RECEIVER_NAME_5 = 'Виталий '
+        RECEIVER_NAME_6 = 'Дима '
+
+        import smtplib
+        import ssl
+        from email.mime.text import MIMEText
+        from email.utils import formataddr
+        from email.mime.multipart import MIMEMultipart  # New line
+        from email.mime.base import MIMEBase  # New line
+        from email import encoders  # New line
+
+        # User configuration
+        sender_email = "amenson1983@gmail.com"
+        sender_name = "Турчин Андрей"
+
+        receiver_emails = [RECEIVER_EMAIL_1, RECEIVER_EMAIL_2, RECEIVER_EMAIL_3, RECEIVER_EMAIL_4, RECEIVER_EMAIL_5,
+                           RECEIVER_EMAIL_6]
+        receiver_names = [RECEIVER_NAME_1, RECEIVER_NAME_2, RECEIVER_NAME_3, RECEIVER_NAME_4, RECEIVER_NAME_5,
+                          RECEIVER_NAME_6]
+
+        # Email body
+        email_html = open('C:\\Users\\Anastasia Siedykh\\PhpstormProjects\\grindex_main_company\\Form.html',
+                          encoding="UTF-8")
+        email_body = email_html.read()
+
+        filename = 'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\big_table_report_ukraine\\big_table_report_2021_new_1.xlsm'
+        filename_text = 'big_table_report_2021_new_1.xlsm'
+        for receiver_email, receiver_name in zip(receiver_emails, receiver_names):
+            print("Sending the email...")
+            # Configurating user's info
+            msg = MIMEMultipart()
+            msg['To'] = formataddr((receiver_name, receiver_email))
+            msg['From'] = formataddr((sender_name, sender_email))
+            msg[
+                'Subject'] = receiver_name + f' , данные были обновлены сегодня - {now_} (доли дистрибьюторов скорректированы))'
+
+            msg.attach(MIMEText(email_body, 'html'))
+            part = MIMEApplication(
+                open('C:\\Users\\Anastasia Siedykh\\PhpstormProjects\\grindex_main_company\\image002.png', 'rb').read())
+            part.add_header('Content-Disposition', 'attachment', filename='image002.png')
+            msg.attach(part)
+            part = MIMEApplication(
+                open('C:\\Users\\Anastasia Siedykh\\PhpstormProjects\\grindex_main_company\\logo.png', 'rb').read())
+            part.add_header('Content-Disposition', 'attachment', filename='logo.png')
+            msg.attach(part)
+
+            try:
+                # Open PDF file in binary mode
+                with open(filename, "rb") as attachment:
+                    part = MIMEBase("application", "octet-stream")
+                    part.set_payload(attachment.read())
+
+                # Encode file in ASCII characters to send by email
+                encoders.encode_base64(part)
+
+                # Add header as key/value pair to attachment part
+                part.add_header(
+                    "Content-Disposition",
+                    f"attachment; filename= {filename_text}",
+                )
+
+                msg.attach(part)
+            except Exception as e:
+                print(f"Oh no! We didn't found the attachment!n{e}")
+                break
+
+            try:
+                # Creating a SMTP session | use 587 with TLS, 465 SSL and 25
+                server = smtplib.SMTP(smtp_server, port)
+                # Encrypts the email
+                context = ssl.create_default_context()
+                server.starttls(context=context)
+                # We log in into our Google account
+                server.login(login, password)
+                # Sending email from sender, to receiver with the email body
+                server.sendmail(sender_email, receiver_email, msg.as_string())
+                print('Email sent!')
+            except Exception as e:
+                print(f'Oh no! Something bad happened!n{e}')
+                break
+            finally:
+                print('Closing the server...')
+                server.quit()
 
     def rewrite_2020_629_base(self):
         x = CBase_2021_quadra_workout()

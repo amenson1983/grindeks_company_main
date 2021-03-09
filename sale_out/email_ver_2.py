@@ -6,21 +6,26 @@ from pandas.tests.dtypes.test_missing import now
 
 smtp_server = "smtp.gmail.com"
 port = 587
-smtp_server_1 = "mail.grindeks.ua"
-port_1 = 587
-login_1 = "andriy.turchyn@grindeks.ua"
-password_1 = "inula685"
+
+
 login = "amenson1983@gmail.com"
 password = "Chernayamast_16"
 now_ = str(now)[0:10]
 
 
-RECEIVER_EMAIL_1 = "amenson1983@gmail.com"
-RECEIVER_EMAIL_2 = "turchyna.natali82@gmail.com"
-RECEIVER_EMAIL_3 = "andriy.turchyn@grindeks.ua"
-RECEIVER_NAME_1 = 'Андрей'
-RECEIVER_NAME_2 = 'Натичек, сонечко '
-RECEIVER_NAME_3 = 'Андрей'
+RECEIVER_EMAIL_1 = "aleksey.soloschenko@grindeks.ua"
+RECEIVER_EMAIL_2 = "oksana.romanenko@grindeks.ua"
+RECEIVER_EMAIL_3 = "oleg.martynchuk@grindeks.ua"
+RECEIVER_EMAIL_4 = "anton.semerenko@grindeks.ua"
+RECEIVER_EMAIL_5 = "vitalii.starchenko@grindeks.ua"
+RECEIVER_EMAIL_6 = "dmytro.shershnov@grindeks.ua"
+RECEIVER_NAME_1 = 'Лёша '
+RECEIVER_NAME_2 = 'Оксана '
+RECEIVER_NAME_3 = 'Олег Владимирович '
+RECEIVER_NAME_4 = 'Антон '
+RECEIVER_NAME_5 = 'Виталий '
+RECEIVER_NAME_6 = 'Дима '
+
 import smtplib
 import ssl
 from email.mime.text import MIMEText
@@ -31,11 +36,11 @@ from email import encoders  # New line
 
 # User configuration
 sender_email = "amenson1983@gmail.com"
-sender_name = "amenson1983@gmail.com"
+sender_name = "Турчин Андрей"
 
 
-receiver_emails = [RECEIVER_EMAIL_1, RECEIVER_EMAIL_2, RECEIVER_EMAIL_3]
-receiver_names = [RECEIVER_NAME_1, RECEIVER_NAME_2, RECEIVER_NAME_3]
+receiver_emails = [RECEIVER_EMAIL_1, RECEIVER_EMAIL_2, RECEIVER_EMAIL_3,RECEIVER_EMAIL_4, RECEIVER_EMAIL_5, RECEIVER_EMAIL_6]
+receiver_names = [RECEIVER_NAME_1, RECEIVER_NAME_2, RECEIVER_NAME_3,RECEIVER_NAME_4, RECEIVER_NAME_5, RECEIVER_NAME_6]
 
 # Email body
 email_html = open('C:\\Users\\Anastasia Siedykh\\PhpstormProjects\\grindex_main_company\\Form.html',encoding="UTF-8")
@@ -49,7 +54,7 @@ for receiver_email, receiver_name in zip(receiver_emails, receiver_names):
         msg = MIMEMultipart()
         msg['To'] = formataddr((receiver_name, receiver_email))
         msg['From'] = formataddr((sender_name, sender_email))
-        msg['Subject'] =  receiver_name + f' , данные были обновлены сегодня - {now_}'
+        msg['Subject'] =  receiver_name + f' , данные были обновлены сегодня - {now_} (доли дистрибьюторов скорректированы))'
 
         msg.attach(MIMEText(email_body, 'html'))
         part = MIMEApplication(open('C:\\Users\\Anastasia Siedykh\\PhpstormProjects\\grindex_main_company\\image002.png', 'rb').read())
