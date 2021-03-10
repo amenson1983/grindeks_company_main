@@ -134,10 +134,11 @@ class Items_GUI(tkinter.Frame):
 
         self.rewrite_629_base_2020_button_sec_euro = tkinter.Button(self.second_upper_frame, text='Rewrite the base 2020', command=self.rewrite_2020_629_base)
         self.rewrite_629_base_2020_button_sec_euro.pack(side='left')
-        self.rewrite_629_base_button_sec_euro = tkinter.Button(self.second_upper_frame, text='Save transformations for reports', command=self.save_transformations_for_riga_sales_report)
-        self.rewrite_629_base_button_sec_euro.pack(side='left')
-        self.refresh_button = tkinter.Button(self.second_upper_frame, text='Read data from Quadra server', command=self.secondary_2021_total_pack_euro,font=my_font1)
+        self.refresh_button = tkinter.Button(self.second_upper_frame, text='Read data from Quadra server', command=self.secondary_2021_total_pack_euro)
         self.refresh_button.pack(side='left')
+        self.rewrite_629_base_button_sec_euro = tkinter.Button(self.second_upper_frame, text='Save transformations for reports', command=self.save_transformations_for_riga_sales_report,font=my_font1)
+        self.rewrite_629_base_button_sec_euro.pack(side='left')
+
         self.send_big_table_button = tkinter.Button(self.second_upper_frame, text='Send Big table report', command=self.send_big_table_report,font=my_font1)
         self.send_big_table_button.pack(side='left')
         self.quit_button = tkinter.Button(self.second_upper_frame, text='Quit', command=self.master.destroy,font=my_font1)

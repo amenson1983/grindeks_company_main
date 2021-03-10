@@ -18,7 +18,6 @@ def run_refresh_in_big_table_report():
     macro_vba()
     macro_vba = app.macro("'big_table_report_2021_new_1.xlsm'!close_tabs")
     macro_vba()
-    wb.to_pdf('C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\big_table_report_ukraine\\big_table_report_2021_new_1.pdf')
     wb.save()
     wb.close()
 connection_url_quadra_server = "jdbc:jtds:sqlserver://62.149.15.123:1433/medowl_grindex"
