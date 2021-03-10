@@ -3,20 +3,25 @@ import sqlite3
 import xlsxwriter
 import jaydebeapi
 from pandas.tests.io.excel.test_openpyxl import openpyxl
-
+import logging
+logging.basicConfig(filename='process_flow_of_job_helper.log', level=logging.INFO, format='%(asctime)s %(message)s', datefmt='%d/%m/%Y %I:%M:%S %p')
 from sale_out.sqls import sql_629_from_quadra_server, sql_629_2020_from_quadra_server
 
 
 def run_refresh_in_big_table_report():
     import xlwings as xw
+    logging.info("Opening big tablereport - 'big_table_report_2021_new_1.xlsm' - OK")
     wb = xw.Book(
         'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\big_table_report_ukraine\\big_table_report_2021_new_1.xlsm')
     app = wb.app
     macro_vba = app.macro("'big_table_report_2021_new_1.xlsm'!open_tabs")
+    logging.info("Opening tabs in 'big_table_report_2021_new_1.xlsm' - OK")
     macro_vba()
+    logging.info("Updating tabs in  big_table_report_2021_new_1.xlsm from connected transformations - OK")
     macro_vba = app.macro("'big_table_report_2021_new_1.xlsm'!refresh")
     macro_vba()
     macro_vba = app.macro("'big_table_report_2021_new_1.xlsm'!close_tabs")
+    logging.info("Closing tabs in  big_table_report_2021_new_1.xlsm - OK")
     macro_vba()
     wb.save()
     wb.close()
@@ -66,6 +71,7 @@ class CEXtract_database_plan_ff: #TODO create ff_plans workout functions
     def read_plan_ff_main(conn):
         rep_plan_list = []
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            logging.info("Connecting to 'local_main_base.db' - OK")
             cursor = conn.cursor()
             cursor.execute(f"select distinct ff_plan.month_local, ff_plan.item_quadra, ff_plan.med_representative_code, ff_plan.packs_plan, ff_plan.euro_plan from ff_plan where ff_plan.year = '2021' and ff_plan.euro_plan <> 0")
             results = cursor.fetchall()
@@ -119,16 +125,21 @@ class CStock_quadra_workout:
         return stock_2021_classifyed
     def classified_stock_to_sqlite(self):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            logging.info("Connecting to 'local_main_base.db' - OK")
             cursor = conn.cursor()
             cursor.execute("DROP TABLE stock_at_distributors_wh")
+            logging.info("Dropping the table 'stock_at_distributors_wh' at 'local_main_base.db' - OK")
             cursor.execute("CREATE TABLE IF NOT EXISTS stock_at_distributors_wh (week,date,country_region,distributor,item_quadra,quantity_packs,amount_euro,num);")
+            logging.info("Creating the table 'stock_at_distributors_wh' at 'local_main_base.db' - OK")
             path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\raw_data_files\\stock_distributors_wh\\stock_at_distributors_wh.xlsx"
+            logging.info("Opening the 'stock_at_distributors_wh.xlsx' - OK")
             conn.commit()
             wb_obj = openpyxl.load_workbook(path)
             sheet_obj = wb_obj.active
             rows_count = str(sheet_obj.calculate_dimension()).rsplit(':')
 
             rows_count = int(str(rows_count[1])[1:])
+            logging.info(f"Calculating rows at 'stock_at_distributors_wh.xlsx' - number of rows - {rows_count} - OK")
 
             string = []
             classified_base_2021 = []
@@ -140,11 +151,17 @@ class CStock_quadra_workout:
                         str_.append(cell_obj.value)
 
                 string.append(str_)
-
+            logging.info(
+                f"Launching stock classification - OK")
             for i in string:
                 x = CStock_quadra_workout()
+
                 string_class = x.classify_stock_quadra(i)
                 classified_base_2021.append(string_class)
+            logging.info(
+                f"Stock classified - OK")
+            logging.info(
+                f"Inserting stock data to base - OK")
             for string in classified_base_2021:
                 for row in string:
                     strin = [row.week,row.date,row.country_region,row.distributor,row.item_quadra, row.quantity_packs,row.amount_euro,row.num]
@@ -353,6 +370,7 @@ class CBase_2021_quadra_workout:
                                                    etalon_code_okpo, delivery_date, position_code, office_head_organization, head_office_okpo, quarter_year, half_year,
                                                    annual_sales_category, med_representative_name, kam_name, week, territory_name, brik_name, sale_in_quantity)
             base_2021_classifyed.append(entry)
+            logging.info("Classification base 2021 - OK")
         return base_2021_classifyed
     def classify_base_2021_from_xlxs(self, item):
         base_2021_classified_ = []
@@ -402,20 +420,25 @@ class CBase_2021_quadra_workout:
                                                        brik_name, sales_packs)
 
         base_2021_classified_.append(st)
+        logging.info("Classification of the base 2021 - OK")
         return base_2021_classified_
     def upload_2021_base_from_quadra(self):
         try:
             # jTDS Driver
             driver_name = "net.sourceforge.jtds.jdbc.Driver"
             connection_url = connection_url_quadra_server
+            logging.info("Connecting to Quadra Server - OK")
             connection_properties = quadra_login
+            logging.info("Log in - OK")
             jar_path = jar_path_constant
             connection = jaydebeapi.connect(driver_name, connection_url, connection_properties, jar_path)
             cursor = connection.cursor()
             cursor.execute(sql_629_from_quadra_server)
+            logging.info("Executing SQL request - OK")
             res = cursor.fetchall()
             x = CBase_2021_quadra_workout()
             base_2021_classifyed = x.classify_base_2021(res)
+            logging.info("Classifying base from Quadra - OK")
             return base_2021_classifyed
         except Exception as err:
             print(str(err))
@@ -424,11 +447,14 @@ class CBase_2021_quadra_workout:
             # jTDS Driver.
             driver_name = "net.sourceforge.jtds.jdbc.Driver"
             connection_url = connection_url_quadra_server
+            logging.info("Connecting to Quadra Server - OK")
             connection_properties = quadra_login
+            logging.info("Log in - OK")
             jar_path = jar_path_constant
             connection = jaydebeapi.connect(driver_name, connection_url, connection_properties, jar_path)
             cursor = connection.cursor()
             cursor.execute(sql_629_from_quadra_server)
+            logging.info("Executing SQL request - OK")
             res = cursor.fetchall()
 
             return res
@@ -440,19 +466,24 @@ class CBase_2021_quadra_workout:
             # jTDS Driver.
             driver_name = "net.sourceforge.jtds.jdbc.Driver"
             connection_url = connection_url_quadra_server
+            logging.info("Connecting to Quadra Server - OK")
             connection_properties = quadra_login
+            logging.info("Log in - OK")
             jar_path = jar_path_constant
             connection = jaydebeapi.connect(driver_name, connection_url, connection_properties, jar_path)
             cursor = connection.cursor()
             cursor.execute(sql_629_from_quadra_server)
+            logging.info("Executing SQL request - OK")
             res = cursor.fetchall()
             status = 'Already updated database'
             status_1 = 'Need to update xlsx and database'
             for i in res:
                 count += 1
             print(count)
+            logging.info(f"Getting rows count number of rows {count} - OK")
 
             path = 'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\0.base_update_2021_row_count.xlsx'
+            logging.info(f"Writing rows count - {count} - to '0.base_update_2021_row_count.xlsx' - OK")
             wb_obj = openpyxl.load_workbook(path)
             sheet_obj = wb_obj.active
             cell_obj = sheet_obj.cell(row=1, column=1)
@@ -476,10 +507,13 @@ class CBase_2021_quadra_workout:
         # jTDS Driver.
         driver_name = "net.sourceforge.jtds.jdbc.Driver"
         connection_url = connection_url_quadra_server
+        logging.info("Connecting to Quadra server  - OK")
         connection_properties = quadra_login
+        logging.info("Log in to Quadra server  - OK")
         jar_path = jar_path_constant
         connection = jaydebeapi.connect(driver_name, connection_url, connection_properties, jar_path)
         cursor = connection.cursor()
+        logging.info("Running 'sql_629_from_quadra_server'-script  - OK")
         cursor.execute(sql_629_from_quadra_server)
         res = cursor.fetchall()
 
@@ -487,6 +521,7 @@ class CBase_2021_quadra_workout:
         base_2021_classifyed_ = x.classify_base_2021(res)
         sum_tot_euro = 0
         workbook = xlsxwriter.Workbook('C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\0.new_629_report_2021.xlsx')
+        logging.info("Opening '0.new_629_report_2021.xlsx' for writing  - OK")
         worksheet = workbook.add_worksheet()
 
         # Widen the first column to make the text clearer.
@@ -525,7 +560,7 @@ class CBase_2021_quadra_workout:
         worksheet.write('AE1', 'Территория', bold)
         worksheet.write('AF1', 'Полигон', bold)
         worksheet.write('AG1', 'Количество (IN)', bold)
-
+        logging.info("Adding headers to '0.new_629_report_2021.xlsx' - OK")
 
         columns = ['year', 'month', 'ff_region', 'country_region', 'city_town', 'organization_name',
                    'organization_adress', 'sales_method',
@@ -615,7 +650,7 @@ class CBase_2021_quadra_workout:
             worksheet.write(int(row_index), int(32),str(y2))
 
             row_index +=1
-
+        logging.info("Writing data to '0.new_629_report_2021.xlsx' - OK")
         workbook.close()
     def save_base_629_2020_to_xlsx(self):
         final_list = []
@@ -764,11 +799,12 @@ class CBase_2021_quadra_workout:
         workbook.close()
     def get_secondary_2021_by_month(self):
         path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\0.new_629_report_2021.xlsx"
+        logging.info("Connecting to '0.new_629_report_2021.xlsx'  - OK")
         wb_obj = openpyxl.load_workbook(path)
         sheet_obj = wb_obj.active
         rows_count = str(sheet_obj.calculate_dimension()).rsplit(':')
         rows_count = int(str(rows_count[1])[2:])
-        print(rows_count)
+        logging.info(f"Calculating rows in '0.new_629_report_2021.xlsx' - number of rows - {rows_count}  - OK")
         string = []
         classified_base_2021 = []
         for row in range(1, rows_count + 1):
@@ -786,13 +822,16 @@ class CBase_2021_quadra_workout:
         mtd_euro = 0
         mtd_packs = 0
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            logging.info("Connecting to 'local_main_base.db'  - OK")
             cursor = conn.cursor()
             cursor.execute(f"select secondary_2021_629.sales_packs, secondary_2021_629.sales_euro from secondary_2021_629 where secondary_2021_629.month = '{month}'")
+
             conn.commit()
             results = cursor.fetchall()
             for i in results:
                 mtd_euro +=float(i[1])
                 mtd_packs += float(i[0])
+            logging.info(f"Getting secondary sales MTD data: MTD packs - {mtd_packs} packs, MTD euro - {mtd_euro} euro - OK")
         return mtd_packs, mtd_euro
     def get_secondary_2020_by_month(self):
         path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\0.new_629_report_2020.xlsx"
@@ -815,15 +854,20 @@ class CBase_2021_quadra_workout:
         return classified_base_2020
     def rewrite_629_2021_in_database(conn):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            logging.info("Connecting to 'local_main_base.db'  - OK")
             cursor = conn.cursor()
             cursor.execute("DROP TABLE secondary_2021_629")
+            logging.info("Dropping the table 'secondary_2021_629' in 'local_main_base.db'  - OK")
             cursor.execute("CREATE TABLE IF NOT EXISTS secondary_2021_629 (year, month, ff_region, country_region, city_town, organization_name,organization_adress, product_group,product_code, item_quadra, organization_etalon_id, organization_etalon_name,distributor_etalon_name, distributor_name, distributor_okpo, sales_euro, promotion, organization_type,organization_status, etalon_code_okpo, delivery_date, position_code, office_head_organization,head_office_okpo, quarter_year, half_year, annual_sales_category,med_representative_name, kam_name, week, territory_name, brik_name, sales_packs);")
             path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\0.new_629_report_2021.xlsx"
+            logging.info("Creating the table 'secondary_2021_629' in 'local_main_base.db'  - OK")
+            logging.info("Opening '0.new_629_report_2021.xlsx'   - OK")
             conn.commit()
             wb_obj = openpyxl.load_workbook(path)
             sheet_obj = wb_obj.active
             rows_count = str(sheet_obj.calculate_dimension()).rsplit(':')
             rows_count = int(str(rows_count[1])[2:])
+            logging.info(f"Calculating rows in '0.new_629_report_2021.xlsx' - number of rows - {rows_count}  - OK")
             string = []
             classified_base_2021 = []
             for row in range(1, rows_count + 1):
@@ -835,13 +879,15 @@ class CBase_2021_quadra_workout:
             for i in string:
                 x = CBase_2021_quadra_workout()
                 string_class = x.classify_base_2021_from_xlxs(i)
+                logging.info("Classifying received data   - OK")
                 classified_base_2021.append(string_class)
             for string in classified_base_2021:
                 for row in string:
                     strin = [row.year,row.month,row.ff_region, row.country_region, row.city_town, row.organization_name,row.organization_adress, row.product_group, row.product_code, row.item_quadra, row.organization_etalon_id, row.organization_etalon_name,row.distributor_etalon_name,row.distributor_name, row.distributor_okpo, row.sales_euro, row.promotion, row.organization_type,row.organization_status,row.etalon_code_okpo, row.delivery_date, row.position_code, row.office_head_organization, row.head_office_okpo,row.quarter_year, row.half_year,row.annual_sales_category, row.med_representative_name,row.kam_name, row.week, row.territory_name,row.brik_name, row.sales_packs]
                     cursor.execute("INSERT INTO secondary_2021_629 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",strin)
             conn.commit()
-            print('OK')
+            logging.info("Inserting received data to 'local_main_base.db' - OK")
+
     def rewrite_629_2020_in_database(conn):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
             cursor = conn.cursor()
@@ -875,8 +921,10 @@ class CBase_2021_quadra_workout:
         total_euro = 0
         total_packs = 0
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            logging.info("Connecting to 'local_main_base.db'  - OK")
             cursor = conn.cursor()
             cursor.execute("select sum(secondary_2021_629.sales_packs),sum(secondary_2021_629.sales_euro)  from secondary_2021_629")
+            logging.info("Getting data from 'secondary_2021_629' table in 'local_main_base.db'  - OK")
             conn.commit()
             results = cursor.fetchall()
             for i in results:
@@ -884,21 +932,25 @@ class CBase_2021_quadra_workout:
                 total_packs += i[0]
             print(total_packs)
             print(total_euro)
+            logging.info(f"Total packs {total_packs} packs, Total euro {total_euro} euro - OK")
         return total_packs, total_euro
     def annual_plans_to_sqlite3_from_xlsx(conn):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            logging.info("Connecting to 'local_main_base.db'  - OK")
             cursor = conn.cursor()
             cursor.execute("DROP TABLE big_table_plans")
+            logging.info("Dropping 'big_table_plans' table in 'local_main_base.db'  - OK")
             cursor.execute("CREATE TABLE IF NOT EXISTS big_table_plans (sales_type,general_name,brand,item_kpi_report,item_quadra,plan_fact,UoM,cip_euro_hq,month,month_local,distributor,value_final);")
             path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\raw_data_files\\secondary_sales_plans\\annual_sales_plan_from_HQ_final.xlsx"
+            logging.info("Creating 'big_table_plans' table in 'local_main_base.db'  - OK")
             conn.commit()
+            logging.info("Opening 'annual_sales_plan_from_HQ_final.xlsx'  - OK")
             wb_obj = openpyxl.load_workbook(path)
             sheet_obj = wb_obj.active
             rows_count = str(sheet_obj.calculate_dimension()).rsplit(':')
             print(rows_count)
             rows_count = int(str(rows_count[1])[1:])
-            print(rows_count)
-            print(rows_count)
+            logging.info(f"Calculating rows - {rows_count}  - OK")
             string = []
 
             for row in range(2, rows_count + 1):
@@ -913,10 +965,12 @@ class CBase_2021_quadra_workout:
                 strin = [row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10],x]
                 cursor.execute("INSERT INTO big_table_plans VALUES (?,?,?,?,?,?,?,?,?,?,?,?);",strin)
             conn.commit()
-            print('OK')
+            logging.info("Inserting data to 'big_table_plans' table in 'local_main_base.db'  - OK")
+
     def plans_in_packs_from_sqlite3_to_xlsx_for_big_table(conn):
 
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            logging.info("Connecting to 'local_main_base.db'  - OK")
             cursor = conn.cursor()
             cursor.execute("select big_table_plans.month, big_table_plans.distributor, big_table_plans.item_quadra, sum(big_table_plans.value_final) from big_table_plans where big_table_plans.UoM = 'packs' group by big_table_plans.month, big_table_plans.distributor, big_table_plans.item_quadra")
             conn.commit()
@@ -924,7 +978,7 @@ class CBase_2021_quadra_workout:
             workbook = xlsxwriter.Workbook(
                 'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\transform_files\\0.transform_for_big_table_plans_packs.xlsx')
             worksheet = workbook.add_worksheet()
-
+            logging.info("Opening '0.transform_for_big_table_plans_packs.xlsx' for writing - OK")
             # Widen the first column to make the text clearer.
             # worksheet.set_column('A:A', 20)
             bold = workbook.add_format({'bold': True}, )
@@ -949,17 +1003,19 @@ class CBase_2021_quadra_workout:
                 worksheet.write(int(row_index), int(2), str(item[2]))
                 worksheet.write(int(row_index), int(3), str(item[3]).replace(".",","))
                 row_index += 1
-
+            logging.info("Writing data to '0.transform_for_big_table_plans_packs.xlsx' - OK")
             workbook.close()
     def plans_in_euro_from_sqlite3_to_xlsx_for_big_table(conn):
 
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            logging.info("Connecting to 'local_main_base.db'  - OK")
             cursor = conn.cursor()
             cursor.execute("select big_table_plans.month, big_table_plans.distributor, big_table_plans.item_quadra, sum(big_table_plans.value_final) from big_table_plans where big_table_plans.UoM = 'euro' group by big_table_plans.month, big_table_plans.distributor, big_table_plans.item_quadra")
             conn.commit()
             results_packs = cursor.fetchall()
             workbook = xlsxwriter.Workbook(
                 'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\transform_files\\0.transform_for_big_table_plans_euro.xlsx')
+            logging.info("Opening '0.transform_for_big_table_plans_euro.xlsx'  - OK")
             worksheet = workbook.add_worksheet()
 
             # Widen the first column to make the text clearer.
@@ -986,19 +1042,23 @@ class CBase_2021_quadra_workout:
                 worksheet.write(int(row_index), int(2), str(item[2]))
                 worksheet.write(int(row_index), int(3), str(item[3]).replace(".",","))
                 row_index += 1
-
+            logging.info("Writing data to '0.transform_for_big_table_plans_euro.xlsx'  - OK")
             workbook.close()
     def actual_sales_to_sqlite3_from_xlsx(conn):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            logging.info("Connecting to 'local_main_base.db' - OK")
             cursor = conn.cursor()
             cursor.execute("DROP TABLE big_table_actual_sales")
+            logging.info("Dropping the table 'big_table_actual_sales' in database - OK")
             cursor.execute("CREATE TABLE IF NOT EXISTS big_table_actual_sales (month, item_quadra, distributor_name, country_region,sales_euro,quarter_year, half_year, week,sales_packs);")
             path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\0.new_629_report_2021.xlsx"
             conn.commit()
             wb_obj = openpyxl.load_workbook(path)
+            logging.info("Loading data from '0.new_629_report_2021.xlsx' - OK")
             sheet_obj = wb_obj.active
             rows_count = str(sheet_obj.calculate_dimension()).rsplit(':')
             rows_count = int(str(rows_count[1])[2:])
+            logging.info(f"Calculating dimensions at '0.new_629_report_2021.xlsx' - number of rows: {rows_count} - OK")
             string = []
             classified_base_2021 = []
             for row in range(2, rows_count + 1):
@@ -1016,10 +1076,12 @@ class CBase_2021_quadra_workout:
                     strin = [row.month,row.item_quadra,row.distributor_name,row.ff_region,row.sales_euro,row.quarter_year, row.half_year,row.week,row.sales_packs]
                     cursor.execute("INSERT INTO big_table_actual_sales VALUES (?,?,?,?,?,?,?,?,?);",strin)
             conn.commit()
+            logging.info("Inserting data to 'big_table_actual_sales' table in database - OK")
             print('OK')
     def actual_sales_from_sqlite3_to_xlsx_for_big_table(conn):
 
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            logging.info("Connecting to 'local_main_base.db' - OK")
             cursor = conn.cursor()
             cursor.execute("SELECT big_table_actual_sales.month, big_table_actual_sales.week, big_table_actual_sales.item_quadra, big_table_actual_sales.distributor_name,big_table_actual_sales.country_region, sum(big_table_actual_sales.sales_packs), sum(big_table_actual_sales.sales_euro) from big_table_actual_sales group by big_table_actual_sales.month,big_table_actual_sales.week, big_table_actual_sales.item_quadra, big_table_actual_sales.distributor_name,big_table_actual_sales.country_region")
             conn.commit()
@@ -1027,6 +1089,7 @@ class CBase_2021_quadra_workout:
             workbook = xlsxwriter.Workbook(
                 'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\transform_files\\0.transform_for_big_table.xlsx')
             worksheet = workbook.add_worksheet()
+            logging.info("Opening '0.transform_for_big_table.xlsx' - OK")
 
             # Widen the first column to make the text clearer.
             # worksheet.set_column('A:A', 20)
@@ -1038,6 +1101,7 @@ class CBase_2021_quadra_workout:
             worksheet.write('E1', "Область", bold)
             worksheet.write('F1', "Количество (IN)", bold)
             worksheet.write('G1', "Сумма (IN)", bold)
+            logging.info("0.transform_for_big_table.xlsx writing headers - OK")
 
             list_base_2021 = []
             row_index = 1
@@ -1061,10 +1125,11 @@ class CBase_2021_quadra_workout:
                 worksheet.write(int(row_index), int(5), str(item[5]).replace(".",","))
                 worksheet.write(int(row_index), int(6), str(item[6]).replace(".", ","))
                 row_index += 1
-
+            logging.info("0.transform_for_big_table.xlsx writing data - OK")
             workbook.close()
     def save_1_tramsform_for_sales_report_with_filter_to_xlsx(self):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            logging.info("Connecting to 'local_main_base.db' - OK")
             cursor = conn.cursor()
             cursor.execute("select ymm.Год,ymm.half_month, items.cip_euro, items.brand, secondary_2021_629.month, secondary_2021_629.delivery_date, items.item_kpi_report, secondary_2021_629.sales_packs, secondary_2021_629.sales_euro, secondary_2021_629.distributor_name, secondary_2021_629.distributor_etalon_name from secondary_2021_629 join ymm on ymm.Дата = secondary_2021_629.delivery_date join items on items.item_quadra = secondary_2021_629.item_quadra and secondary_2021_629.month = items.month_ru where items.year = '2021'")
             conn.commit()
@@ -1072,6 +1137,7 @@ class CBase_2021_quadra_workout:
         sum_tot_euro = 0
         workbook = xlsxwriter.Workbook('C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\transform_files\\0.transform_for_1_sales_report_with_filter.xlsx')
         worksheet = workbook.add_worksheet('BASE')
+        logging.info("Opening '0.transform_for_1_sales_report_with_filter.xlsx' for writing - OK")
 
         # Widen the first column to make the text clearer.
         #worksheet.set_column('A:A', 20)
@@ -1117,7 +1183,7 @@ class CBase_2021_quadra_workout:
             worksheet.write(int(row_index), int(9), str(item[9]))
             worksheet.write(int(row_index), int(10), str(item[10]))
             row_index +=1
-
+        logging.info("Writing data to '0.transform_for_1_sales_report_with_filter.xlsx' - OK")
         workbook.close()
     def get_secondary_sales_sqlite3_for_big_table(conn,selected_months,year):
         sql_ = f"select secondary_{year}_629.month,  sum(secondary_{year}_629.sales_packs), sum(secondary_{year}_629.sales_euro)from secondary_{year}_629 where secondary_{year}_629.month NOT LIKE 'Месяц'  group by secondary_{year}_629.month"
