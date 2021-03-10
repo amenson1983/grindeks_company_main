@@ -1,3 +1,4 @@
+import logging
 import tkinter
 from tkinter import Tk
 
@@ -81,7 +82,7 @@ def actual_secondary_sales_2020():
         print(f'Год: 2020; Месяц: {month}: \t\t\t\t', '{0:,}'.format(y.__round__(2)).replace(",", " "), 'euro')
 def job():
     print("Работаю*************************************")
-
+    logging.info("Checking Quadra Server for update  - OK")
     try:
         count = 0
         # jTDS Driver.
@@ -263,16 +264,18 @@ def job():
         for i in res:
             count += 1
         print(count)
+        logging.info(f"Number of rows in Quadra base - {count}  - OK")
 
         path = 'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\0.base_update_2021_row_count.xlsx'
         wb_obj = openpyxl.load_workbook(path)
         sheet_obj = wb_obj.active
         cell_obj = sheet_obj.cell(row=1, column=1)
+        logging.info(f"Previous update number of rows in Quadra base - {cell_obj.value}  - OK")
         if cell_obj.value == count:
             print(f'Updated already')
         else:
             print('Oh, we have an update, launching Job Helper )))')
-            print(f'Checked at: {now}')
+            logging.info(f"We have an update, launching Helper  - OK")
             Main()
 
     except Exception as err:

@@ -370,7 +370,7 @@ class CBase_2021_quadra_workout:
                                                    etalon_code_okpo, delivery_date, position_code, office_head_organization, head_office_okpo, quarter_year, half_year,
                                                    annual_sales_category, med_representative_name, kam_name, week, territory_name, brik_name, sale_in_quantity)
             base_2021_classifyed.append(entry)
-            logging.info("Classification base 2021 - OK")
+
         return base_2021_classifyed
     def classify_base_2021_from_xlxs(self, item):
         base_2021_classified_ = []
@@ -420,7 +420,7 @@ class CBase_2021_quadra_workout:
                                                        brik_name, sales_packs)
 
         base_2021_classified_.append(st)
-        logging.info("Classification of the base 2021 - OK")
+
         return base_2021_classified_
     def upload_2021_base_from_quadra(self):
         try:
@@ -876,10 +876,10 @@ class CBase_2021_quadra_workout:
                     cell_obj = sheet_obj.cell(row=row, column=col)
                     str_.append(cell_obj.value)
                 string.append(str_)
+            logging.info("Classifying received data   - OK")
             for i in string:
                 x = CBase_2021_quadra_workout()
                 string_class = x.classify_base_2021_from_xlxs(i)
-                logging.info("Classifying received data   - OK")
                 classified_base_2021.append(string_class)
             for string in classified_base_2021:
                 for row in string:
