@@ -1,0 +1,106 @@
+import logging
+import sqlite3
+
+from pandas.tests.io.excel.test_xlsxwriter import xlsxwriter
+
+logging.basicConfig(filename='bi.log', level=logging.INFO, format='%(asctime)s %(message)s', datefmt='%d/%m/%Y %I:%M:%S %p')
+
+
+class CPower_BI:
+    def actual_secondary_sales_from_sqlite3(conn):
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            logging.info("Connecting to 'local_main_base.db' - OK")
+            cursor = conn.cursor()
+            cursor.execute("SELECT secondary_2021_629.month, secondary_2021_629.delivery_date, secondary_2021_629.week, secondary_2021_629.item_quadra, secondary_2021_629.distributor_name, secondary_2021_629.ff_region, secondary_2021_629.office_head_organization, secondary_2021_629.position_code, sum(secondary_2021_629.sales_packs), sum(secondary_2021_629.sales_euro) from secondary_2021_629 group by secondary_2021_629.month, secondary_2021_629.delivery_date, secondary_2021_629.week, secondary_2021_629.item_quadra, secondary_2021_629.distributor_name,secondary_2021_629.ff_region,secondary_2021_629.office_head_organization, secondary_2021_629.position_code")
+            conn.commit()
+            results = cursor.fetchall()
+            workbook = xlsxwriter.Workbook(
+                'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\power_bi_package\\0.secondary_sales_2021.xlsx')
+            worksheet = workbook.add_worksheet()
+            logging.info("Opening - OK")
+
+            # Widen the first column to make the text clearer.
+            # worksheet.set_column('A:A', 20)
+            bold = workbook.add_format({'bold': True}, )
+            worksheet.write('A1', "Месяц", bold)
+            worksheet.write('B1', "Дата", bold)
+            worksheet.write('C1', "Неделя", bold)
+            worksheet.write('D1', "Товар", bold)
+            worksheet.write('E1', "Дистрибьютор", bold)
+            worksheet.write('F1', "Область", bold)
+            worksheet.write('G1', "Главный Офис Сети", bold)
+            worksheet.write('H1', "Код сотрудника", bold)
+            worksheet.write('I1', "Упаковки (IN)", bold)
+            worksheet.write('J1', "Сумма (IN)", bold)
+            logging.info("Writing headers - OK")
+
+            list_base_2021 = []
+            row_index = 1
+
+            for item in results:
+                item_ = [[
+                          str(item[0]),
+                          str(item[1]),
+                          str(item[2]),
+                          str(item[3]),
+                          str(item[4]),
+                          str(item[5]),
+                          str(item[6]),
+                          str(item[7]),
+                          str(item[8]),
+                          str(item[9])]]
+
+                list_base_2021.append(item_)
+                worksheet.write(int(row_index), int(0), str(item[0]))
+                worksheet.write(int(row_index), int(1), str(item[1]))
+                worksheet.write(int(row_index), int(2), str(item[2]))
+                worksheet.write(int(row_index), int(3), str(item[3]))
+                worksheet.write(int(row_index), int(4), str(item[4]))
+                worksheet.write(int(row_index), int(5), str(item[5]))
+                worksheet.write(int(row_index), int(6), str(item[6]))
+                worksheet.write(int(row_index), int(7), str(item[7]))
+                worksheet.write(int(row_index), int(8), str(item[8]).replace(".",","))
+                worksheet.write(int(row_index), int(9), str(item[9]).replace(".", ","))
+                row_index += 1
+            logging.info("Writing data - OK")
+            workbook.close()
+    def distinct_head_offices(conn):
+
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            logging.info("Connecting to 'local_main_base.db' - OK")
+            cursor = conn.cursor()
+            cursor.execute("SELECT distinct secondary_2021_629.office_head_organization from secondary_2021_629")
+            conn.commit()
+            results = cursor.fetchall()
+            workbook = xlsxwriter.Workbook(
+                'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\power_bi_package\\0.distinct_head_offices.xlsx')
+            worksheet = workbook.add_worksheet()
+            logging.info("Opening  - OK")
+
+            # Widen the first column to make the text clearer.
+            # worksheet.set_column('A:A', 20)
+            bold = workbook.add_format({'bold': True}, )
+            worksheet.write('A1', "Главный офис сети", bold)
+
+
+            list_base_2021 = []
+            row_index = 1
+
+            for item in results:
+                item_ = [[
+                          str(item[0])]]
+
+                list_base_2021.append(item_)
+                worksheet.write(int(row_index), int(0), str(item[0]))
+
+                row_index += 1
+            logging.info("Writing data - OK")
+            workbook.close()
+
+
+
+
+if __name__ == '__main__':
+    ex = CPower_BI()
+    ex.distinct_head_offices()
+    ex.actual_secondary_sales_from_sqlite3()

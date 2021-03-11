@@ -290,9 +290,9 @@ def run_update_monitoring():
 
 
 
-#TODO logging!
 
-if __name__ == '__main__':
+
+#if __name__ == '__main__':
     #ex = CBase_2021_quadra_workout()
     #ex.actual_sales_to_sqlite3_from_xlsx()
 
@@ -300,13 +300,14 @@ if __name__ == '__main__':
     #ex.plans_in_euro_from_sqlite3_to_xlsx_for_big_table()
     #ex.plans_in_packs_from_sqlite3_to_xlsx_for_big_table()
     #print('OK')
-    Main()
+    #Main()
     #run_update_monitoring()
     #ex.actual_sales_from_sqlite3_to_xlsx_for_big_table()
     #ez = CStock_quadra_workout()
     #ez.classified_stock_to_sqlite()
     #ez.get_stock_for_big_table()
     #run_refresh_in_big_table_report()
+
 
 
 

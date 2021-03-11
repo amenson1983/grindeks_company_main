@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import tkinter
 from datetime import date
@@ -1357,16 +1358,19 @@ class Items_GUI(tkinter.Frame):
         # TODO to add package for power BI
     def send_big_table_report(self):
         from email.mime.application import MIMEApplication
-
+        logging.basicConfig(filename='process_flow_of_job_helper.log', level=logging.INFO,
+                            format='%(asctime)s %(message)s', datefmt='%d/%m/%Y %I:%M:%S %p')
         import requests
         import lxml
         from pandas.tests.dtypes.test_missing import now
 
         smtp_server = "smtp.gmail.com"
+        logging.info(f"Connecting to {smtp_server}  - OK")
         port = 587
 
         login = "amenson1983@gmail.com"
         password = "Chernayamast_16"
+        logging.info(f"Logging in - OK")
         now_ = str(now)[0:10]
 
         RECEIVER_EMAIL_1 = "aleksey.soloschenko@grindeks.ua"
@@ -1456,8 +1460,10 @@ class Items_GUI(tkinter.Frame):
                 # Sending email from sender, to receiver with the email body
                 server.sendmail(sender_email, receiver_email, msg.as_string())
                 print('Email sent!')
+                logging.info(f"E-mails sent to: {RECEIVER_NAME_1}, {RECEIVER_NAME_2}, {RECEIVER_NAME_3}, {RECEIVER_NAME_4}, {RECEIVER_NAME_5}")
             except Exception as e:
                 print(f'Oh no! Something bad happened!n{e}')
+                logging.info('Oh no! Something bad happened!')
                 break
             finally:
                 print('Closing the server...')
