@@ -15,6 +15,7 @@ from pandas.tests.io.excel.test_openpyxl import openpyxl
 from win32timezone import now
 
 from items_class import SKU_WORKOUT, CSKU, CItemsDAO
+from power_bi_pack.__main__ import CPower_BI
 from sale_out.database import CEXtract_database_tertiary, Tertiary_download_structure, CBase_2021_quadra_workout, \
     Kam_plans, CStock_quadra_workout, run_refresh_in_big_table_report
 
@@ -1355,6 +1356,7 @@ class Items_GUI(tkinter.Frame):
         my_xlsx_excel_file = 'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\sales_report_riga\\1.Sales report with filter_new.xlsx'
         wb = xw.Book(my_xlsx_excel_file)
 
+
         # TODO to add package for power BI
     def send_big_table_report(self):
         from email.mime.application import MIMEApplication
@@ -1468,7 +1470,11 @@ class Items_GUI(tkinter.Frame):
             finally:
                 print('Closing the server...')
                 server.quit()
-
+    def power_bi_pack(self):#TODO POWER BI TO CONNECT
+        ex = CPower_BI()
+        ex.distinct_head_offices()
+        ex.actual_secondary_sales_from_sqlite3()
+        ex.secondary_sales_2020_from_sqlite3_to_transform_xlxs()
     def rewrite_2020_629_base(self):
         x = CBase_2021_quadra_workout()
         x.rewrite_629_2020_in_database()

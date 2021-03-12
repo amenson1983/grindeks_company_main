@@ -1,5 +1,7 @@
 import csv
 import sqlite3
+
+import pandas
 import xlsxwriter
 import jaydebeapi
 from pandas.tests.io.excel.test_openpyxl import openpyxl
@@ -215,6 +217,73 @@ class Tertiary_download_structure:
         self.month = month
         self.year = year
         self.item_kpi = item_kpi
+class Tertiary_by_region_download_structure:
+    def __init__(self,year,	period_name,region,	full_medication_name,market_org,quantity,volume,sro,weight_sro):
+        self.weight_sro = weight_sro
+        self.sro = sro
+        self.volume = volume
+        self.quantity = quantity
+        self.market_org = market_org
+        self.full_medication_name = full_medication_name
+        self.region = region
+        self.period_name = period_name
+        self.year = year
+class Tertiary_workout:
+    def classify(self,col):
+        classifyed_tert = []
+        year = str(col[0])
+        period_name = col[1]
+        region = col[2]
+        full_medication_name = col[3]
+        market_org = col[4]
+        quantity = str(col[5])
+        volume = str(col[6])
+        sro = str(col[7])
+        weight_sro = str(col[8])
+        x = Tertiary_by_region_download_structure(str(year),	period_name,region,	full_medication_name,market_org,str(quantity),str(volume),str(sro),str(weight_sro))
+        classifyed_tert.append(x)
+        return classifyed_tert
+
+
+
+
+
+    def tert_reg_to_sqlite(self):
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            logging.info("Connecting to 'local_main_base.db'  - OK")
+            cursor = conn.cursor()
+            #cursor.execute("DROP TABLE tertiary_by_reg")
+            logging.info("Dropping the table 'tertiary_by_reg' in 'local_main_base.db'  - OK")
+            cursor.execute("CREATE TABLE IF NOT EXISTS tertiary_by_reg (year,	period_name,region,	full_medication_name,market_org,quantity,volume,sro,weight_sro);")
+            path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\transform_files\\0.transform_tertiary_by_region.xlsx"
+            logging.info("Creating the table 'tertiary_by_reg' in 'local_main_base.db'  - OK")
+            logging.info("Opening 'tertiary_region_actual.csv'   - OK")
+            conn.commit()
+            wb_obj = openpyxl.load_workbook(path)
+            sheet_obj = wb_obj.active
+            rows_count = str(sheet_obj.calculate_dimension()).rsplit(':')
+            rows_count = int(str(rows_count[1])[2:])
+            logging.info(f"tertiary_region_actual.csv' - number of rows - {rows_count}  - OK")
+            string = []
+            classified_base_2021 = []
+            for row in range(1, rows_count + 1):
+                str_ = []
+                for col in range(1, 10):
+                    cell_obj = sheet_obj.cell(row=row, column=col)
+                    str_.append(cell_obj.value)
+                string.append(str_)
+            logging.info("Classifying received data   - OK")
+            for i in string[1:]:
+
+                x = Tertiary_workout()
+                string_class = x.classify(i)
+                classified_base_2021.append(string_class)
+            for string in classified_base_2021:
+                for row in string:
+                    strin = [row.year,	row.period_name,row.region,	row.full_medication_name,row.market_org,row.quantity,row.volume,row.sro,row.weight_sro]
+                    cursor.execute("INSERT INTO tertiary_by_reg VALUES (?,?,?,?,?,?,?,?,?);",strin)
+            conn.commit()
+            logging.info("Inserting received data to 'local_main_base.db' - OK")
 
 class Secondary_total_2021:
     def __init__(self,item_quadra,sales_euro):
