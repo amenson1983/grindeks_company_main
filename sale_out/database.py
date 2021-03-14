@@ -1,6 +1,8 @@
 import csv
+import os
 import sqlite3
-
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
 import pandas
 import xlsxwriter
 import jaydebeapi
@@ -238,8 +240,128 @@ class Tertiary_by_region_download_structure_for_power_bi:
         self.region_quadra = region_quadra
         self.month = month
         self.item_quadra = item_quadra
+class Tertiary_by_week_download_structure_for_power_bi:
+    def __init__(self,item_proxima_dirty,w01,w02,w03,w04,w05,w06,w07,w08,w09):
+        self.w09 = w09
+        self.w08 = w08
+        self.w07 = w07
+        self.w06 = w06
+        self.w05 = w05
+        self.w04 = w04
+        self.w03 = w03
+        self.w02 = w02
+        self.w01 = w01
+        self.item_proxima_dirty = item_proxima_dirty
+
+class Tertiary_by_week_download_structure_for_power_bi_workout:
+    def normalize_weekly_tertiary(self):
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                f"SELECT distinct items.item_proxima from items")
+            results = cursor.fetchall()
+        list_crm = []
+        for i in results:
+            list_crm.append(i)
+        filename = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\transform_files\\0.transform_tertiary_week_actual.xlsx"
+        path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\raw_data_files\\tertiary_sales\\tertiary_week_actual.xlsx"
+        wb_obj = openpyxl.load_workbook(path)
+        sheet_obj = wb_obj.active
+        rows_count = str(sheet_obj.calculate_dimension()).rsplit(':')
+        print(rows_count)
+        rows_count = int(str(rows_count[1])[1:])
+        print(rows_count)
+        logging.info(f"number of rows - {rows_count}  - OK")
+        string = []
+        classified_base_2021 = []
+        for row in range(1, rows_count + 1):
+            str_ = []
+            for col in range(1, 70):
+                cell_obj = sheet_obj.cell(row=row, column=col)
+                str_.append(cell_obj.value)
+            string.append(str_)
+        for i in string[2:]:
+            print(i[0])
+            print(list_crm[0])
+            count = 0
+            item_proxima_dirty = ''
+            index_ = process.extractOne(str(i[0]),list_crm)
+            if index_[1] > 91:
+                item_proxima_dirty = str(index_[0]).replace("('","").replace("',)","")
+            else: count +=1
+
+            print(item_proxima_dirty)
+
+            w01 = i[2]
+            w02 = i[3]
+            w03 = i[4]
+            w04 = i[5]
+            w05 = i[6]
+            w06 = i[7]
+            w07 = i[8]
+            w08 = i[9]
+            w09 = i[10]
+            x = Tertiary_by_week_download_structure_for_power_bi(item_proxima_dirty,w01,w02,w03,w04,w05,w06,w07,w08,w09)
+            string_class = x
+            classified_base_2021.append(string_class)
+
+
+        workbook = xlsxwriter.Workbook(filename)
+        logging.info(f"Opening f'{filename}' for writing  - OK")
+        worksheet = workbook.add_worksheet()
+
+        # Widen the first column to make the text clearer.
+        # worksheet.set_column('A:A', 20)
+        bold = workbook.add_format({'bold': True}, )
+        worksheet.write('A1', "item_proximadirty", bold)
+        worksheet.write('B1', "01", bold)
+        worksheet.write('C1', "02", bold)
+        worksheet.write('D1', "03", bold)
+        worksheet.write('E1', "04", bold)
+        worksheet.write('F1', "05", bold)
+        worksheet.write('G1', "06", bold)
+        worksheet.write('H1', "07", bold)
+        worksheet.write('I1', "08", bold)
+        worksheet.write('J1', "09", bold)
+        logging.info("Adding headers - OK")
+
+        list_base_2021 = []
+        row_index = 1
+
+        for item in classified_base_2021:
+            item_ = [[str(item.item_proxima_dirty),
+                      str(item.w01),
+                      str(item.w02),
+                      str(item.w03),
+                      str(item.w04),
+                      str(item.w05),
+                      str(item.w06),
+                      str(item.w07),
+                      str(item.w08),
+                      str(item.w09)]]
+
+            list_base_2021.append(item_)
+            worksheet.write(int(row_index), int(0), str(item.item_proxima_dirty))
+            worksheet.write(int(row_index), int(1), str(item.w01))
+            worksheet.write(int(row_index), int(2), str(item.w02))
+            worksheet.write(int(row_index), int(3), str(item.w03))
+            worksheet.write(int(row_index), int(4), str(item.w04))
+            worksheet.write(int(row_index), int(5), str(item.w05))
+            worksheet.write(int(row_index), int(6), str(item.w06))
+            worksheet.write(int(row_index), int(7), str(item.w07))
+            worksheet.write(int(row_index), int(8), str(item.w08))
+            worksheet.write(int(row_index), int(9), str(item.w09))
+            row_index += 1
+        logging.info("Writing data - OK")
+        workbook.close()
+        os.open("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\transform_files\\0.transform_tertiary_week_actual.xlsx",1)
 
 class Tertiary_workout:
+
+
+
+
+
     def classify(self,col):
         classifyed_tert = []
         year = str(col[0])
@@ -264,13 +386,14 @@ class Tertiary_workout:
             cursor.execute("CREATE TABLE IF NOT EXISTS tertiary_by_reg (year,	period_name,region,	full_medication_name,market_org,quantity,volume,sro,weight_sro);")
             path = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\transform_files\\0.transform_tertiary_by_region.xlsx"
             logging.info("Creating the table 'tertiary_by_reg' in 'local_main_base.db'  - OK")
-            logging.info("Opening 'tertiary_region_actual.csv'   - OK")
             conn.commit()
             wb_obj = openpyxl.load_workbook(path)
             sheet_obj = wb_obj.active
             rows_count = str(sheet_obj.calculate_dimension()).rsplit(':')
-            rows_count = int(str(rows_count[1])[2:])
-            logging.info(f"tertiary_region_actual.csv' - number of rows - {rows_count}  - OK")
+            print(rows_count)
+            rows_count = int(str(rows_count[1])[1:])
+            print(rows_count)
+            logging.info(f"transform_tertiary_by_region' - number of rows - {rows_count}  - OK")
             string = []
             classified_base_2021 = []
             for row in range(1, rows_count + 1):

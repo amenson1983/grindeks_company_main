@@ -3,7 +3,8 @@ import sqlite3
 
 from pandas.tests.io.excel.test_xlsxwriter import xlsxwriter
 
-from sale_out.database import Kam_plan_download_structure, Tertiary_by_region_download_structure, Tertiary_workout
+from sale_out.database import Kam_plan_download_structure, Tertiary_by_region_download_structure, Tertiary_workout, \
+    Tertiary_by_week_download_structure_for_power_bi_workout
 
 logging.basicConfig(filename='bi.log', level=logging.INFO, format='%(asctime)s %(message)s', datefmt='%d/%m/%Y %I:%M:%S %p')
 
@@ -231,7 +232,9 @@ if __name__ == '__main__':
     #ex.actual_secondary_sales_from_sqlite3()
     #ex.secondary_sales_2020_from_sqlite3_to_transform_xlxs()
     #ex.kam_plan()
-    list_months = ['Январь']
-    x = Tertiary_workout()
+    #list_months = ['Январь']
+    #x = Tertiary_workout()
     #x.tert_reg_to_sqlite()
-    x.tertiary_by_region_to_xlxs(list_months)
+    #x.tertiary_by_region_to_xlxs(list_months)
+    pp = Tertiary_by_week_download_structure_for_power_bi_workout()
+    pp.normalize_weekly_tertiary()
