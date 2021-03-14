@@ -231,5 +231,7 @@ if __name__ == '__main__':
     #ex.actual_secondary_sales_from_sqlite3()
     #ex.secondary_sales_2020_from_sqlite3_to_transform_xlxs()
     #ex.kam_plan()
+    list_months = ['Январь']
     x = Tertiary_workout()
-    x.tert_reg_to_sqlite()
+    #x.tert_reg_to_sqlite()
+    x.tertiary_by_region_to_xlxs(list_months)

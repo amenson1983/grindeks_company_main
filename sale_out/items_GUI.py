@@ -17,7 +17,7 @@ from win32timezone import now
 from items_class import SKU_WORKOUT, CSKU, CItemsDAO
 from power_bi_pack.__main__ import CPower_BI
 from sale_out.database import CEXtract_database_tertiary, Tertiary_download_structure, CBase_2021_quadra_workout, \
-    Kam_plans, CStock_quadra_workout, run_refresh_in_big_table_report
+    Kam_plans, CStock_quadra_workout, run_refresh_in_big_table_report, Tertiary_workout
 
 conn = sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db")
 items_ = CItemsDAO.read_tertiary(conn)
@@ -138,8 +138,11 @@ class Items_GUI(tkinter.Frame):
         self.rewrite_629_base_2020_button_sec_euro.pack(side='left')
         self.refresh_button = tkinter.Button(self.second_upper_frame, text='Read data from Quadra server', command=self.secondary_2021_total_pack_euro)
         self.refresh_button.pack(side='left')
-        self.rewrite_629_base_button_sec_euro = tkinter.Button(self.second_upper_frame, text='Save transformations for reports', command=self.save_transformations_for_riga_sales_report,font=my_font1)
-        self.rewrite_629_base_button_sec_euro.pack(side='left')
+        self.savetrans_button = tkinter.Button(self.second_upper_frame, text='Save transformations for reports', command=self.save_transformations_for_riga_sales_report,font=my_font1)
+        self.savetrans_button.pack(side='left')
+        self.savepower_bi_button = tkinter.Button(self.second_upper_frame, text='Save power BI package',
+                                               command=self.power_bi_pack, font=my_font1)
+        self.savepower_bi_button.pack(side='left')
 
         self.send_big_table_button = tkinter.Button(self.second_upper_frame, text='Send Big table report', command=self.send_big_table_report,font=my_font1)
         self.send_big_table_button.pack(side='left')
@@ -1475,6 +1478,10 @@ class Items_GUI(tkinter.Frame):
         ex.distinct_head_offices()
         ex.actual_secondary_sales_from_sqlite3()
         ex.secondary_sales_2020_from_sqlite3_to_transform_xlxs()
+        x = Tertiary_workout()
+        list, list_months_quadra, year = self.radiobutton_months()
+        x.tertiary_by_region_to_xlxs(list_months_quadra)
+
     def rewrite_2020_629_base(self):
         x = CBase_2021_quadra_workout()
         x.rewrite_629_2020_in_database()

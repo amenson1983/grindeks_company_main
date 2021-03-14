@@ -228,6 +228,17 @@ class Tertiary_by_region_download_structure:
         self.region = region
         self.period_name = period_name
         self.year = year
+class Tertiary_by_region_download_structure_for_power_bi:
+    def __init__(self,item_quadra, month, region_quadra, brand, quantity,  volume, sro, weight_sro):
+        self.weight_sro = weight_sro
+        self.sro = sro
+        self.volume = volume
+        self.quantity = quantity
+        self.brand = brand
+        self.region_quadra = region_quadra
+        self.month = month
+        self.item_quadra = item_quadra
+
 class Tertiary_workout:
     def classify(self,col):
         classifyed_tert = []
@@ -243,10 +254,6 @@ class Tertiary_workout:
         x = Tertiary_by_region_download_structure(str(year),	period_name,region,	full_medication_name,market_org,str(quantity),str(volume),str(sro),str(weight_sro))
         classifyed_tert.append(x)
         return classifyed_tert
-
-
-
-
 
     def tert_reg_to_sqlite(self):
         with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
@@ -284,6 +291,69 @@ class Tertiary_workout:
                     cursor.execute("INSERT INTO tertiary_by_reg VALUES (?,?,?,?,?,?,?,?,?);",strin)
             conn.commit()
             logging.info("Inserting received data to 'local_main_base.db' - OK")
+
+    def tertiary_by_region_to_xlxs(self,list_months):
+        filename = "C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\transform_files\\0.transform_tertiary_by_region_converted.xlsx"
+        with sqlite3.connect("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\local_main_base.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                f"SELECT items.item_quadra, ymm.Месяц, UkraineMapInfo.region_quadra, items.brand, tertiary_by_reg.quantity,  tertiary_by_reg.volume, tertiary_by_reg.sro, tertiary_by_reg.weight_sro from items join tertiary_by_reg on tertiary_by_reg.full_medication_name = items.item_proxima join ymm on tertiary_by_reg.period_name = ymm.month join UkraineMapInfo on UkraineMapInfo.region_proxima = tertiary_by_reg.region where tertiary_by_reg.year = '2021' group by items.item_quadra, ymm.Месяц, UkraineMapInfo.region_quadra, items.brand")
+            results = cursor.fetchall()
+            tertiary_list = []
+            for i in results:
+                y_1 = str(i[4]).replace(".",",")
+                y_2 = str(i[5]).replace(".",",")
+                y_3 = str(i[6]).replace(".",",")
+                y_4 = str(i[7]).replace(".",",")
+
+                z = Tertiary_by_region_download_structure_for_power_bi(i[0], i[1], i[2], i[3], y_1, y_2, y_3, y_4)
+                tertiary_list.append(z)
+        final_list = []
+        workbook = xlsxwriter.Workbook(filename)
+        logging.info("Opening '0.transform_tertiary_by_region_converted.xlsx' for writing  - OK")
+        worksheet = workbook.add_worksheet()
+
+        # Widen the first column to make the text clearer.
+        # worksheet.set_column('A:A', 20)
+        bold = workbook.add_format({'bold': True}, )
+        worksheet.write('A1', "item_quadra", bold)
+        worksheet.write('B1', "month", bold)
+        worksheet.write('C1', "region", bold)
+        worksheet.write('D1', "brand", bold)
+        worksheet.write('E1', "quantity", bold)
+        worksheet.write('F1', "volume", bold)
+        worksheet.write('G1', "sro", bold)
+        worksheet.write('H1', "weight_sro", bold)
+        logging.info("Adding headers to '0.transform_tertiary_by_region_converted.xlsx' - OK")
+
+
+        list_base_2021 = []
+        row_index = 1
+
+        for item in tertiary_list:
+            item_ = [[str(item.item_quadra),
+                      str(item.month),
+                      str(item.region_quadra),
+                      str(item.brand),
+                      str(item.quantity),
+                      str(item.volume),
+                      str(item.sro),
+                      str(item.weight_sro)]]
+
+            list_base_2021.append(item_)
+            worksheet.write(int(row_index), int(0), str(item.item_quadra))
+            worksheet.write(int(row_index), int(1), str(item.month))
+            worksheet.write(int(row_index), int(2), str(item.region_quadra))
+            worksheet.write(int(row_index), int(3), str(item.brand))
+            worksheet.write(int(row_index), int(4), str(item.quantity))
+            worksheet.write(int(row_index), int(5), str(item.volume))
+            worksheet.write(int(row_index), int(6), str(item.sro))
+            worksheet.write(int(row_index), int(7), str(item.weight_sro))
+
+
+            row_index += 1
+        logging.info("Writing data to '0.transform_tertiary_by_region_converted.xlsx' - OK")
+        workbook.close()
 
 class Secondary_total_2021:
     def __init__(self,item_quadra,sales_euro):
