@@ -1,7 +1,8 @@
 import csv
 import os
 import sqlite3
-from fuzzywuzzy import fuzz
+
+import unidecode
 from fuzzywuzzy import process
 import pandas
 import xlsxwriter
@@ -285,9 +286,9 @@ class Tertiary_by_week_download_structure_for_power_bi_workout:
             print(list_crm[0])
             count = 0
             item_proxima_dirty = ''
-            index_ = process.extractOne(str(i[0]),list_crm)
+            index_ = process.extractOne(str(i[0])[7:],list_crm)
             if index_[1] > 91:
-                item_proxima_dirty = str(index_[0]).replace("('","").replace("',)","")
+                item_proxima_dirty = str(str(i[0])[8:]).replace("('","").replace("',)","")
             else: count +=1
 
             print(item_proxima_dirty)
@@ -354,7 +355,6 @@ class Tertiary_by_week_download_structure_for_power_bi_workout:
             row_index += 1
         logging.info("Writing data - OK")
         workbook.close()
-        os.open("C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\transform_files\\0.transform_tertiary_week_actual.xlsx",1)
 
 class Tertiary_workout:
 
