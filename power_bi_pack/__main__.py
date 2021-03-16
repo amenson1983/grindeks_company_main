@@ -18,7 +18,7 @@ class CPower_BI:
             conn.commit()
             results = cursor.fetchall()
             workbook = xlsxwriter.Workbook(
-                'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\power_bi_package\\0.secondary_sales_2020.xlsx')
+                'C:\\Users\\Anastasia Siedykh\\Documents\\Backup\\KPI report\\MODULE SET V6\\power_bi_package\\0.secondary_sales_2021.xlsx')
             worksheet = workbook.add_worksheet()
             logging.info("Opening - OK")
 
@@ -227,14 +227,15 @@ class CPower_BI:
 
 
 if __name__ == '__main__':
-    #ex = CPower_BI()
+    ex = CPower_BI()
     #ex.distinct_head_offices()
-    #ex.actual_secondary_sales_from_sqlite3()
-    #ex.secondary_sales_2020_from_sqlite3_to_transform_xlxs()
+    ex.actual_secondary_sales_from_sqlite3()
+    ex.secondary_sales_2020_from_sqlite3_to_transform_xlxs()
+
     #ex.kam_plan()
     #list_months = ['Январь']
     #x = Tertiary_workout()
     #x.tert_reg_to_sqlite()
     #x.tertiary_by_region_to_xlxs(list_months)
-    pp = Tertiary_by_week_download_structure_for_power_bi_workout()
-    pp.normalize_weekly_tertiary()
+    #pp = Tertiary_by_week_download_structure_for_power_bi_workout()
+    #pp.normalize_weekly_tertiary()

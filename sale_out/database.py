@@ -242,7 +242,16 @@ class Tertiary_by_region_download_structure_for_power_bi:
         self.month = month
         self.item_quadra = item_quadra
 class Tertiary_by_week_download_structure_for_power_bi:
-    def __init__(self,item_proxima_dirty,w01,w02,w03,w04,w05,w06,w07,w08,w09):
+    def __init__(self,item_proxima_dirty,w01,w02,w03,w04,w05,w06,w07,w08,w09,w10,w11,w12,w13,w14,w15,w16,w17,w18):
+        self.w18 = w18
+        self.w17 = w17
+        self.w16 = w16
+        self.w15 = w15
+        self.w14 = w14
+        self.w13 = w13
+        self.w12 = w12
+        self.w11 = w11
+        self.w10 = w10
         self.w09 = w09
         self.w08 = w08
         self.w07 = w07
@@ -302,7 +311,16 @@ class Tertiary_by_week_download_structure_for_power_bi_workout:
             w07 = i[8]
             w08 = i[9]
             w09 = i[10]
-            x = Tertiary_by_week_download_structure_for_power_bi(item_proxima_dirty,w01,w02,w03,w04,w05,w06,w07,w08,w09)
+            w10 = i[11]
+            w11 = i[12]
+            w12 = i[13]
+            w13 = i[14]
+            w14 = i[15]
+            w15 = i[16]
+            w16 = i[17]
+            w17 = i[18]
+            w18 = i[19]
+            x = Tertiary_by_week_download_structure_for_power_bi(item_proxima_dirty,w01,w02,w03,w04,w05,w06,w07,w08,w09,w10,w11,w12,w13,w14,w15,w16,w17,w18)
             string_class = x
             classified_base_2021.append(string_class)
 
@@ -314,7 +332,7 @@ class Tertiary_by_week_download_structure_for_power_bi_workout:
         # Widen the first column to make the text clearer.
         # worksheet.set_column('A:A', 20)
         bold = workbook.add_format({'bold': True}, )
-        worksheet.write('A1', "item_proximadirty", bold)
+        worksheet.write('A1', "item_proxima", bold)
         worksheet.write('B1', "01", bold)
         worksheet.write('C1', "02", bold)
         worksheet.write('D1', "03", bold)
@@ -324,6 +342,15 @@ class Tertiary_by_week_download_structure_for_power_bi_workout:
         worksheet.write('H1', "07", bold)
         worksheet.write('I1', "08", bold)
         worksheet.write('J1', "09", bold)
+        worksheet.write('K1', "10", bold)
+        worksheet.write('L1', "11", bold)
+        worksheet.write('M1', "12", bold)
+        worksheet.write('N1', "13", bold)
+        worksheet.write('O1', "14", bold)
+        worksheet.write('P1', "15", bold)
+        worksheet.write('Q1', "16", bold)
+        worksheet.write('R1', "17", bold)
+        worksheet.write('S1', "18", bold)
         logging.info("Adding headers - OK")
 
         list_base_2021 = []
@@ -339,7 +366,17 @@ class Tertiary_by_week_download_structure_for_power_bi_workout:
                       str(item.w06),
                       str(item.w07),
                       str(item.w08),
-                      str(item.w09)]]
+                      str(item.w09),
+                      str(item.w10),
+                      str(item.w11),
+                      str(item.w12),
+                      str(item.w13),
+                      str(item.w14),
+                      str(item.w15),
+                      str(item.w16),
+                      str(item.w17),
+                      str(item.w18)
+                      ]]
 
             list_base_2021.append(item_)
             worksheet.write(int(row_index), int(0), str(item.item_proxima_dirty))
@@ -352,6 +389,15 @@ class Tertiary_by_week_download_structure_for_power_bi_workout:
             worksheet.write(int(row_index), int(7), str(item.w07))
             worksheet.write(int(row_index), int(8), str(item.w08))
             worksheet.write(int(row_index), int(9), str(item.w09))
+            worksheet.write(int(row_index), int(10), str(item.w10))
+            worksheet.write(int(row_index), int(11), str(item.w11))
+            worksheet.write(int(row_index), int(12), str(item.w12))
+            worksheet.write(int(row_index), int(13), str(item.w13))
+            worksheet.write(int(row_index), int(14), str(item.w14))
+            worksheet.write(int(row_index), int(15), str(item.w15))
+            worksheet.write(int(row_index), int(16), str(item.w16))
+            worksheet.write(int(row_index), int(17), str(item.w17))
+            worksheet.write(int(row_index), int(18), str(item.w18))
             row_index += 1
         logging.info("Writing data - OK")
         workbook.close()
